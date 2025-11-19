@@ -6,7 +6,19 @@ Nano Flows is a modern, AI-focused marketing website built with React, TypeScrip
 
 ## Recent Changes (November 2025)
 
-### Comprehensive Theme System Implementation (Latest)
+### New Service Categories in Navigation (November 19, 2025)
+- **Added SaaS Development Service Category**: Complete SaaS solutions including MVP development, multi-tenant architecture, subscription/billing integration, and platform modernization
+- **Added Internet of Things Service Category**: IoT solutions covering device integration, data analytics, smart home/building automation, and industrial IoT (IIoT)
+- **Products Navigation Enhancement**: Navigation bar now displays 5 service categories (AI Experience Suite, Cloud & Performance Platform, Growth & Analytics Hub, SaaS Development, Internet of Things) in the Products dropdown menu
+- **Service Items**: Each new category includes 4 detailed service offerings with descriptions and slugs for future page development
+
+### n8n Workflow Automation Integration (November 19, 2025)
+- **Added n8n Service to Services Section**: Comprehensive n8n Workflow Automation service card with setup, custom workflows, integrations, and self-hosted solutions
+- **Created Dedicated n8n Industry Page**: Complete automation page at `/industry/n8n-workflow-automation` with hero, 6 core services, 6 highlights, 4 solution categories, and 4 FAQs
+- **Updated Features Section**: Rebranded "Seamless Integration" feature to "n8n Workflow Automation" emphasizing 400+ app integrations and expert n8n positioning
+- **Consistent n8n Messaging**: All content positions Nano Flows as premier n8n automation partner with enterprise-grade capabilities, self-hosted security, and migration expertise
+
+### Comprehensive Theme System Implementation
 - **Centralized Theme Architecture**: Created comprehensive theme system with darkTheme.ts and lightTheme.ts files containing ALL styling tokens
 - **Theme Configuration Files**: 
   - `darkTheme.ts`: Electric blue (#00F0FF) and electric green (#00E881) color scheme with all component styling classes

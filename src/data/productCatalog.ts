@@ -111,6 +111,62 @@ export const productCategories: ProductCategory[] = [
         description: 'Grow your channel with content strategy, SEO, and performance tracking.'
       }
     ]
+  },
+  {
+    title: 'SaaS Development',
+    slug: 'saas-development',
+    description: 'Full-stack SaaS solutions from MVP to enterprise scale with modern architecture.',
+    path: '/products/saas-development',
+    items: [
+      {
+        name: 'SaaS MVP Development',
+        slug: 'saas-mvp-development',
+        description: 'Launch your SaaS product fast with a fully-featured MVP built for growth.'
+      },
+      {
+        name: 'Multi-Tenant Architecture',
+        slug: 'multi-tenant-architecture',
+        description: 'Build secure, scalable multi-tenant systems with data isolation and customization.'
+      },
+      {
+        name: 'Subscription & Billing',
+        slug: 'subscription-billing',
+        description: 'Integrate subscription management, payment processing, and revenue tracking.'
+      },
+      {
+        name: 'SaaS Platform Modernization',
+        slug: 'saas-platform-modernization',
+        description: 'Upgrade legacy SaaS platforms with modern tech stacks and cloud architecture.'
+      }
+    ]
+  },
+  {
+    title: 'Internet of Things',
+    slug: 'internet-of-things',
+    description: 'Connected IoT solutions with device management, data analytics, and automation.',
+    path: '/products/internet-of-things',
+    items: [
+      {
+        name: 'IoT Device Integration',
+        slug: 'iot-device-integration',
+        description: 'Connect sensors, gateways, and devices to cloud platforms with secure protocols.'
+      },
+      {
+        name: 'IoT Data Analytics',
+        slug: 'iot-data-analytics',
+        description: 'Process and visualize IoT data streams with real-time dashboards and insights.'
+      },
+      {
+        name: 'Smart Home & Building Solutions',
+        slug: 'smart-home-building-solutions',
+        description: 'Build connected home and building automation systems with voice and app control.'
+      },
+      {
+        name: 'Industrial IoT (IIoT)',
+        slug: 'industrial-iot',
+        description: 'Deploy predictive maintenance, asset tracking, and process automation for industry.'
+      }
+    ]
   }
 ];
 
