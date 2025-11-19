@@ -1,9 +1,8 @@
-import React from 'react';
 import { useTheme } from '../context/ThemeContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { ArrowRight, HelpCircle, MapPin, Database, TrendingUp } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 
 const challenges = [
   {
@@ -56,7 +55,7 @@ const howItWorksServices = [
     ],
     image: '/image1.png',
     cta: 'Explore Discovery',
-    layout: 'left' // image on left, text on right
+    layout: 'left'
   },
   {
     id: 2,
@@ -73,7 +72,7 @@ const howItWorksServices = [
     ],
     image: '/image2.png',
     cta: 'Explore CDP',
-    layout: 'right' // image on right, text on left
+    layout: 'right'
   },
   {
     id: 3,
@@ -90,9 +89,45 @@ const howItWorksServices = [
     ],
     image: '/image3.png',
     cta: 'Get Started',
-    layout: 'left' // image on left, text on right
+    layout: 'left'
   }
 ];
+
+// Animation variants
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1
+    }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut"
+    }
+  }
+};
+
+const featureItemVariants: Variants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.4,
+      ease: "easeOut"
+    }
+  }
+};
 
 const HowItWorks = () => {
   const { theme } = useTheme();
@@ -101,23 +136,33 @@ const HowItWorks = () => {
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
       <Header />
       <div className="pt-20">
-        <div className="container mx-auto px-6 py-18">
+        <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-16 lg:py-20">
           {/* Page Header */}
-          <div className="text-center mb-12">
-            <h1 className={`text-4xl md:text-5xl font-orbitron font-bold mb-3 ${
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="text-center mb-16 lg:mb-20"
+          >
+            <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-orbitron font-bold mb-4 ${
               theme === 'dark' ? 'text-white' : 'text-black'
             }`}>
               How It <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>Works</span>
             </h1>
-            <p className={`text-base md:text-lg font-exo max-w-3xl mx-auto ${
-              theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className={`text-base sm:text-lg lg:text-xl font-exo max-w-3xl mx-auto ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+              }`}
+            >
               Discover how we solve your business challenges with innovative solutions
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           {/* How It Works Services Section */}
-          <div className="mb-12 space-y-12 md:space-y-16">
+          <div className="mb-16 lg:mb-24 space-y-16 lg:space-y-24">
             {howItWorksServices.map((service, index) => {
               const Icon = service.icon;
               const isReversed = service.layout === 'right';
@@ -125,109 +170,203 @@ const HowItWorks = () => {
               return (
                 <motion.div
                   key={service.id}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.2 }}
-                  className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-6 lg:gap-10 items-center`}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.7, delay: index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  className={`flex flex-col ${isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-8 lg:gap-12 xl:gap-16 items-center`}
                 >
                   {/* Image Section */}
-                  <div className="w-full lg:w-1/2 flex justify-center">
-                    <div className={`rounded-2xl overflow-hidden w-[75%] ${
+                  <motion.div 
+                    className="w-full lg:w-1/2 flex justify-center"
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className={`rounded-2xl overflow-hidden w-full max-w-md lg:max-w-none lg:w-[85%] relative group ${
                       theme === 'dark' ? 'bg-dark-card' : 'bg-white'
                     } shadow-xl`}>
-                      <img
+                      <motion.div
+                        className="absolute inset-0 z-10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                        style={{
+                          background: theme === 'dark' 
+                            ? 'linear-gradient(135deg, rgba(0,240,255,0.1) 0%, rgba(0,232,129,0.1) 100%)'
+                            : 'linear-gradient(135deg, rgba(235,50,50,0.05) 0%, rgba(0,123,255,0.05) 100%)',
+                          boxShadow: theme === 'dark'
+                            ? '0 0 40px rgba(0,240,255,0.3)'
+                            : '0 0 40px rgba(235,50,50,0.2)'
+                        }}
+                      />
+                      <motion.img
                         src={service.image}
                         alt={service.title}
-                        className="w-full h-auto object-cover"
+                        className="w-full h-auto object-cover relative z-0"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
                       />
                     </div>
-                  </div>
+                  </motion.div>
 
                   {/* Content Section */}
-                  <div className="w-full lg:w-1/2">
-                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 ${
-                      theme === 'dark'
-                        ? 'bg-electric-blue/20 text-electric-blue'
-                        : 'bg-accent-red/20 text-accent-red'
-                    }`}>
-                      <Icon size={32} />
-                    </div>
-                    <h2 className={`text-2xl md:text-3xl font-orbitron font-bold mb-3 ${
-                      theme === 'dark' ? 'text-white' : 'text-black'
-                    }`}>
+                  <motion.div 
+                    className="w-full lg:w-1/2 px-4 sm:px-0"
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-50px" }}
+                  >
+                    <motion.div
+                      variants={itemVariants}
+                      whileHover={{ 
+                        scale: 1.05,
+                        rotate: [0, -5, 5, 0],
+                        transition: { duration: 0.5 }
+                      }}
+                      className={`w-16 h-16 rounded-xl flex items-center justify-center mb-6 ${
+                        theme === 'dark'
+                          ? 'bg-electric-blue/20 text-electric-blue shadow-[0_0_20px_rgba(0,240,255,0.3)]'
+                          : 'bg-accent-red/20 text-accent-red shadow-[0_0_20px_rgba(235,50,50,0.2)]'
+                      }`}
+                    >
+                      <Icon size={36} />
+                    </motion.div>
+                    
+                    <motion.h2
+                      variants={itemVariants}
+                      className={`text-2xl sm:text-3xl lg:text-4xl font-orbitron font-bold mb-4 ${
+                        theme === 'dark' ? 'text-white' : 'text-black'
+                      }`}
+                    >
                       {service.title}
-                    </h2>
-                    <p className={`text-sm md:text-base font-exo leading-relaxed mb-4 ${
-                      theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                    }`}>
+                    </motion.h2>
+                    
+                    <motion.p
+                      variants={itemVariants}
+                      className={`text-sm sm:text-base lg:text-lg font-exo leading-relaxed mb-6 ${
+                        theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                      }`}
+                    >
                       {service.description}
-                    </p>
+                    </motion.p>
                     
                     {/* Additional Website Features */}
                     {service.additionalContent && (
-                      <div className="mb-5">
-                        <h4 className={`text-sm font-orbitron font-semibold mb-3 ${
+                      <motion.div variants={itemVariants} className="mb-6">
+                        <h4 className={`text-sm sm:text-base font-orbitron font-semibold mb-4 ${
                           theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
                         }`}>
                           Key Website Features:
                         </h4>
-                        <ul className="space-y-2">
+                        <motion.ul 
+                          className="space-y-3"
+                          variants={containerVariants}
+                        >
                           {service.additionalContent.map((item, idx) => (
-                            <li key={idx} className="flex items-start gap-2">
-                              <div className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 ${
-                                theme === 'dark' ? 'bg-electric-green' : 'bg-accent-red'
-                              }`} />
-                              <span className={`text-xs md:text-sm font-exo ${
+                            <motion.li
+                              key={idx}
+                              variants={featureItemVariants}
+                              whileHover={{ x: 5 }}
+                              className="flex items-start gap-3"
+                            >
+                              <motion.div
+                                animate={{
+                                  scale: [1, 1.2, 1],
+                                  boxShadow: theme === 'dark'
+                                    ? ['0 0 0px rgba(0,232,129,0)', '0 0 10px rgba(0,232,129,0.6)', '0 0 0px rgba(0,232,129,0)']
+                                    : ['0 0 0px rgba(235,50,50,0)', '0 0 10px rgba(235,50,50,0.6)', '0 0 0px rgba(235,50,50,0)']
+                                }}
+                                transition={{
+                                  duration: 2,
+                                  repeat: Infinity,
+                                  delay: idx * 0.2
+                                }}
+                                className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
+                                  theme === 'dark' ? 'bg-electric-green' : 'bg-accent-red'
+                                }`}
+                              />
+                              <span className={`text-xs sm:text-sm lg:text-base font-exo ${
                                 theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                               }`}>
                                 {item}
                               </span>
-                            </li>
+                            </motion.li>
                           ))}
-                        </ul>
-                      </div>
+                        </motion.ul>
+                      </motion.div>
                     )}
                     
-                    <button className={`px-6 py-2.5 rounded-lg font-exo font-semibold transition-all duration-300 hover:scale-105 ${
-                      theme === 'dark'
-                        ? 'bg-electric-green text-black hover:glow-green'
-                        : 'bg-accent-red text-white hover:glow-red'
-                    }`}>
+                    <motion.button
+                      variants={itemVariants}
+                      whileHover={{ 
+                        scale: 1.05,
+                        boxShadow: theme === 'dark'
+                          ? '0 10px 30px rgba(0,232,129,0.4)'
+                          : '0 10px 30px rgba(235,50,50,0.4)'
+                      }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-6 sm:px-8 py-3 rounded-lg font-exo font-semibold transition-all duration-300 ${
+                        theme === 'dark'
+                          ? 'bg-electric-green text-black shadow-[0_4px_15px_rgba(0,232,129,0.4)]'
+                          : 'bg-accent-red text-white shadow-[0_4px_15px_rgba(235,50,50,0.4)]'
+                      }`}
+                    >
                       {service.cta} <ArrowRight className="inline ml-2" size={20} />
-                    </button>
-                  </div>
+                    </motion.button>
+                  </motion.div>
                 </motion.div>
               );
             })}
           </div>
 
           {/* Challenges Q/A Section */}
-          <div className="mb-12">
-            <h2 className={`text-2xl md:text-3xl font-orbitron font-bold mb-6 ${
-              theme === 'dark' ? 'text-white' : 'text-black'
-            }`}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-16 lg:mb-24"
+          >
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className={`text-3xl sm:text-4xl lg:text-5xl font-orbitron font-bold mb-10 text-center ${
+                theme === 'dark' ? 'text-white' : 'text-black'
+              }`}
+            >
               Challenges Q/A
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6">
+            </motion.h2>
+            <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
               {challenges.map((challenge, index) => (
                 <motion.div
                   key={challenge.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className={`${theme === 'dark' ? 'bg-dark-card' : 'bg-white'} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300`}
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.5, delay: index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  whileHover={{ 
+                    y: -5,
+                    boxShadow: theme === 'dark'
+                      ? '0 20px 40px rgba(0,240,255,0.2)'
+                      : '0 20px 40px rgba(235,50,50,0.15)',
+                    transition: { duration: 0.3 }
+                  }}
+                  className={`${theme === 'dark' ? 'bg-dark-card' : 'bg-white'} rounded-2xl p-6 lg:p-8 shadow-lg transition-shadow duration-300`}
                 >
-                  <div className="flex items-start space-x-4 mb-4">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      theme === 'dark'
-                        ? 'bg-electric-blue/20 text-electric-blue'
-                        : 'bg-accent-red/20 text-accent-red'
-                    }`}>
-                      <HelpCircle size={24} />
-                    </div>
+                  <div className="flex items-start space-x-4 mb-5">
+                    <motion.div
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.6 }}
+                      className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        theme === 'dark'
+                          ? 'bg-electric-blue/20 text-electric-blue shadow-[0_0_15px_rgba(0,240,255,0.3)]'
+                          : 'bg-accent-red/20 text-accent-red shadow-[0_0_15px_rgba(235,50,50,0.2)]'
+                      }`}
+                    >
+                      <HelpCircle size={26} />
+                    </motion.div>
                     <div className="flex-1">
-                      <h3 className={`text-lg md:text-xl font-orbitron font-bold mb-3 ${
+                      <h3 className={`text-base sm:text-lg lg:text-xl font-orbitron font-bold mb-3 ${
                         theme === 'dark' ? 'text-white' : 'text-black'
                       }`}>
                         {challenge.question}
@@ -235,69 +374,105 @@ const HowItWorks = () => {
                     </div>
                   </div>
 
-                  <div className={`border-t ${
-                    theme === 'dark' ? 'border-gray-700' : 'border-gray-200'
-                  } pt-4 mb-4`}>
-                    <h4 className={`text-base font-orbitron font-bold mb-2 ${
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.2 }}
+                    className={`border-t ${
+                      theme === 'dark' ? 'border-gray-700' : 'border-gray-200'
+                    } pt-5 mb-5`}
+                  >
+                    <h4 className={`text-base sm:text-lg font-orbitron font-bold mb-3 ${
                       theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
                     }`}>
                       Solution
                     </h4>
-                    <p className={`font-exo mb-4 text-sm md:text-base ${
+                    <p className={`font-exo mb-4 text-sm sm:text-base ${
                       theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                     }`}>
                       {challenge.solution}
                     </p>
-                  </div>
+                  </motion.div>
 
                   {challenge.features.length > 0 && (
-                    <div className="mb-4">
-                      <h5 className={`text-sm font-orbitron font-semibold mb-2 ${
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 }}
+                      className="mb-5"
+                    >
+                      <h5 className={`text-sm font-orbitron font-semibold mb-3 ${
                         theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                       }`}>
                         Key Features:
                       </h5>
                       <div className="flex flex-wrap gap-2">
                         {challenge.features.map((feature, idx) => (
-                          <span
+                          <motion.span
                             key={idx}
-                            className={`px-3 py-1 rounded-full text-xs font-exo ${
+                            initial={{ opacity: 0, scale: 0 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            whileHover={{ scale: 1.1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.4 + idx * 0.1 }}
+                            className={`px-3 py-1.5 rounded-full text-xs font-exo ${
                               theme === 'dark'
                                 ? 'bg-electric-blue/20 text-electric-blue'
                                 : 'bg-accent-red/20 text-accent-red'
                             }`}
                           >
                             {feature}
-                          </span>
+                          </motion.span>
                         ))}
                       </div>
-                    </div>
+                    </motion.div>
                   )}
 
-                  <a
+                  <motion.a
                     href={`/services#${challenge.platform.toLowerCase().replace(/\s+/g, '-')}`}
-                    className={`inline-flex items-center space-x-2 px-4 py-2 rounded-lg font-exo font-semibold transition-all duration-300 hover:scale-105 ${
+                    whileHover={{ x: 5 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`inline-flex items-center space-x-2 px-5 py-2.5 rounded-lg font-exo font-semibold transition-all duration-300 ${
                       theme === 'dark'
-                        ? 'text-electric-blue hover:text-electric-green'
-                        : 'text-accent-red hover:text-accent-blue'
+                        ? 'text-electric-blue hover:text-electric-green hover:bg-electric-blue/10'
+                        : 'text-accent-red hover:text-accent-blue hover:bg-accent-red/10'
                     }`}
                   >
                     <span>{challenge.cta}</span>
-                    <ArrowRight size={16} />
-                  </a>
+                    <motion.div
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      <ArrowRight size={18} />
+                    </motion.div>
+                  </motion.a>
                 </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Process Flow Section */}
-          <div className={`${theme === 'dark' ? 'bg-dark-card' : 'bg-white'} rounded-2xl p-8 shadow-lg`}>
-            <h2 className={`text-3xl font-orbitron font-bold mb-8 text-center ${
-              theme === 'dark' ? 'text-white' : 'text-black'
-            }`}>
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className={`${theme === 'dark' ? 'bg-dark-card' : 'bg-white'} rounded-2xl p-8 lg:p-12 shadow-lg`}
+          >
+            <motion.h2
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className={`text-3xl sm:text-4xl lg:text-5xl font-orbitron font-bold mb-12 text-center ${
+                theme === 'dark' ? 'text-white' : 'text-black'
+              }`}
+            >
               Our Process
-            </h2>
-            <div className="grid md:grid-cols-4 gap-6">
+            </motion.h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
               {[
                 {
                   step: '01',
@@ -322,32 +497,74 @@ const HowItWorks = () => {
               ].map((process, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  whileHover={{ 
+                    y: -10,
+                    transition: { duration: 0.3 }
+                  }}
                   className="text-center"
                 >
-                  <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                    theme === 'dark'
-                      ? 'bg-electric-blue/20 text-electric-blue'
-                      : 'bg-accent-red/20 text-accent-red'
-                  }`}>
+                  <motion.div
+                    whileHover={{ 
+                      scale: 1.1,
+                      rotate: [0, -10, 10, 0],
+                      transition: { duration: 0.5 }
+                    }}
+                    animate={{
+                      boxShadow: theme === 'dark'
+                        ? [
+                            '0 0 0px rgba(0,240,255,0)',
+                            '0 0 20px rgba(0,240,255,0.4)',
+                            '0 0 0px rgba(0,240,255,0)'
+                          ]
+                        : [
+                            '0 0 0px rgba(235,50,50,0)',
+                            '0 0 20px rgba(235,50,50,0.3)',
+                            '0 0 0px rgba(235,50,50,0)'
+                          ]
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      delay: index * 0.5
+                    }}
+                    className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 ${
+                      theme === 'dark'
+                        ? 'bg-electric-blue/20 text-electric-blue'
+                        : 'bg-accent-red/20 text-accent-red'
+                    }`}
+                  >
                     <span className="font-orbitron font-bold text-2xl">{process.step}</span>
-                  </div>
-                  <h3 className={`text-xl font-orbitron font-bold mb-2 ${
-                    theme === 'dark' ? 'text-white' : 'text-black'
-                  }`}>
+                  </motion.div>
+                  <motion.h3
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.2 + index * 0.1 }}
+                    className={`text-xl sm:text-2xl font-orbitron font-bold mb-3 ${
+                      theme === 'dark' ? 'text-white' : 'text-black'
+                    }`}
+                  >
                     {process.title}
-                  </h3>
-                  <p className={`font-exo text-sm ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
+                  </motion.h3>
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3 + index * 0.1 }}
+                    className={`font-exo text-sm sm:text-base ${
+                      theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                    }`}
+                  >
                     {process.description}
-                  </p>
+                  </motion.p>
                 </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
       <Footer />
@@ -356,4 +573,3 @@ const HowItWorks = () => {
 };
 
 export default HowItWorks;
-
