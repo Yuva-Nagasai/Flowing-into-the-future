@@ -113,12 +113,75 @@ const IndustryDetail = () => {
   // Use darkAccent colors in dark mode if available, otherwise fall back to accent
   const palette = theme === 'dark' && darkAccent ? darkAccent : accent;
 
+  // Helper function to generate industry-specific decorative elements
+  const getIndustryDecoration = () => {
+    const decorations: Record<string, JSX.Element> = {
+      'agritech-application-development': (
+        <>
+          <div className="absolute top-20 right-10 w-32 h-32 rounded-full opacity-10 blur-2xl" 
+               style={{ background: `radial-gradient(circle, ${palette.secondary}, transparent)` }} />
+          <div className="absolute bottom-40 left-20 w-24 h-24 rounded-full opacity-10 blur-2xl" 
+               style={{ background: `radial-gradient(circle, ${palette.primary}, transparent)` }} />
+        </>
+      ),
+      'dating-app-development': (
+        <>
+          <div className="absolute top-32 left-16 w-40 h-40 rounded-full opacity-15 blur-3xl" 
+               style={{ background: `radial-gradient(circle, ${palette.primary}, transparent)` }} />
+          <div className="absolute bottom-20 right-16 w-36 h-36 rounded-full opacity-15 blur-3xl" 
+               style={{ background: `radial-gradient(circle, ${palette.secondary}, transparent)` }} />
+        </>
+      ),
+      'healthtech-app-development': (
+        <>
+          <div className="absolute top-24 right-24 w-28 h-28 rounded-full opacity-12 blur-2xl" 
+               style={{ background: `radial-gradient(circle, ${palette.primary}, transparent)` }} />
+          <div className="absolute bottom-32 left-12 w-32 h-32 rounded-full opacity-12 blur-2xl" 
+               style={{ background: `radial-gradient(circle, ${palette.secondary}, transparent)` }} />
+        </>
+      ),
+      'ecommerce-app-development': (
+        <>
+          <div className="absolute top-16 right-32 w-36 h-36 rounded-full opacity-15 blur-3xl" 
+               style={{ background: `radial-gradient(circle, ${palette.primary}, transparent)` }} />
+          <div className="absolute bottom-24 left-16 w-40 h-40 rounded-full opacity-15 blur-3xl" 
+               style={{ background: `radial-gradient(circle, ${palette.secondary}, transparent)` }} />
+        </>
+      ),
+      'gaming-app-development': (
+        <>
+          <div className="absolute top-12 left-24 w-44 h-44 rounded-full opacity-20 blur-3xl" 
+               style={{ background: `radial-gradient(circle, ${palette.primary}, transparent)` }} />
+          <div className="absolute bottom-16 right-20 w-40 h-40 rounded-full opacity-20 blur-3xl" 
+               style={{ background: `radial-gradient(circle, ${palette.secondary}, transparent)` }} />
+        </>
+      ),
+      'fitnesstech-app-development': (
+        <>
+          <div className="absolute top-28 right-16 w-32 h-32 rounded-full opacity-12 blur-2xl" 
+               style={{ background: `radial-gradient(circle, ${palette.primary}, transparent)` }} />
+          <div className="absolute bottom-28 left-24 w-36 h-36 rounded-full opacity-12 blur-2xl" 
+               style={{ background: `radial-gradient(circle, ${palette.secondary}, transparent)` }} />
+        </>
+      ),
+      'financial-services-software-solutions': (
+        <>
+          <div className="absolute top-20 left-20 w-32 h-32 rounded-full opacity-10 blur-2xl" 
+               style={{ background: `radial-gradient(circle, ${palette.primary}, transparent)` }} />
+          <div className="absolute bottom-20 right-20 w-32 h-32 rounded-full opacity-10 blur-2xl" 
+               style={{ background: `radial-gradient(circle, ${palette.secondary}, transparent)` }} />
+        </>
+      ),
+    };
+    return decorations[slug || ''] || null;
+  };
+
   const heroGradientStyle = {
     backgroundImage: `linear-gradient(135deg, ${accent.gradient[0]}, ${accent.gradient[1]}, ${accent.gradient[2]})`,
   };
 
   const darkModeGradientStyle = {
-    backgroundImage: `linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95))`,
+    backgroundImage: `linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98))`,
   };
 
   const heroBullets = (alignCenter = false) => (
@@ -148,12 +211,13 @@ const IndustryDetail = () => {
     <div className={`mt-8 flex flex-wrap gap-4 ${alignCenter ? 'justify-center' : ''}`}>
       <a
         href={industry.hero.primaryCta.href}
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white shadow-lg transition-all hover:opacity-90"
+        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold shadow-lg transition-all hover:opacity-90"
         style={{
           backgroundColor: palette.primary,
+          color: theme === 'dark' ? '#0f172a' : '#ffffff',
           boxShadow:
             theme === 'dark'
-              ? 'none'
+              ? `0 0 25px ${palette.primary}40`
               : `0 15px 40px ${palette.primary}33`,
         }}
       >
@@ -243,13 +307,14 @@ const IndustryDetail = () => {
         >
           {theme === 'dark' && (
             <div
-              className="absolute inset-0 opacity-10"
+              className="absolute inset-0 opacity-20"
               style={{
-                backgroundImage: `radial-gradient(circle at 30% 20%, ${palette.primary}40, transparent 50%), radial-gradient(circle at 70% 80%, ${palette.secondary}30, transparent 50%)`,
+                backgroundImage: `radial-gradient(circle at 30% 20%, ${palette.primary}50, transparent 60%), radial-gradient(circle at 70% 80%, ${palette.secondary}40, transparent 60%)`,
               }}
             />
           )}
           <div className="container mx-auto px-6 text-center relative z-10">
+            {theme === 'dark' && getIndustryDecoration()}
             {heroTextBlock(true)}
             <div className="mt-12 max-w-5xl mx-auto">
               <div
@@ -286,13 +351,14 @@ const IndustryDetail = () => {
         >
           {theme === 'dark' && (
             <div
-              className="absolute inset-0 opacity-10"
+              className="absolute inset-0 opacity-20"
               style={{
-                backgroundImage: `radial-gradient(circle at 20% 30%, ${palette.primary}40, transparent 50%), radial-gradient(circle at 80% 70%, ${palette.secondary}30, transparent 50%)`,
+                backgroundImage: `radial-gradient(circle at 20% 30%, ${palette.primary}50, transparent 60%), radial-gradient(circle at 80% 70%, ${palette.secondary}40, transparent 60%)`,
               }}
             />
           )}
           <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+            {theme === 'dark' && getIndustryDecoration()}
             <div>{heroTextBlock(false)}</div>
             <div className="relative pb-12">
               <div
@@ -361,13 +427,14 @@ const IndustryDetail = () => {
       >
         {theme === 'dark' && (
           <div
-            className="absolute inset-0 opacity-10"
+            className="absolute inset-0 opacity-20"
             style={{
-              backgroundImage: `radial-gradient(circle at 40% 40%, ${palette.primary}40, transparent 50%), radial-gradient(circle at 60% 80%, ${palette.secondary}30, transparent 50%)`,
+              backgroundImage: `radial-gradient(circle at 40% 40%, ${palette.primary}50, transparent 60%), radial-gradient(circle at 60% 80%, ${palette.secondary}40, transparent 60%)`,
             }}
           />
         )}
         <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+          {theme === 'dark' && getIndustryDecoration()}
           <div>{heroTextBlock(false)}</div>
           <div className="relative">
             <div
@@ -398,8 +465,8 @@ const IndustryDetail = () => {
 
   const servicesCardClass =
     theme === 'dark'
-      ? 'bg-dark-card border-electric-blue/30'
-      : 'border-gray-200 shadow-sm';
+      ? 'bg-dark-card/80 backdrop-blur-sm'
+      : 'bg-white border-gray-200 shadow-sm';
 
   const servicesIntro = (
     <div className="text-center max-w-3xl mx-auto">
@@ -448,10 +515,13 @@ const IndustryDetail = () => {
                   )}
                 </div>
                 <div
-                  className={`flex-1 rounded-2xl border px-5 py-4 ${servicesCardClass}`}
+                  className={`flex-1 rounded-2xl border px-5 py-4 ${servicesCardClass} hover:shadow-lg transition-all duration-300`}
                   style={
                     theme === 'dark'
-                      ? undefined
+                      ? {
+                          borderColor: `${palette.primary}40`,
+                          boxShadow: `0 0 20px ${palette.primary}15`,
+                        }
                       : { backgroundColor: accent.muted }
                   }
                 >
@@ -479,10 +549,13 @@ const IndustryDetail = () => {
             {industry.services.map((service) => (
               <div
                 key={service.title}
-                className={`rounded-3xl border p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 ${servicesCardClass}`}
+                className={`rounded-3xl border p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 ${servicesCardClass} hover:shadow-lg transition-all duration-300`}
                 style={
                   theme === 'dark'
-                    ? undefined
+                    ? {
+                        borderColor: `${palette.primary}40`,
+                        boxShadow: `0 0 20px ${palette.primary}15`,
+                      }
                     : {
                         backgroundColor: accent.surface,
                       }
@@ -502,7 +575,10 @@ const IndustryDetail = () => {
                   className="px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide"
                   style={
                     theme === 'dark'
-                      ? { border: '1px solid #38bdf8' }
+                      ? {
+                          border: `1px solid ${palette.primary}`,
+                          color: palette.primary,
+                        }
                       : {
                           backgroundColor: accent.muted,
                           color: accent.primary,
@@ -525,10 +601,13 @@ const IndustryDetail = () => {
           {industry.services.map((service, index) => (
             <div
               key={service.title}
-              className={`rounded-2xl border px-4 py-5 ${servicesCardClass}`}
+              className={`rounded-2xl border px-4 py-5 ${servicesCardClass} hover:shadow-lg hover:scale-[1.02] transition-all duration-300`}
               style={
                 theme === 'dark'
-                  ? undefined
+                  ? {
+                      borderColor: `${palette.primary}40`,
+                      boxShadow: `0 0 15px ${palette.primary}15`,
+                    }
                   : { backgroundColor: '#ffffff' }
               }
             >
@@ -598,8 +677,12 @@ const IndustryDetail = () => {
             </p>
             <Link
               to="/#contact"
-              className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-xl font-semibold text-white transition-colors"
-              style={{ backgroundColor: accent.primary }}
+              className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-xl font-semibold transition-all hover:opacity-90 shadow-lg"
+              style={{
+                backgroundColor: palette.primary,
+                color: theme === 'dark' ? '#0f172a' : '#ffffff',
+                boxShadow: theme === 'dark' ? `0 0 25px ${palette.primary}40` : `0 8px 24px ${palette.primary}33`,
+              }}
             >
               Get in touch <ArrowRight size={18} />
             </Link>
@@ -618,7 +701,7 @@ const IndustryDetail = () => {
 
   const highlightCardClass =
     theme === 'dark'
-      ? 'bg-dark-card border-electric-blue/30'
+      ? 'bg-dark-card/80 backdrop-blur-sm'
       : 'bg-white border-gray-200 shadow-sm';
 
   const renderHighlights = () => {

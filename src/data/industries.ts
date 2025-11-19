@@ -222,6 +222,12 @@ const presentationThemes: Record<string, IndustryPresentation> = {
       surface: '#ffffff',
       muted: '#fff1e6',
     },
+    darkAccent: {
+      primary: '#fb923c',
+      secondary: '#60a5fa',
+      surface: '#1e293b',
+      muted: '#334155',
+    },
   },
   'agritech-application-development': {
     heroStyle: 'split',
@@ -292,6 +298,12 @@ const presentationThemes: Record<string, IndustryPresentation> = {
       surface: '#fffaf5',
       muted: '#fff1e6',
     },
+    darkAccent: {
+      primary: '#fb923c',
+      secondary: '#2dd4bf',
+      surface: '#1e293b',
+      muted: '#334155',
+    },
   },
   'educationtech-software-development': {
     heroStyle: 'centered',
@@ -304,6 +316,12 @@ const presentationThemes: Record<string, IndustryPresentation> = {
       secondary: '#2563eb',
       surface: '#ffffff',
       muted: '#f4f0ff',
+    },
+    darkAccent: {
+      primary: '#a78bfa',
+      secondary: '#60a5fa',
+      surface: '#1e293b',
+      muted: '#334155',
     },
   },
   'financial-services-software-solutions': {
@@ -318,6 +336,12 @@ const presentationThemes: Record<string, IndustryPresentation> = {
       surface: '#f8fafc',
       muted: '#e6fffa',
     },
+    darkAccent: {
+      primary: '#38bdf8',
+      secondary: '#14b8a6',
+      surface: '#1e293b',
+      muted: '#334155',
+    },
   },
   'fitnesstech-app-development': {
     heroStyle: 'split',
@@ -331,6 +355,12 @@ const presentationThemes: Record<string, IndustryPresentation> = {
       surface: '#fffdf5',
       muted: '#fff1d6',
     },
+    darkAccent: {
+      primary: '#fb923c',
+      secondary: '#38bdf8',
+      surface: '#1e293b',
+      muted: '#334155',
+    },
   },
   'foodtech-software-solutions': {
     heroStyle: 'centered',
@@ -343,6 +373,12 @@ const presentationThemes: Record<string, IndustryPresentation> = {
       secondary: '#22c55e',
       surface: '#fffdf7',
       muted: '#fff6d8',
+    },
+    darkAccent: {
+      primary: '#fb923c',
+      secondary: '#4ade80',
+      surface: '#1e293b',
+      muted: '#334155',
     },
   },
   'gaming-app-development': {
@@ -395,6 +431,12 @@ const presentationThemes: Record<string, IndustryPresentation> = {
       surface: '#f8f9ff',
       muted: '#eaeefe',
     },
+    darkAccent: {
+      primary: '#818cf8',
+      secondary: '#38bdf8',
+      surface: '#1e293b',
+      muted: '#334155',
+    },
   },
   'car-rental-booking-aggregator': {
     heroStyle: 'overlap',
@@ -407,6 +449,12 @@ const presentationThemes: Record<string, IndustryPresentation> = {
       secondary: '#2563eb',
       surface: '#fff5fa',
       muted: '#f1f5ff',
+    },
+    darkAccent: {
+      primary: '#f472b6',
+      secondary: '#60a5fa',
+      surface: '#1e293b',
+      muted: '#334155',
     },
   },
 };
