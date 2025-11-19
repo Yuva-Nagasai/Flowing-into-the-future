@@ -31,7 +31,7 @@ const services = [
       `Predictive models utilize analytics on historical data to forecast market trends and consumer behavior, empowering businesses with proactive, data-driven decision-making advantages.`,
       `Natural Language Processing enables computers to understand, interpret, and respond to human language effectively, driving chatbots, voice assistants, and advanced sentiment analyses.`,
     ],
-    image: '/image1.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2E3YWVhZW1nbXdpZWE5MGY5NHBwN2g1bXJwYWh4NWoyeWh6OGd5NiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xTiN0CNHgoRf1Ha7CM/giphy.gif',
   },
   {
     icon: Code,
@@ -47,7 +47,7 @@ const services = [
       `APIs facilitate secure communication between platforms, enabling smooth data exchange and integration that enhances scalability and maintainability in complex systems.`,
       `System integrations connect disparate software and databases smartly, automating workflows, reducing manual intervention, and improving overall operational efficiency.`,
     ],
-    image: '/image2.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWdra2NjemFjbmEzZm8wYmF5NWNtbmQ5aWN0NnJhcTBpaDhxemh5YiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/JqmupuTVZYaQX5s094/giphy.gif',
   },
   {
     icon: Cloud,
@@ -63,7 +63,7 @@ const services = [
       `Serverless architectures enable applications to automatically scale based on demand, cutting operational overhead and optimizing resource utilization effectively.`,
       `Microservices architecture divides applications into independent components communicating through APIs, fostering flexibility, fault tolerance, and rapid deployment cycles.`,
     ],
-    image: '/image3.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmxjaDN6YjMydGFvdTRneWx6eGM3dWV4a3NqbGsxeWR5Z3QweGc2ZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3osxYrgM8gi9CDjcPu/giphy.gif',
   },
   {
     icon: Database,
@@ -79,7 +79,7 @@ const services = [
       `Business Intelligence dashboards combine KPIs and analytics into a unified view, offering real-time insights that empower timely and informed leadership actions.`,
       `Predictive analytics applies machine learning to historic data, offering forecasts of future behavior and trends that help manage risk and optimize operations.`,
     ],
-    image: '/image4.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGNlaThxcWNiMnp0Z21nMmFycWQ3OWJtYnFpZ2k4NXdheHhvenk5dyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xUA7aWJ33L5vYH7Nao/giphy.gif',
   },
   {
     icon: Shield,
@@ -95,7 +95,7 @@ const services = [
       `Compliance audits evaluate IT systems against regulations and standards, highlighting weaknesses and ensuring ongoing conformity to avoid penalties and reputational damage.`,
       `Security monitoring provides continuous surveillance of IT infrastructure, identifying unauthorized access attempts promptly and facilitating forensic investigations efficiently.`,
     ],
-    image: '/image5.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWJiODd2eWRsdjlnZWV0YzJsa3B5ajB5YzRmMWpuYzE3YjZhcGdsMCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26tPnAAJxXTvpLwJy/giphy.gif',
   },
   {
     icon: Zap,
@@ -111,7 +111,7 @@ const services = [
       `Code optimization enhances program efficiency by refining algorithms, reducing complexity, and minimizing resource consumption for better maintainability.`,
       `Content Delivery Networks deploy assets worldwide, delivering fast, secure content and mitigating downtime caused by server overloads or DDoS attacks.`,
     ],
-    image: '/image6.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXlscG05eWIyazN0cmp1OHBzaDhyeWlrYnBhNWZpdTI3ZGtoZ2pnYyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l3vRfNA1p0rvhMSvS/giphy.gif',
   },
   {
     icon: Youtube,
@@ -127,7 +127,7 @@ const services = [
       `Audience targeting leverages analytics and segmentation tools to serve personalized content and advertisements that effectively engage specific viewer groups.`,
       `Performance tracking monitors vital metrics like watch time, subscriber growth, and engagement rate to provide actionable insights for content improvement.`,
     ],
-    image: '/image7.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmZxdHJocHowYmF1OHFtZnEwcWRkZ2EzNzJ2NHk5MmNrNzJiZGYwNSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0HlNaQ6gWfllcjDO/giphy.gif',
   },
   {
     icon: Megaphone,
@@ -143,7 +143,7 @@ const services = [
       `Content creation produces high-quality visuals, infographics, and videos that effectively communicate your brand story and encourage user sharing.`,
       `Brand management monitors online reputation, responding to feedback proactively and maintaining customer loyalty through strategic communications.`,
     ],
-    image: '/image8.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTI3dWI3bGlyY3Z1MHIzcHVzN3doYXM5d3RnYXowOTRnazB2bG4wbiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l378A8qFW6R3iyX3a/giphy.gif',
   },
   {
     icon: TrendingUp,
@@ -159,7 +159,7 @@ const services = [
       `Local SEO enhances business visibility in geographic searches and local directory listings, expanding local customer reach successfully.`,
       `Technical SEO fixes site speed, mobile usability, and crawlability issues, ensuring high performance and effective indexation.`,
     ],
-    image: '/image9.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXU2cjB6YnN6M2JqNXVoNHk1N3RnaG0xd2hpZnJmanI5NGFuaDFrYiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xT9IgzoKnwFNmISR8I/giphy.gif',
   },
   {
     icon: BookOpen,
@@ -175,7 +175,7 @@ const services = [
       `Corporate AI training develops employee expertise with practical, hands-on courses covering machine learning, data ethics, and AI best practices.`,
       `Process automation guidance focuses on identifying tasks suited for AI-driven automation, improving efficiency and workforce agility.`,
     ],
-    image: '/image10.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzFpcGw5YXhsdmduaDBoaXpmaDJ6bWgxcXU5NGl0ZTNhZmphd2QzbCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/LaVp0AyqR5bGsC5Cbm/giphy.gif',
   },
   {
     icon: Wrench,
@@ -191,7 +191,7 @@ const services = [
       `API integrations enable secure, real-time data communication between disparate applications, fostering seamless business ecosystem connectivity.`,
       `Bot development delivers automated customer support and internal communication tools operating continuously to enhance productivity.`,
     ],
-    image: '/image11.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHBubGNteDFqYzZhdDVmcWF2d3BjeThsNGprNWk0MTM2bWxxMWFweiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0IylSajlbPRFxH8Y/giphy.gif',
   },
 ];
 
