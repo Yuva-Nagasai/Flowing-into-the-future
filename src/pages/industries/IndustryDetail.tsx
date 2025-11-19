@@ -32,7 +32,6 @@ import {
   Scale,
   Settings,
   Shield,
-  ShieldCheck,
   Sparkles,
   Stethoscope,
   Target,
@@ -108,11 +107,18 @@ const IndustryDetail = () => {
   }
 
   const { presentation } = industry;
-  const { accent, heroStyle, servicesStyle, highlightStyle, solutionsStyle } =
+  const { accent, darkAccent, heroStyle, servicesStyle, highlightStyle, solutionsStyle } =
     presentation;
+
+  // Use darkAccent colors in dark mode if available, otherwise fall back to accent
+  const palette = theme === 'dark' && darkAccent ? darkAccent : accent;
 
   const heroGradientStyle = {
     backgroundImage: `linear-gradient(135deg, ${accent.gradient[0]}, ${accent.gradient[1]}, ${accent.gradient[2]})`,
+  };
+
+  const darkModeGradientStyle = {
+    backgroundImage: `linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95))`,
   };
 
   const heroBullets = (alignCenter = false) => (
@@ -142,13 +148,13 @@ const IndustryDetail = () => {
     <div className={`mt-8 flex flex-wrap gap-4 ${alignCenter ? 'justify-center' : ''}`}>
       <a
         href={industry.hero.primaryCta.href}
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white shadow-lg transition-all"
+        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white shadow-lg transition-all hover:opacity-90"
         style={{
-          backgroundColor: accent.primary,
+          backgroundColor: palette.primary,
           boxShadow:
             theme === 'dark'
               ? 'none'
-              : `0 15px 40px ${accent.primary}33`,
+              : `0 15px 40px ${palette.primary}33`,
         }}
       >
         <PhoneCall size={18} />
@@ -156,10 +162,10 @@ const IndustryDetail = () => {
       </a>
       <a
         href={industry.hero.secondaryCta.href}
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border transition-all"
+        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border transition-all hover:opacity-80"
         style={{
-          borderColor: accent.secondary,
-          color: theme === 'dark' ? '#fff' : accent.secondary,
+          borderColor: palette.secondary,
+          color: theme === 'dark' ? '#fff' : palette.secondary,
         }}
       >
         {industry.hero.secondaryCta.label} <ArrowRight size={18} />
@@ -176,9 +182,9 @@ const IndustryDetail = () => {
           style={
             theme === 'dark'
               ? {
-                  backgroundColor: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  color: '#fff',
+                  backgroundColor: palette.muted,
+                  border: `1px solid ${palette.primary}40`,
+                  color: palette.primary,
                 }
               : { backgroundColor: accent.muted, color: accent.primary }
           }
@@ -230,23 +236,40 @@ const IndustryDetail = () => {
     if (heroStyle === 'centered') {
       return (
         <section
-          style={theme === 'dark' ? undefined : heroGradientStyle}
-          className={`py-12 ${theme === 'dark' ? 'bg-dark-card' : ''}`}
+          style={theme === 'dark' ? darkModeGradientStyle : heroGradientStyle}
+          className={`py-16 relative overflow-hidden ${
+            theme === 'dark' ? '' : ''
+          }`}
         >
-          <div className="container mx-auto px-6 text-center">
+          {theme === 'dark' && (
+            <div
+              className="absolute inset-0 opacity-10"
+              style={{
+                backgroundImage: `radial-gradient(circle at 30% 20%, ${palette.primary}40, transparent 50%), radial-gradient(circle at 70% 80%, ${palette.secondary}30, transparent 50%)`,
+              }}
+            />
+          )}
+          <div className="container mx-auto px-6 text-center relative z-10">
             {heroTextBlock(true)}
-            <div className="mt-8 max-w-4xl mx-auto">
+            <div className="mt-12 max-w-5xl mx-auto">
               <div
-                className={`rounded-[32px] p-3 ${
-                  theme === 'dark'
-                    ? 'bg-gradient-to-r from-electric-blue/40 via-purple-500/30 to-electric-green/30'
-                    : 'bg-white shadow-2xl'
+                className={`rounded-[32px] p-1.5 shadow-2xl ${
+                  theme === 'dark' ? '' : ''
                 }`}
+                style={
+                  theme === 'dark'
+                    ? {
+                        background: `linear-gradient(135deg, ${palette.primary}40, ${palette.secondary}30)`,
+                      }
+                    : {
+                        background: 'white',
+                      }
+                }
               >
                 <img
                   src={industry.hero.image}
                   alt={industry.name}
-                  className="rounded-[24px] w-full object-cover"
+                  className="rounded-[28px] w-full object-cover"
                 />
               </div>
             </div>
@@ -258,16 +281,33 @@ const IndustryDetail = () => {
     if (heroStyle === 'overlap') {
       return (
         <section
-          style={theme === 'dark' ? undefined : heroGradientStyle}
-          className={`py-12 ${theme === 'dark' ? 'bg-dark-card' : ''}`}
+          style={theme === 'dark' ? darkModeGradientStyle : heroGradientStyle}
+          className={`py-16 relative overflow-hidden ${theme === 'dark' ? '' : ''}`}
         >
-          <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+          {theme === 'dark' && (
+            <div
+              className="absolute inset-0 opacity-10"
+              style={{
+                backgroundImage: `radial-gradient(circle at 20% 30%, ${palette.primary}40, transparent 50%), radial-gradient(circle at 80% 70%, ${palette.secondary}30, transparent 50%)`,
+              }}
+            />
+          )}
+          <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
             <div>{heroTextBlock(false)}</div>
-            <div className="relative pb-10">
+            <div className="relative pb-12">
               <div
-                className={`rounded-[32px] p-2 ${
-                  theme === 'dark' ? 'bg-white/5' : 'bg-white shadow-2xl'
+                className={`rounded-[32px] p-1.5 shadow-2xl ${
+                  theme === 'dark' ? '' : ''
                 }`}
+                style={
+                  theme === 'dark'
+                    ? {
+                        background: `linear-gradient(135deg, ${palette.primary}40, ${palette.secondary}30)`,
+                      }
+                    : {
+                        background: 'white',
+                      }
+                }
               >
                 <img
                   src={industry.hero.image}
@@ -279,15 +319,32 @@ const IndustryDetail = () => {
                 {industry.stats.slice(0, 2).map((stat) => (
                   <div
                     key={stat.label}
-                    className="rounded-2xl px-5 py-4 shadow-lg border flex-1 min-w-[180px]"
+                    className="rounded-2xl px-6 py-5 shadow-2xl border flex-1 min-w-[180px] backdrop-blur-sm"
                     style={
                       theme === 'dark'
-                        ? { borderColor: '#3b82f6', backgroundColor: '#0f172a' }
-                        : { backgroundColor: accent.surface, borderColor: accent.muted }
+                        ? {
+                            borderColor: palette.primary,
+                            background: `linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95))`,
+                          }
+                        : {
+                            backgroundColor: accent.surface,
+                            borderColor: accent.primary + '30',
+                          }
                     }
                   >
-                    <p className="text-xl font-orbitron font-semibold">{stat.value}</p>
-                    <p className="text-sm opacity-75">{stat.label}</p>
+                    <p
+                      className="text-2xl font-orbitron font-semibold"
+                      style={{ color: palette.primary }}
+                    >
+                      {stat.value}
+                    </p>
+                    <p
+                      className={`text-sm ${
+                        theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                      }`}
+                    >
+                      {stat.label}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -299,30 +356,39 @@ const IndustryDetail = () => {
 
     return (
       <section
-        style={theme === 'dark' ? undefined : heroGradientStyle}
-        className={`py-12 ${theme === 'dark' ? 'bg-dark-card' : ''}`}
+        style={theme === 'dark' ? darkModeGradientStyle : heroGradientStyle}
+        className={`py-16 relative overflow-hidden ${theme === 'dark' ? '' : ''}`}
       >
-        <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+        {theme === 'dark' && (
+          <div
+            className="absolute inset-0 opacity-10"
+            style={{
+              backgroundImage: `radial-gradient(circle at 40% 40%, ${palette.primary}40, transparent 50%), radial-gradient(circle at 60% 80%, ${palette.secondary}30, transparent 50%)`,
+            }}
+          />
+        )}
+        <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
           <div>{heroTextBlock(false)}</div>
           <div className="relative">
             <div
-              className={`rounded-[32px] p-2 ${
-                theme === 'dark'
-                  ? 'bg-gradient-to-tr from-electric-blue/40 via-purple-500/30 to-electric-green/20'
-                  : 'bg-white shadow-xl'
+              className={`rounded-[32px] p-1.5 shadow-2xl ${
+                theme === 'dark' ? '' : ''
               }`}
+              style={
+                theme === 'dark'
+                  ? {
+                      background: `linear-gradient(135deg, ${palette.primary}40, ${palette.secondary}30)`,
+                    }
+                  : {
+                      background: 'white',
+                    }
+              }
             >
-              <div
-                className={`rounded-[28px] p-4 ${
-                  theme === 'dark' ? 'bg-dark-bg' : 'bg-white'
-                }`}
-              >
-                <img
-                  src={industry.hero.image}
-                  alt={industry.name}
-                  className="rounded-2xl w-full object-cover max-h-[420px]"
-                />
-              </div>
+              <img
+                src={industry.hero.image}
+                alt={industry.name}
+                className="rounded-[28px] w-full object-cover max-h-[450px]"
+              />
             </div>
           </div>
         </div>
@@ -371,8 +437,8 @@ const IndustryDetail = () => {
                     className="w-10 h-10 rounded-full text-sm font-bold flex items-center justify-center"
                     style={{
                       backgroundColor:
-                        theme === 'dark' ? '#1e293b' : accent.surface,
-                      color: theme === 'dark' ? '#fff' : accent.primary,
+                        theme === 'dark' ? palette.surface : accent.surface,
+                      color: theme === 'dark' ? palette.primary : accent.primary,
                     }}
                   >
                     {index + 1}
@@ -607,27 +673,52 @@ const IndustryDetail = () => {
     }
 
     return (
-      <section className="container mx-auto px-6 mt-12">
-        <div className="grid lg:grid-cols-2 gap-5">
+      <section className="container mx-auto px-6 mt-14">
+        <div className="mb-8">
+          <h3 className="text-3xl font-orbitron font-semibold">
+            Why choose NanoFlows?
+          </h3>
+          <p className={`mt-2 text-lg ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+            Partner with excellence for your {industry.name.toLowerCase()} initiatives
+          </p>
+        </div>
+        <div className="grid lg:grid-cols-2 gap-6">
           {industry.highlights.map((highlight) => {
             const Icon =
               (highlight.icon && iconMap[highlight.icon]) || Sparkles;
             return (
               <div
                 key={highlight.title}
-                className={`rounded-3xl border p-5 flex gap-4 ${highlightCardClass}`}
+                className={`rounded-3xl border p-6 flex gap-5 transition-all hover:shadow-lg ${highlightCardClass}`}
+                style={
+                  theme === 'dark'
+                    ? undefined
+                    : { backgroundColor: accent.surface }
+                }
               >
                 <div
-                  className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-                    theme === 'dark' ? 'bg-electric-blue/20' : 'bg-accent-red/10'
+                  className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md ${
+                    theme === 'dark' ? '' : ''
                   }`}
+                  style={
+                    theme === 'dark'
+                      ? {
+                          background: `linear-gradient(135deg, ${palette.primary}30, ${palette.secondary}20)`,
+                        }
+                      : {
+                          background: `linear-gradient(135deg, ${palette.primary}20, ${palette.secondary}15)`,
+                        }
+                  }
                 >
-                  <Icon className="text-electric-green" />
+                  <Icon 
+                    size={28}
+                    style={{ color: palette.primary }}
+                  />
                 </div>
-                <div>
+                <div className="flex-1">
                   <h4 className="text-xl font-semibold">{highlight.title}</h4>
                   <p
-                    className={`mt-2 ${
+                    className={`mt-2.5 leading-relaxed ${
                       theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                     }`}
                   >

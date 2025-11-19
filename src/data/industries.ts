@@ -65,6 +65,12 @@ export interface IndustryPresentation {
     surface: string;
     muted: string;
   };
+  darkAccent?: {
+    primary: string;
+    secondary: string;
+    surface: string;
+    muted: string;
+  };
 }
 
 export interface IndustryContent {
@@ -229,6 +235,12 @@ const presentationThemes: Record<string, IndustryPresentation> = {
       surface: '#ffffff',
       muted: '#fff7ed',
     },
+    darkAccent: {
+      primary: '#fb923c',
+      secondary: '#34d399',
+      surface: '#1e293b',
+      muted: '#334155',
+    },
   },
   'dating-app-development': {
     heroStyle: 'centered',
@@ -242,6 +254,12 @@ const presentationThemes: Record<string, IndustryPresentation> = {
       surface: '#ffffff',
       muted: '#ffe8f4',
     },
+    darkAccent: {
+      primary: '#f472b6',
+      secondary: '#818cf8',
+      surface: '#1e293b',
+      muted: '#334155',
+    },
   },
   'ecommerce-app-development': {
     heroStyle: 'overlap',
@@ -254,6 +272,12 @@ const presentationThemes: Record<string, IndustryPresentation> = {
       secondary: '#9333ea',
       surface: '#f8fafc',
       muted: '#e0f2ff',
+    },
+    darkAccent: {
+      primary: '#38bdf8',
+      secondary: '#a855f7',
+      surface: '#1e293b',
+      muted: '#334155',
     },
   },
   'grocery-delivery-app-development': {
@@ -333,6 +357,12 @@ const presentationThemes: Record<string, IndustryPresentation> = {
       surface: '#111827',
       muted: '#1f2937',
     },
+    darkAccent: {
+      primary: '#818cf8',
+      secondary: '#67e8f9',
+      surface: '#1e293b',
+      muted: '#334155',
+    },
   },
   'healthtech-app-development': {
     heroStyle: 'split',
@@ -345,6 +375,12 @@ const presentationThemes: Record<string, IndustryPresentation> = {
       secondary: '#0ea5e9',
       surface: '#f7fff9',
       muted: '#e2fbe8',
+    },
+    darkAccent: {
+      primary: '#4ade80',
+      secondary: '#38bdf8',
+      surface: '#1e293b',
+      muted: '#334155',
     },
   },
   'manufacturingtech-software-solutions': {
