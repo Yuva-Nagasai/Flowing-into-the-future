@@ -619,7 +619,7 @@ const IndustryDetail = () => {
                 >
                   {String(index + 1).padStart(2, '0')}
                 </span>
-                <Layers3 className="text-electric-green" size={22} />
+                <Layers3 className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'} size={22} />
               </div>
               <h3 className="mt-4 text-xl font-semibold leading-tight">
                 {service.title}
@@ -638,7 +638,38 @@ const IndustryDetail = () => {
     );
   };
 
-  const renderStatsAndLeadership = () => (
+  const renderStats = () => (
+    <section className="mt-12">
+      <div
+        className="py-12"
+        style={
+          theme === 'dark'
+            ? { backgroundColor: '#0f172a' }
+            : { backgroundColor: accent.muted }
+        }
+      >
+        <div className="container mx-auto px-6">
+          <div className="flex flex-wrap gap-4 justify-center">
+            {industry.stats.map((stat) => (
+              <div
+                key={stat.label}
+                className={`rounded-2xl px-6 py-4 border ${
+                  theme === 'dark'
+                    ? 'border-electric-blue/40 text-white'
+                    : 'border-white bg-white/70 text-gray-900 shadow-sm'
+                }`}
+              >
+                <p className="text-2xl font-orbitron font-semibold">{stat.value}</p>
+                <p className="text-sm opacity-80">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  const renderLeadership = () => (
     <section className="mt-12">
       <div
         className="py-12"
@@ -650,21 +681,6 @@ const IndustryDetail = () => {
       >
         <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-8 items-center">
           <div>
-            <div className="flex flex-wrap gap-4 mb-8">
-              {industry.stats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className={`rounded-2xl px-6 py-4 border ${
-                    theme === 'dark'
-                      ? 'border-electric-blue/40 text-white'
-                      : 'border-white bg-white/70 text-gray-900 shadow-sm'
-                  }`}
-                >
-                  <p className="text-2xl font-orbitron font-semibold">{stat.value}</p>
-                  <p className="text-sm opacity-80">{stat.label}</p>
-                </div>
-              ))}
-            </div>
             <h3 className="text-3xl font-orbitron font-semibold">
               {industry.leadership.highlight}
             </h3>
@@ -850,7 +866,7 @@ const IndustryDetail = () => {
               >
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <Building2 className="text-electric-green" />
+                    <Building2 className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'} />
                     <h4 className="text-xl font-semibold">{solution.title}</h4>
                   </div>
                   <span
@@ -909,7 +925,7 @@ const IndustryDetail = () => {
               className={`rounded-3xl border p-5 ${solutionCardClass}`}
             >
               <div className="flex items-center gap-3">
-                <Building2 className="text-electric-green" />
+                <Building2 className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'} />
                 <h4 className="text-xl font-semibold">{solution.title}</h4>
               </div>
               <p
@@ -954,10 +970,11 @@ const IndustryDetail = () => {
       <Header />
       <main className="flex-1 pt-16 pb-10">
         {renderHero()}
+        {renderStats()}
         {renderServices()}
-        {renderStatsAndLeadership()}
         {renderHighlights()}
         {renderSolutions()}
+        {renderLeadership()}
 
         {/* Engagement Models */}
         <section className="container mx-auto px-6 mt-12">
@@ -1013,7 +1030,9 @@ const IndustryDetail = () => {
                   Tech stacks, frameworks, and platforms
                 </h4>
               </div>
-              <span className="inline-flex items-center gap-2 text-sm font-semibold text-electric-green">
+              <span className={`inline-flex items-center gap-2 text-sm font-semibold ${
+                theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+              }`}>
                 Explore capabilities <ChevronRight size={16} />
               </span>
             </div>
