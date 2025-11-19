@@ -1,0 +1,119 @@
+Create a complete theme system for my React + Tailwind project.
+
+I want 2 theme files:
+1. darkTheme.ts
+2. lightTheme.ts
+
+And a combined theme index file:
+3. theme.ts
+
+Make sure the themes match the styles used in my CaseStudy component (dark mode + light mode).
+
+-----------------------------------
+DARK THEME REQUIREMENTS
+-----------------------------------
+Create a file called `darkTheme.ts` exporting:
+
+export default {
+  mode: "dark",
+  classes: {
+    containerBg: "bg-dark-card",
+    mesh: "gradient-mesh",
+    headingPrimary: "text-white",
+    headingAccent: "text-electric-blue",
+    card: "bg-dark-card/50 border border-electric-blue/20",
+    cardHover: "hover:bg-dark-card/70 hover:shadow-[0_0_25px_rgba(0,255,255,0.4)]",
+    title: "text-electric-green",
+    text: "text-gray-300",
+    dotActive: "bg-electric-green",
+    dotInactive: "bg-gray-600",
+    navButton: "bg-electric-blue text-black hover:bg-electric-blue/80 focus:ring-electric-blue/60",
+    downloadBtn: "text-black bg-electric-green hover:bg-electric-green/90 hover:scale-105 shadow-[0_4px_12px_rgba(0,232,129,0.6)]",
+    downloadBtnPressed: "scale-95 bg-electric-green/80 shadow-[0_4px_10px_rgba(0,232,129,0.6)]"
+  },
+  colors: {
+    darkCard: "#071021",
+    electricBlue: "#00F0FF",
+    electricGreen: "#00E881",
+    accentRed: "#EB3232",
+    gray300: "#D1D5DB",
+    gray600: "#4B5563"
+  },
+  toStyleVars() {
+    return {
+      "--dark-card": "#071021",
+      "--electric-blue": "#00F0FF",
+      "--electric-green": "#00E881",
+      "--accent-red": "#EB3232",
+      "--gray-300": "#D1D5DB",
+      "--gray-600": "#4B5563"
+    };
+  }
+};
+
+-----------------------------------
+LIGHT THEME REQUIREMENTS
+-----------------------------------
+Create a file called `lightTheme.ts` exporting:
+
+export default {
+  mode: "light",
+  classes: {
+    containerBg: "bg-white",
+    mesh: "gradient-mesh-light",
+    headingPrimary: "text-black",
+    headingAccent: "text-accent-red",
+    card: "bg-white/80 border border-gray-200",
+    cardHover: "hover:bg-white/90 hover:shadow-[0_0_25px_rgba(235,50,50,0.4)]",
+    title: "text-accent-red",
+    text: "text-gray-700",
+    dotActive: "bg-accent-red",
+    dotInactive: "bg-gray-300",
+    navButton: "bg-accent-red text-white hover:bg-accent-red/80 focus:ring-accent-red/60",
+    downloadBtn: "text-white bg-accent-red hover:bg-accent-red/90 hover:scale-105 shadow-[0_4px_12px_rgba(235,50,50,0.6)]",
+    downloadBtnPressed: "scale-95 bg-accent-red/80 shadow-[0_4px_10px_rgba(235,50,50,0.6)]"
+  },
+  colors: {
+    white: "#FFFFFF",
+    accentRed: "#EB3232",
+    gray700: "#374151",
+    gray300: "#D1D5DB"
+  },
+  toStyleVars() {
+    return {
+      "--white": "#FFFFFF",
+      "--accent-red": "#EB3232",
+      "--gray-700": "#374151",
+      "--gray-300": "#D1D5DB"
+    };
+  }
+};
+
+-----------------------------------
+THEME INDEX FILE
+-----------------------------------
+Create a file called `theme.ts` that exports:
+
+import darkTheme from "./darkTheme";
+import lightTheme from "./lightTheme";
+
+export const themes = {
+  dark: darkTheme,
+  light: lightTheme
+};
+
+export type ThemeMode = "dark" | "light";
+
+export function getTheme(mode: ThemeMode) {
+  return themes[mode];
+}
+
+-----------------------------------
+NOTES
+-----------------------------------
+- Do NOT generate any React components.
+- Only generate these 3 files: darkTheme.ts, lightTheme.ts, theme.ts.
+- They must be reusable across multiple components.
+- This must match the style design from my original dark and light theme logic in the CaseStudy component.
+
+Generate all 3 files now.

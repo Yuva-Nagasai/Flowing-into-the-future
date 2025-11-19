@@ -1,0 +1,266 @@
+Build a complete responsive e-learning platform similar to Udemy called “NanoFlows Academy”.
+Use modern tech stack: React + TailwindCSS for frontend, Node.js + Express + MongoDB (or Supabase) for backend.
+Also integrate Razorpay for payments and Google Drive video streaming.
+
+🧩 FEATURES REQUIRED
+1. Authentication System (User + Admin)
+
+Create one single Login page with toggle tabs:
+
+User Login
+
+Admin Login
+
+Create User Signup page.
+
+After login:
+
+Users → Explore Courses page (/courses)
+
+Admin → Admin Dashboard (/admin)
+
+2. Homepage Hero Section
+
+“Empower Your Business. Gain the confidence to evolve intelligently.”
+Buttons:
+
+Learn More
+
+Explore Solutions
+
+When clicking Learn More, redirect user to Login Page.
+
+Homepage slider included.
+
+3. User Experience (Like Udemy)
+
+After user logs in:
+
+Explore Courses Page
+
+Display list of all available courses.
+
+Each course card should include:
+
+Title
+
+Thumbnail
+
+Price (₹ INR)
+
+Instructor name
+
+“Buy Now” button
+
+"View Details" button
+
+Course Details Page
+
+Course image
+
+Description
+
+Curriculum list
+
+Price in ₹
+
+Razorpay “Buy Now”
+
+“Already purchased? → Go to Course”
+
+User Dashboard
+
+View all Purchased Courses
+
+Click course → open course player
+
+Track progress (optional)
+
+Course Player Page
+
+Show sections + videos list
+
+Embedded video player (Google Drive playback)
+
+Notes area
+
+Downloadable resources (PDF, Docs)
+
+Auto-save progress
+
+4. Razorpay Payment Integration
+
+Integrate Razorpay Checkout form.
+
+Currency should be INR (₹).
+
+After successful payment:
+
+Store purchase in DB under purchasedCourses
+
+Redirect to course player page
+
+5. Admin Panel (like Udemy Instructor Dashboard)
+Admin Login using same login page
+
+Admin dashboard should contain:
+
+Create New Course
+
+Fields:
+
+Course title
+
+Description
+
+Price (INR)
+
+Category
+
+Thumbnail upload
+
+Upload promotional video
+
+Upload Google Drive video links (multiple)
+
+Upload resources (PDF, zip etc.)
+
+Publish/Unpublish toggle
+
+Manage Videos
+
+Add videos to course
+
+Remove videos
+
+Re-order videos
+
+Add downloadable resources
+
+User Purchases Overview
+
+List all users
+
+Show purchased courses
+
+Search/filter
+
+6. Additional Features
+
+Include all these:
+
+Search and Filter System
+
+Search courses by name
+
+Filter by category
+
+Price low to high
+
+Wishlist (optional)
+Ratings & Reviews
+Certificates (optional)
+Responsive Design (Mobile + Tablet)
+Dark Mode toggle
+JWT Authentication
+Protected Routes
+Logout system
+7. Tech Stack
+
+Frontend
+
+React
+
+React Router
+
+TailwindCSS
+
+Context API / Redux Toolkit
+
+Backend
+
+Node.js
+
+Express
+
+MongoDB / Supabase
+
+Payments
+
+Razorpay
+
+Video Storage
+
+Google Drive embedded videos
+
+8. Deliverables
+
+Generate:
+
+Full Frontend Source Code
+
+Full Backend Source Code
+
+API routes:
+
+/login
+
+/signup
+
+/admin/login
+
+/courses
+
+/purchase
+
+/admin/create-course
+
+/admin/upload-video
+
+/user/purchased
+
+Razorpay integration code
+
+MongoDB schema
+
+Authentication middleware
+
+Admin role-based access control
+
+Full UI pages:
+
+Login
+
+Signup
+
+Homepage
+
+Explore Courses
+
+Course Details
+
+Payment Page
+
+User Dashboard
+
+Course Player
+
+Admin Dashboard
+
+Admin Add Course
+
+Admin Upload Videos
+
+9. Deployment
+
+Ensure the project can be deployed on:
+
+Replit
+
+Render
+
+Railway
+
+Vercel
+
+Now generate the complete working codebase for this entire e-learning platform.

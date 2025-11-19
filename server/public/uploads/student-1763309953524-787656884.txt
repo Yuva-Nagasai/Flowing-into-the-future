@@ -1,0 +1,108 @@
+Title: Full-Stack Trading Platform (Web App) with User & Admin Systems
+
+Description:
+Build a complete trading web application similar to Zerodha, Robinhood, or Binance with real-time market data, user portfolio management, and admin control panel. The theme colors should match my existing website design (use deep blue and white gradients). The system should include user and admin features, follow KYC compliance, offer secure transactions, and support both stock and crypto trading (configurable).
+
+ User Features:----------
+
+Authentication & Onboarding:
+Login, Register, Email OTP verification, 2FA support
+KYC process: upload ID, PAN number, address proof
+User onboarding flow with tutorials for beginners
+
+Dashboard:
+View total balance, profit/loss, portfolio summary
+Latest news or market insights
+Real-time wallet status
+
+Market Watch:
+Live market data with search and filters
+Categorized by assets (stocks, crypto, forex)
+Favorites and trending assets
+
+Trading Module:
+Buy/Sell functionality with types: Market order, Limit order, Stop-loss, OCO
+Display depth charts and candlesticks using TradingView
+Real-time order confirmation and execution feedback
+
+Portfolio:
+My Investments: Current holdings, P&L, total invested, performance
+Trade history with filters
+Export data to CSV/PDF
+
+Wallet Management:
+Add money (UPI, bank transfer, credit/debit card, crypto wallet)
+Withdraw funds
+Show all wallet transactions
+
+Notifications:
+Real-time alerts: trade updates, deposit/withdrawal status, price alerts
+Email/SMS notifications
+
+Support & Learning:
+FAQs, chatbot, support ticket system
+Embedded tutorial videos and learning content for new traders
+
+Settings:
+Profile update
+Security settings (2FA, change password)
+Linked bank accounts
+
+📊 Admin Features
+
+Admin Authentication:
+Secure admin login with role-based access
+
+Dashboard:
+System status overview
+User registration analytics
+Trading volume, platform revenue
+
+User Management:
+Review user profiles
+Approve/reject KYC
+Block/unblock users
+View wallet and trade activities
+
+Trade Monitoring:
+View all trade actions by users
+Detect unusual or risky behavior
+Option to freeze trades
+
+Asset & Market Configuration:
+Add/remove assets (crypto, stocks)
+Configure fees, spreads, leverage, max trade volume
+Toggle markets (e.g., enable crypto only, or switch to forex)
+
+Wallet & Payments:
+Approve withdrawals
+Review deposit transactions
+Manage payouts and settlement logs
+
+Reports & Analytics:
+Daily/weekly/monthly usage report
+Revenue reports by users and fees
+Trade volume analytics by market/asset
+
+System Settings:
+Configure notifications, platform limits
+UI text manager (for updating instructions or labels)
+Parameter configuration for the trading engine
+
+⚙️ Technical Requirements
+
+Frontend:
+Framework: React or Next.js + TypeScript
+Component Library: Tailwind CSS / Chakra UI
+Realtime: WebSocket or Socket.io
+Charting Library: TradingView or Chart.js
+State Management: Redux Toolkit
+
+Backend:
+Node.js (Express or NestJS)
+Database: PostgreSQL or MongoDB
+Cache: Redis
+Real-time engine (Socket.io)
+Order matching engine (if building proprietary exchange)
+
+Integration with external APIs (Binance/Finnhub/Zerodha for market data)

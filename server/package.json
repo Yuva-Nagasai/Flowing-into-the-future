@@ -1,0 +1,28 @@
+{
+  "name": "nanoflows-academy-server",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js",
+    "migrate:elearning": "node run-elearning-migration.js",
+    "migrate:course-enhancement": "node run-course-enhancement-migration.js",
+    "migrate:module-resources": "node run-module-resources-migration.js",
+    "migrate:module-quizzes-assignments": "node run-module-quizzes-assignments-migration.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "NanoFlows Academy Backend Server",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.10.1",
+    "razorpay": "^2.9.6"
+  }
+}
