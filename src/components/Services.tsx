@@ -12,6 +12,7 @@ import {
   BookOpen,
   Wrench,
   X,
+  Workflow,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
@@ -192,6 +193,22 @@ const services = [
       `Bot development delivers automated customer support and internal communication tools operating continuously to enhance productivity.`,
     ],
     image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHBubGNteDFqYzZhdDVmcWF2d3BjeThsNGprNWk0MTM2bWxxMWFweiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0IylSajlbPRFxH8Y/giphy.gif',
+  },
+  {
+    icon: Workflow,
+    title: 'n8n Workflow Automation',
+    description:
+      'Transform business operations with cutting-edge n8n automation solutions. Build powerful integrations, automate complex workflows, and connect 400+ apps without code. Future-proof your automation infrastructure.',
+    popupContent:
+      'Nano Flows AI is your premier n8n automation partner, delivering enterprise-grade workflow automation, seamless integrations, and custom node development. We stay updated with the latest n8n features and best practices to ensure your automation infrastructure is always ahead of the curve.',
+    features: ['n8n Setup & Configuration', 'Custom Workflow Design', 'Advanced Integrations', 'Self-Hosted Solutions'],
+    subserviceExplanations: [
+      `n8n setup and configuration includes complete platform deployment, security hardening, performance optimization, and team onboarding to ensure your automation infrastructure is production-ready from day one.`,
+      `Custom workflow design creates sophisticated automation sequences that connect your apps, databases, APIs, and services into intelligent, self-executing processes that save hours of manual work daily.`,
+      `Advanced integrations leverage n8n's 400+ pre-built nodes and custom development capabilities to connect any tool in your tech stack, from CRMs and marketing platforms to internal databases and AI services.`,
+      `Self-hosted solutions provide complete control over your automation infrastructure with on-premise n8n deployments, custom security configurations, and dedicated support for enterprise compliance requirements.`,
+    ],
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTBkcmVoZzJmNHJxdGRreGxwdmJ2ZzByeW1uY3R2ZTRkcXFqbWl5YyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/qgQUggAC3Pfv687qPC/giphy.gif',
   },
 ];
 

@@ -71,21 +71,22 @@ const features: Feature[] = [
     ],
   },
   {
-    title: 'Seamless Integration',
+    title: 'n8n Workflow Automation',
     description:
-      'Connect effortlessly with your existing tools and workflows. Our platform integrates with 100+ third-party services.',
+      'Expert n8n automation solutions connecting 400+ apps and services. Build powerful workflows, automate complex processes, and integrate everything without code—all while maintaining complete control.',
     details:
-      'Nano Flows delivers a connected ecosystem where systems, APIs, and platforms communicate flawlessly. Our integration fabric ensures real-time data exchange and eliminates fragmentation across digital operations.',
+      'Nano Flows is your premier n8n automation partner. We architect enterprise-grade workflow automation ecosystems with n8n, delivering custom integrations, self-hosted solutions, and cutting-edge automation strategies that keep your business ahead of the curve.',
     icons: [Layers, Server, Cloud, Database],
     stats: [
-      { label: 'Integrations', value: '100+' },
-      { label: 'Setup Time', value: '< 5 min' },
+      { label: 'n8n Apps', value: '400+' },
+      { label: 'Setup Time', value: '< 1 day' },
     ],
     professionalIcon: PlugZap,
     points: [
-      'Unified API connectivity across major enterprise systems',
-      'No-code connectors for faster onboarding',
-      'Secure, real-time synchronization between tools',
+      'n8n platform setup, configuration & optimization',
+      'Custom workflow automation for any business process',
+      'Self-hosted & cloud n8n deployments with full security',
+      'Advanced integrations connecting your entire tech stack',
     ],
   },
   {

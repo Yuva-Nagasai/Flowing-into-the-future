@@ -1913,6 +1913,168 @@ export const industriesContent: IndustryContent[] = [
       presentationThemes['car-rental-booking-aggregator'] ??
       presentationThemes.default,
   },
+  {
+    slug: 'n8n-workflow-automation',
+    name: 'n8n Workflow Automation & Integration',
+    hero: buildHero(
+      'Premier n8n Automation & Integration Experts',
+      'Transform your business operations with enterprise-grade n8n automation solutions. Connect 400+ apps, automate complex workflows, and integrate everything—all without code.',
+      'We are n8n automation specialists delivering cutting-edge workflow orchestration, custom node development, and self-hosted enterprise solutions. Stay ahead with the latest n8n features, AI integrations, and automation best practices powered by our deep n8n expertise.',
+      '/image1.png',
+      [
+        'Expert n8n setup, configuration & optimization',
+        'Custom workflow design for any business process',
+        'Self-hosted & cloud n8n deployment',
+        'Advanced integrations with 400+ apps & APIs',
+      ]
+    ),
+    stats: baseStats,
+    services: [
+      {
+        title: 'n8n Platform Setup & Configuration',
+        description:
+          'Complete n8n deployment, security hardening, performance tuning, and team onboarding for production-ready automation infrastructure.',
+      },
+      {
+        title: 'Custom Workflow Automation Design',
+        description:
+          'Sophisticated automation sequences connecting apps, databases, APIs, and services into intelligent, self-executing processes.',
+      },
+      {
+        title: 'Advanced n8n Integrations',
+        description:
+          'Leverage 400+ pre-built nodes and custom development to connect any tool in your tech stack—from CRMs to AI services.',
+      },
+      {
+        title: 'Self-Hosted n8n Solutions',
+        description:
+          'Complete control with on-premise deployments, custom security configurations, and enterprise compliance support.',
+      },
+      {
+        title: 'n8n Custom Node Development',
+        description:
+          'Build proprietary nodes for internal tools, legacy systems, and specialized APIs not covered by standard n8n library.',
+      },
+      {
+        title: 'n8n Migration & Upgrades',
+        description:
+          'Seamless migration from Zapier, Make, or other automation platforms to n8n with zero downtime and improved performance.',
+      },
+    ],
+    leadership: {
+      highlight: 'Leading n8n Automation Partner',
+      description:
+        'Transform your operations with Nano Flows\' n8n expertise. We architect enterprise automation ecosystems, build custom integrations, and maintain cutting-edge knowledge of n8n\'s latest features and AI capabilities to future-proof your workflow infrastructure.',
+      image: '/image1.png',
+    },
+    highlights: [
+      {
+        title: 'n8n Certified Experts',
+        description:
+          'Deep n8n expertise with hundreds of production workflows deployed across industries and enterprise clients.',
+        icon: 'Users',
+      },
+      {
+        title: 'Rapid Automation Delivery',
+        description:
+          'Launch automation workflows in days, not weeks—with agile methodology and n8n best practices baked in.',
+        icon: 'Rocket',
+      },
+      {
+        title: 'Future-Ready Architecture',
+        description:
+          'Stay updated with latest n8n releases, AI integrations, and emerging automation patterns for sustained competitive advantage.',
+        icon: 'Sparkles',
+      },
+      {
+        title: 'Enterprise-Grade Security',
+        description:
+          'Self-hosted deployments, encrypted credentials, role-based access, and compliance-ready configurations.',
+        icon: 'Shield',
+      },
+      {
+        title: 'Flexible Engagement Models',
+        description:
+          'From one-time workflow builds to dedicated automation teams—scale n8n expertise as your needs evolve.',
+        icon: 'Layers',
+      },
+      {
+        title: 'Premium Support & Training',
+        description:
+          'Comprehensive team training, detailed documentation, and ongoing support to maximize your n8n investment.',
+        icon: 'Heart',
+      },
+    ],
+    solutions: [
+      {
+        title: 'Sales & Marketing Automation',
+        description:
+          'Automate lead capture, CRM updates, email campaigns, and reporting with n8n workflows.',
+        bullets: [
+          'Lead routing & enrichment automation',
+          'Multi-channel campaign orchestration',
+          'Real-time dashboard & analytics sync',
+        ],
+      },
+      {
+        title: 'Data Integration & ETL Pipelines',
+        description:
+          'Build robust data pipelines connecting databases, APIs, and analytics platforms with n8n.',
+        bullets: [
+          'Scheduled & event-driven data sync',
+          'Transformation & validation workflows',
+          'Error handling & retry logic',
+        ],
+      },
+      {
+        title: 'Customer Support Automation',
+        description:
+          'Streamline ticketing, chatbot handoffs, and internal notifications with intelligent n8n workflows.',
+        bullets: [
+          'Ticket routing & SLA monitoring',
+          'AI-powered response suggestions',
+          'Cross-platform support sync',
+        ],
+      },
+      {
+        title: 'DevOps & IT Automation',
+        description:
+          'Automate deployments, monitoring alerts, incident response, and infrastructure management with n8n.',
+        bullets: [
+          'CI/CD pipeline orchestration',
+          'Incident alerting & escalation',
+          'Resource provisioning automation',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why choose n8n over Zapier or Make?',
+        answer:
+          'n8n offers complete data ownership with self-hosted options, unlimited workflow executions, advanced debugging, custom code execution, and no vendor lock-in—all at a fraction of the cost of cloud automation platforms.',
+      },
+      {
+        question: 'Can n8n integrate with our legacy systems and custom APIs?',
+        answer:
+          'Absolutely. n8n supports HTTP requests, webhooks, custom authentication, and we can build custom nodes for any proprietary system, ensuring seamless integration across your entire tech stack.',
+      },
+      {
+        question: 'How secure is n8n for enterprise use?',
+        answer:
+          'n8n provides enterprise-grade security with self-hosted deployment options, encrypted credential storage, role-based access control, audit logs, and compliance with GDPR, SOC 2, and other standards when properly configured.',
+      },
+      {
+        question: 'What kind of workflows can n8n automate?',
+        answer:
+          'From simple data sync to complex multi-step business processes—n8n handles lead routing, invoice processing, inventory sync, customer onboarding, report generation, API orchestration, and virtually any workflow spanning multiple tools and systems.',
+      },
+    ],
+    engagementModels: baseEngagementModels,
+    techStacks: baseTechStacks,
+    presentation:
+      presentationThemes['agritech-application-development'] ??
+      presentationThemes.default,
+  },
 ];
 
 export const getIndustryBySlug = (slug?: string) =>
