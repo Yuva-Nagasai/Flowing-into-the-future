@@ -51,7 +51,7 @@ const services: ServiceData[] = [
       'API Development',
       'System Integrations'
     ],
-    image: '/image2.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWdra2NjemFjbmEzZm8wYmF5NWNtbmQ5aWN0NnJhcTBpaDhxemh5YiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/JqmupuTVZYaQX5s094/giphy.gif',
     cta: 'Get Started',
     comparison: [
       {
@@ -105,7 +105,7 @@ const services: ServiceData[] = [
       'Serverless Systems',
       'Microservices Design'
     ],
-    image: '/image3.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmxjaDN6YjMydGFvdTRneWx6eGM3dWV4a3NqbGsxeWR5Z3QweGc2ZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3osxYrgM8gi9CDjcPu/giphy.gif',
     cta: 'Explore Cloud',
     comparison: [
       {
@@ -159,7 +159,7 @@ const services: ServiceData[] = [
       'Code Optimization',
       'CDN Configuration'
     ],
-    image: '/image6.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXlscG05eWIyazN0cmp1OHBzaDhyeWlrYnBhNWZpdTI3ZGtoZ2pnYyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l3vRfNA1p0rvhMSvS/giphy.gif',
     cta: 'Optimize Now',
     comparison: [
       {
@@ -213,7 +213,7 @@ const services: ServiceData[] = [
       'Compliance Audits',
       'Security Monitoring'
     ],
-    image: '/image5.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWJiODd2eWRsdjlnZWV0YzJsa3B5ajB5YzRmMWpuYzE3YjZhcGdsMCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26tPnAAJxXTvpLwJy/giphy.gif',
     cta: 'Secure Now',
     comparison: [
       {
@@ -267,7 +267,7 @@ const services: ServiceData[] = [
       'BI Dashboards',
       'Predictive Analytics'
     ],
-    image: '/image4.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGNlaThxcWNiMnp0Z21nMmFycWQ3OWJtYnFpZ2k4NXdheHhvenk5dyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xUA7aWJ33L5vYH7Nao/giphy.gif',
     cta: 'Analyze Data',
     comparison: [
       {
@@ -321,7 +321,7 @@ const services: ServiceData[] = [
       'Predictive Models',
       'NLP Solutions'
     ],
-    image: '/image1.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2E3YWVhZW1nbXdpZWE5MGY5NHBwN2g1bXJwYWh4NWoyeWh6OGd5NiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xTiN0CNHgoRf1Ha7CM/giphy.gif',
     cta: 'Explore AI',
     comparison: [
       {
@@ -375,7 +375,7 @@ const services: ServiceData[] = [
       'Content Creation',
       'Brand Management'
     ],
-    image: '/image8.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTI3dWI3bGlyY3Z1MHIzcHVzN3doYXM5d3RnYXowOTRnazB2bG4wbiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l378A8qFW6R3iyX3a/giphy.gif',
     cta: 'Start Campaign',
     comparison: [
       {
@@ -429,7 +429,7 @@ const services: ServiceData[] = [
       'Audience Targeting',
       'Performance Tracking'
     ],
-    image: '/image7.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmZxdHJocHowYmF1OHFtZnEwcWRkZ2EzNzJ2NHk5MmNrNzJiZGYwNSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0HlNaQ6gWfllcjDO/giphy.gif',
     cta: 'Grow Channel',
     comparison: [
       {
@@ -483,7 +483,7 @@ const services: ServiceData[] = [
       'Corporate AI Training',
       'Process Automation Guidance'
     ],
-    image: '/image10.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzFpcGw5YXhsdmduaDBoaXpmaDJ6bWgxcXU5NGl0ZTNhZmphd2QzbCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/LaVp0AyqR5bGsC5Cbm/giphy.gif',
     cta: 'Get Consultation',
     comparison: [
       {
@@ -537,7 +537,7 @@ const services: ServiceData[] = [
       'API Integrations',
       'Bot Development'
     ],
-    image: '/image11.png',
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHBubGNteDFqYzZhdDVmcWF2d3BjeThsNGprNWk0MTM2bWxxMWFweiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0IylSajlbPRFxH8Y/giphy.gif',
     cta: 'Automate Now',
     comparison: [
       {
