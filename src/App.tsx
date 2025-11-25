@@ -64,6 +64,7 @@ import ServicesPage from './pages/ServicesPage';
 import HowItWorks from './pages/HowItWorks';
 import IndustryDetail from './pages/industries/IndustryDetail';
 import ELearningLanding from './pages/ELearningLanding';
+import CourseListing from './pages/CourseListing';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -173,6 +174,16 @@ function AnimatedRoutes() {
             element={
               <PageTransition>
                 <ELearningLanding />
+              </PageTransition>
+            }
+          />
+
+          {/* ✅ Course Listing Page Route */}
+          <Route
+            path="/courses"
+            element={
+              <PageTransition>
+                <CourseListing />
               </PageTransition>
             }
           />
