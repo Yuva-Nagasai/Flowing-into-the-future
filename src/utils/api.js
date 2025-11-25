@@ -22,7 +22,7 @@ api.interceptors.request.use(
 
 export const authAPI = {
   login: (email, password) => api.post('/auth/login', { email, password }),
-  signup: (name, email, password) => api.post('/auth/signup', { name, email, password })
+  signup: (name, email, password, role = 'student') => api.post('/auth/signup', { name, email, password, role })
 };
 
 export const coursesAPI = {

@@ -116,7 +116,7 @@ const Login = () => {
   };
 
   return (
-    <div className={`relative flex h-screen items-center justify-center overflow-hidden ${currentTheme.classes.containerBg}`}>
+    <div className={`relative flex min-h-screen overflow-hidden ${currentTheme.classes.containerBg}`}>
       {/* Background Gradient Mesh */}
       <div className={`absolute inset-0 ${currentTheme.classes.mesh}`} />
 
@@ -140,14 +140,80 @@ const Login = () => {
         )}
       </motion.button>
 
-      {/* Login Container - Centered */}
-      <div className="relative z-10 mx-auto w-full max-w-sm px-4 sm:px-6 py-4 sm:py-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className={`rounded-2xl p-5 sm:p-6 shadow-2xl backdrop-blur-xl ${currentTheme.classes.cardBg} ${currentTheme.classes.border} ${currentTheme.classes.shadow}`}
-        >
+      {/* Two-Column Layout */}
+      <div className="relative z-10 w-full grid grid-cols-1 lg:grid-cols-2">
+        {/* Left Column - Branding */}
+        <div className="hidden lg:flex flex-col justify-center items-start p-12 xl:p-16">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-lg"
+          >
+            {/* Logo */}
+            <div className="mb-8">
+              <div className="h-16 w-32 overflow-hidden flex items-center justify-start">
+                <img
+                  src="/NanoFlows-LOGO-removebg-preview.png"
+                  alt="Nano Flows Logo"
+                  className="h-full w-auto"
+                />
+              </div>
+            </div>
+
+            <div className={`mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold uppercase tracking-wider ${currentTheme.classes.badgeGradient}`}>
+              <Sparkles className="h-4 w-4 animate-pulse" />
+              NanoFlows Academy
+            </div>
+
+            <h1 className={`text-4xl xl:text-5xl font-bold mb-6 leading-tight ${currentTheme.classes.headingPrimary}`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
+              Welcome to the Future of Learning
+            </h1>
+
+            <p className={`text-lg mb-8 leading-relaxed ${currentTheme.classes.text}`}>
+              Join thousands of students mastering cutting-edge technologies with expert-led courses. 
+              Transform your career with practical, industry-relevant skills.
+            </p>
+
+            {/* Features List */}
+            <div className="space-y-4">
+              {[
+                { icon: Brain, text: 'AI-Powered Learning Paths' },
+                { icon: Zap, text: 'Hands-On Projects' },
+                { icon: Sparkles, text: 'Industry-Recognized Certificates' }
+              ].map((feature, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + idx * 0.1, duration: 0.5 }}
+                  className="flex items-center gap-3"
+                >
+                  <div className={`p-2 rounded-lg ${
+                    theme === 'dark'
+                      ? 'bg-electric-green/20 text-electric-green'
+                      : 'bg-accent-red/20 text-accent-red'
+                  }`}>
+                    <feature.icon className="h-5 w-5" />
+                  </div>
+                  <span className={`text-sm font-semibold ${currentTheme.classes.headingPrimary}`}>
+                    {feature.text}
+                  </span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Right Column - Login Form */}
+        <div className="flex items-center justify-center p-4 sm:p-8 lg:p-12">
+          <div className="w-full max-w-md">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className={`rounded-2xl p-5 sm:p-6 shadow-2xl backdrop-blur-xl ${currentTheme.classes.cardBg} ${currentTheme.classes.border} ${currentTheme.classes.shadow}`}
+            >
           {/* Logo & Header */}
           <div className="mb-6 text-center">
             <div className="mx-auto mb-3 h-10 w-20 overflow-hidden flex items-center justify-center rounded-lg">
@@ -373,19 +439,21 @@ const Login = () => {
 
         {/* Help Section */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className={`mt-4 text-center text-xs ${currentTheme.classes.text}`}
-        >
-          Need help?{' '}
-          <a
-            href="mailto:support@nanoflows.com"
-            className={`font-semibold transition ${currentTheme.classes.link}`}
-          >
-            Contact support
-          </a>
-        </motion.div>
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className={`mt-4 text-center text-xs ${currentTheme.classes.text}`}
+            >
+              Need help?{' '}
+              <a
+                href="mailto:support@nanoflows.com"
+                className={`font-semibold transition ${currentTheme.classes.link}`}
+              >
+                Contact support
+              </a>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   );

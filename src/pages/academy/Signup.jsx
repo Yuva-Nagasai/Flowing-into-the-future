@@ -11,6 +11,7 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('student');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
@@ -35,10 +36,10 @@ const Signup = () => {
 
     setLoading(true);
 
-    const result = await signup(name, email, password);
+    const result = await signup(name, email, password, role);
 
     if (result.success) {
-      navigate('/academy/login');
+      navigate('/academy/dashboard');
     } else {
       setError(result.error);
     }
@@ -191,6 +192,64 @@ const Signup = () => {
                 placeholder="••••••••"
                 required
               />
+            </div>
+
+            <div>
+              <label className={`mb-2 block text-sm font-semibold ${currentTheme.classes.label}`}>
+                I am a
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <label className={`relative flex items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                  role === 'student'
+                    ? theme === 'dark'
+                      ? 'border-electric-green bg-electric-green/10'
+                      : 'border-accent-red bg-accent-red/10'
+                    : theme === 'dark'
+                      ? 'border-gray-700 bg-dark-lighter hover:border-gray-600'
+                      : 'border-gray-200 bg-white hover:border-gray-300'
+                }`}>
+                  <input
+                    type="radio"
+                    name="role"
+                    value="student"
+                    checked={role === 'student'}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="sr-only"
+                  />
+                  <span className={`text-sm font-semibold ${
+                    role === 'student'
+                      ? theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+                      : theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
+                    Student
+                  </span>
+                </label>
+                <label className={`relative flex items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                  role === 'instructor'
+                    ? theme === 'dark'
+                      ? 'border-electric-green bg-electric-green/10'
+                      : 'border-accent-red bg-accent-red/10'
+                    : theme === 'dark'
+                      ? 'border-gray-700 bg-dark-lighter hover:border-gray-600'
+                      : 'border-gray-200 bg-white hover:border-gray-300'
+                }`}>
+                  <input
+                    type="radio"
+                    name="role"
+                    value="instructor"
+                    checked={role === 'instructor'}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="sr-only"
+                  />
+                  <span className={`text-sm font-semibold ${
+                    role === 'instructor'
+                      ? theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+                      : theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
+                    Instructor
+                  </span>
+                </label>
+              </div>
             </div>
 
             <button
