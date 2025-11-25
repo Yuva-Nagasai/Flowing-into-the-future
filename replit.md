@@ -6,6 +6,31 @@ Nano Flows is a modern, AI-focused marketing website built with React, TypeScrip
 
 ## Recent Changes (November 2025)
 
+### E-Learning Platform Public Landing Page (November 25, 2025)
+- **Created Public E-Learning Landing Page**: New comprehensive course browsing page at `/elearning` accessible without authentication
+- **Top Navigation Integration**: Updated second button in top feature bar to route to e-learning platform (changed from `/products` to `/elearning`)
+- **Hero Section**: Professional academy branding with NanoFlows Academy title, descriptive tagline, CTA buttons ("Start Learning Today", "Explore Courses"), and stat cards (courses, students, certificates, rating)
+- **Advanced Filtering System**: 
+  - Search bar for real-time course filtering by title and description
+  - Category filter with 9 categories (Web Development, Backend Development, Data Science, Mobile Development, DevOps, AI & ML, Database, Cloud Computing)
+  - Level filter (Beginner, Intermediate, Advanced)
+- **Course Cards**: Responsive grid layout with:
+  - Thumbnail placeholders and video icons
+  - Category tags and level badges
+  - Course title and description
+  - Duration and student enrollment counts
+  - Pricing (Free or ₹ amount)
+  - Click-to-login functionality (redirects to login with course redirect)
+- **Robust Error Handling**:
+  - Null-safe filtering for course title and description fields
+  - Loading skeleton during initial load and retry operations
+  - User-friendly error messages with retry button when API fails
+  - Graceful degradation when backend is unavailable
+  - Empty state message when no courses match filters
+- **Full Theme Integration**: Consistent dark/light mode styling matching existing design system with electric blue/green (dark) and accent red/blue (light) color schemes
+- **Backend Integration**: Connects to existing courses API endpoint (`GET /api/courses`) with proper published course filtering
+- **Responsive Design**: Mobile-first approach with sidebar filters and 2-column course grid
+
 ### New Service Categories in Navigation (November 19, 2025)
 - **Added SaaS Development Service Category**: Complete SaaS solutions including MVP development, multi-tenant architecture, subscription/billing integration, and platform modernization
 - **Added Internet of Things Service Category**: IoT solutions covering device integration, data analytics, smart home/building automation, and industrial IoT (IIoT)
