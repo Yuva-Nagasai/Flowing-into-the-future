@@ -75,7 +75,7 @@ const createNotification = async (user_id, type, title, message) => {
   try {
     await pool.query(
       `INSERT INTO notifications (user_id, type, title, message)
-       VALUES ($1, $2, $3, $4)`,
+       VALUES (?, ?, ?, ?)`,
       [user_id, type, title, message]
     );
   } catch (error) {

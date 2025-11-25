@@ -71,7 +71,7 @@ const Contact = () => {
   return (
     <section
       id="contact"
-      className={`relative pt-4 md:pt-6 pb-20 overflow-hidden ${
+      className={`relative pt-4 md:pt-6 pb-20 overflow-hidden scroll-mt-24 lg:scroll-mt-32 ${
         theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'
       }`}
     >

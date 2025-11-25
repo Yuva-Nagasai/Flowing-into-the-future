@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const pool = require('../config/db');
 
 const createPurchase = async (req, res) => {
@@ -10,7 +11,7 @@ const createPurchase = async (req, res) => {
     }
 
     const existingPurchase = await pool.query(
-      'SELECT * FROM purchases WHERE user_id = $1 AND course_id = $2',
+      'SELECT * FROM purchases WHERE user_id = ? AND course_id = ?',
       [user_id, course_id]
     );
 
@@ -18,13 +19,17 @@ const createPurchase = async (req, res) => {
       return res.status(400).json({ error: 'Course already purchased' });
     }
 
-    const result = await pool.query(
-      `INSERT INTO purchases (user_id, course_id, razorpay_payment_id, razorpay_order_id, amount, status)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [user_id, course_id, razorpay_payment_id || 'FREE', razorpay_order_id, amount || 0, 'completed']
+    const purchaseId = uuidv4();
+
+    await pool.query(
+      `INSERT INTO purchases (id, user_id, course_id, razorpay_payment_id, razorpay_order_id, amount, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [purchaseId, user_id, course_id, razorpay_payment_id || 'FREE', razorpay_order_id || null, amount || 0, 'completed']
     );
 
-    res.status(201).json({ message: 'Purchase successful', purchase: result.rows[0] });
+    const purchaseResult = await pool.query('SELECT * FROM purchases WHERE id = ?', [purchaseId]);
+
+    res.status(201).json({ message: 'Purchase successful', purchase: purchaseResult.rows[0] });
   } catch (error) {
     console.error('Create purchase error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -52,7 +57,7 @@ const getUserPurchases = async (req, res) => {
         c.instructor_name
        FROM purchases p
        JOIN courses c ON p.course_id = c.id
-       WHERE p.user_id = $1
+       WHERE p.user_id = ?
        ORDER BY p.purchased_at DESC`,
       [user_id]
     );
@@ -97,12 +102,12 @@ const checkPurchase = async (req, res) => {
     const user_id = req.user.id;
 
     // Check if course is free
-    const courseResult = await pool.query('SELECT free FROM courses WHERE id = $1', [course_id]);
+    const courseResult = await pool.query('SELECT free FROM courses WHERE id = ?', [course_id]);
     const isFreeCourse = courseResult.rows.length > 0 && courseResult.rows[0].free === true;
 
     // Check if user has purchased/enrolled
     const result = await pool.query(
-      'SELECT * FROM purchases WHERE user_id = $1 AND course_id = $2',
+      'SELECT * FROM purchases WHERE user_id = ? AND course_id = ?',
       [user_id, course_id]
     );
 
@@ -149,7 +154,7 @@ const getStudentsByCourse = async (req, res) => {
         u.email as user_email,
         u.created_at as user_joined_at,
         c.title as course_title,
-        COUNT(DISTINCT up.lesson_id) FILTER (WHERE up.completed = true) as completed_lessons,
+        COUNT(DISTINCT CASE WHEN up.completed = true THEN up.lesson_id END) as completed_lessons,
         COUNT(DISTINCT l.id) as total_lessons
        FROM purchases p
        JOIN users u ON p.user_id = u.id
@@ -157,7 +162,7 @@ const getStudentsByCourse = async (req, res) => {
        LEFT JOIN modules m ON c.id = m.course_id
        LEFT JOIN lessons l ON m.id = l.module_id
        LEFT JOIN user_progress up ON l.id = up.lesson_id AND up.user_id = u.id
-       WHERE p.course_id = $1
+       WHERE p.course_id = ?
        GROUP BY p.id, u.id, u.name, u.email, u.created_at, c.title
        ORDER BY p.purchased_at DESC`,
       [course_id]

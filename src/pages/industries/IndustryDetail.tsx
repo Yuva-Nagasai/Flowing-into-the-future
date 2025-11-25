@@ -3,49 +3,81 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   Activity,
   ArrowRight,
+  Atom,
   BadgeCheck,
   BadgeDollarSign,
+  BarChart3,
+  Brain,
   Building2,
   CalendarCheck,
   Car,
   CheckCircle2,
   ChevronRight,
+  Cloud,
+  CloudCog,
+  CloudRain,
   Coins,
+  Coffee,
   CreditCard,
-  FlaskConical,
+  FileCode,
   FileCheck,
+  Figma,
+  Fish,
+  Flame,
+  FlaskConical,
   Gauge,
+  Gem,
   Gift,
   Globe,
   Handshake,
   Heart,
+  Infinity,
+  KanbanSquare,
   Layers,
   Layers3,
+  Leaf,
   Link2,
   Map,
   MessageCircle,
+  Network,
+  NotebookPen,
+  Package,
   PhoneCall,
   RefreshCcw,
   Recycle,
   Rocket,
   Route,
+  Rows3,
   Scale,
-  Settings,
+  Server,
   Shield,
+  Settings,
+  Snowflake,
   Sparkles,
+  StickyNote,
   Stethoscope,
   Target,
   TrendingUp,
   Tv,
+  Wifi,
   Users,
   Utensils,
-  Wifi,
+  Wind,
   Zap,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { useTheme } from '../../context/ThemeContext';
 import { getIndustryBySlug } from '../../data/industries';
+import {
+  sectionContainerVariants,
+  staggeredVariants,
+  itemVariants,
+  scaleHoverVariants,
+  glowPulseAnimation,
+  viewportConfig
+} from '../../utils/motionPresets';
 
 const iconMap: Record<string, ElementType> = {
   Users,
@@ -86,11 +118,46 @@ const iconMap: Record<string, ElementType> = {
   MessageCircle,
 };
 
+const techItemIcons: Record<string, ElementType> = {
+  React: Atom,
+  TypeScript: FileCode,
+  Vue: Leaf,
+  'Next.js': Globe,
+  TailwindCSS: Wind,
+  'Node.js': Server,
+  Python: Infinity,
+  Go: Fish,
+  Java: Coffee,
+  'Ruby on Rails': Gem,
+  AWS: CloudCog,
+  Azure: CloudRain,
+  GCP: Cloud,
+  Kubernetes: Network,
+  Terraform: Layers,
+  TensorFlow: Brain,
+  PyTorch: Flame,
+  dbt: Package,
+  Snowflake: Snowflake,
+  PowerBI: BarChart3,
+  Figma: Figma,
+  Jira: KanbanSquare,
+  Notion: NotebookPen,
+  Linear: Rows3,
+  Miro: StickyNote,
+};
+
 const IndustryDetail = () => {
   const { theme } = useTheme();
   const { slug } = useParams();
   const navigate = useNavigate();
   const industry = getIndustryBySlug(slug);
+
+  const headingColor = theme === 'dark' ? 'text-white' : 'text-black';
+  const subheadingColor = theme === 'dark' ? 'text-gray-200' : 'text-gray-700';
+  const bodyColor = theme === 'dark' ? 'text-gray-300' : 'text-gray-600';
+  const kickerTextClass = `text-xs uppercase tracking-[0.2em] font-semibold ${
+    theme === 'dark' ? 'text-electric-blue/80' : 'text-accent-red/80'
+  }`;
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -185,10 +252,14 @@ const IndustryDetail = () => {
   };
 
   const heroBullets = (alignCenter = false) => (
-    <ul className={`mt-6 space-y-3 ${alignCenter ? 'max-w-2xl mx-auto' : ''}`}>
+    <motion.ul
+      variants={staggeredVariants}
+      className={`mt-6 space-y-3 ${alignCenter ? 'max-w-2xl mx-auto' : ''}`}
+    >
       {industry.hero.bullets.map((item) => (
-        <li
+        <motion.li
           key={item}
+          variants={itemVariants}
           className={`flex items-center gap-3 text-base ${
             alignCenter ? 'justify-center text-center' : ''
           }`}
@@ -197,21 +268,25 @@ const IndustryDetail = () => {
             className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}
             size={20}
           />
-          <span
-            className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}
-          >
+          <span className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>
             {item}
           </span>
-        </li>
+        </motion.li>
       ))}
-    </ul>
+    </motion.ul>
   );
 
   const heroActions = (alignCenter = false) => (
-    <div className={`mt-8 flex flex-wrap gap-4 ${alignCenter ? 'justify-center' : ''}`}>
-      <a
+    <motion.div
+      variants={staggeredVariants}
+      className={`mt-8 flex flex-wrap gap-4 ${alignCenter ? 'justify-center' : ''}`}
+    >
+      <motion.a
+        variants={itemVariants}
+        whileHover={{ scale: 1.05, boxShadow: `0 20px 50px ${palette.primary}40` }}
+        whileTap={{ scale: 0.96 }}
         href={industry.hero.primaryCta.href}
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold shadow-lg transition-all hover:opacity-90"
+        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold shadow-lg transition-all"
         style={{
           backgroundColor: palette.primary,
           color: theme === 'dark' ? '#0f172a' : '#ffffff',
@@ -223,25 +298,37 @@ const IndustryDetail = () => {
       >
         <PhoneCall size={18} />
         {industry.hero.primaryCta.label}
-      </a>
-      <a
+      </motion.a>
+      <motion.a
+        variants={itemVariants}
+        whileHover={{
+          scale: 1.03,
+          color: theme === 'dark' ? palette.primary : palette.secondary,
+        }}
+        whileTap={{ scale: 0.97 }}
         href={industry.hero.secondaryCta.href}
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border transition-all hover:opacity-80"
+        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border transition-all"
         style={{
           borderColor: palette.secondary,
           color: theme === 'dark' ? '#fff' : palette.secondary,
         }}
       >
         {industry.hero.secondaryCta.label} <ArrowRight size={18} />
-      </a>
-    </div>
+      </motion.a>
+    </motion.div>
   );
 
   const heroBadges = (alignCenter = false) => (
-    <div className={`mt-8 flex flex-wrap gap-4 ${alignCenter ? 'justify-center' : 'items-center'}`}>
-      {industry.hero.partnerBadges.map((badge) => (
-        <span
+    <motion.div
+      variants={staggeredVariants}
+      className={`mt-8 flex flex-wrap gap-4 ${alignCenter ? 'justify-center' : 'items-center'}`}
+    >
+      {industry.hero.partnerBadges.map((badge, index) => (
+        <motion.span
           key={badge}
+          variants={itemVariants}
+          whileHover={{ scale: 1.05 }}
+          transition={{ delay: index * 0.05 }}
           className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide px-4 py-2 rounded-full"
           style={
             theme === 'dark'
@@ -255,41 +342,43 @@ const IndustryDetail = () => {
         >
           <BadgeCheck size={16} />
           {badge}
-        </span>
+        </motion.span>
       ))}
-    </div>
+    </motion.div>
   );
 
   const heroTextBlock = (alignCenter = false) => (
     <>
-      <p
-        className={`text-sm uppercase tracking-[0.35em] font-orbitron mb-4 ${
-          theme === 'dark' ? 'text-electric-blue' : 'text-accent-red'
-        } ${alignCenter ? 'text-center' : ''}`}
+      <motion.p
+        variants={itemVariants}
+        className={`${kickerTextClass} mb-4 ${alignCenter ? 'text-center' : ''}`}
       >
         {industry.hero.kicker}
-      </p>
-      <h1
-        className={`text-2xl lg:text-4xl font-orbitron font-semibold leading-tight ${
+      </motion.p>
+      <motion.h1
+        variants={itemVariants}
+        className={`text-2xl lg:text-4xl font-orbitron font-semibold leading-tight ${headingColor} ${
           alignCenter ? 'text-center' : ''
         }`}
       >
         {industry.hero.title}
-      </h1>
-      <p
+      </motion.h1>
+      <motion.p
+        variants={itemVariants}
         className={`mt-3 text-base ${
           theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
         } ${alignCenter ? 'text-center' : ''}`}
       >
         {industry.hero.subtitle}
-      </p>
-      <p
-        className={`mt-3 ${
-          theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-        } ${alignCenter ? 'text-center max-w-3xl mx-auto' : ''}`}
+      </motion.p>
+      <motion.p
+        variants={itemVariants}
+        className={`mt-3 ${bodyColor} ${
+          alignCenter ? 'text-center max-w-3xl mx-auto' : ''
+        }`}
       >
         {industry.hero.description}
-      </p>
+      </motion.p>
       {heroBullets(alignCenter)}
       {heroActions(alignCenter)}
       {heroBadges(alignCenter)}
@@ -299,7 +388,11 @@ const IndustryDetail = () => {
   const renderHero = () => {
     if (heroStyle === 'centered') {
       return (
-        <section
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportConfig}
+          variants={sectionContainerVariants}
           style={theme === 'dark' ? darkModeGradientStyle : heroGradientStyle}
           className={`py-16 relative overflow-hidden ${
             theme === 'dark' ? '' : ''
@@ -315,8 +408,12 @@ const IndustryDetail = () => {
           )}
           <div className="container mx-auto px-6 text-center relative z-10">
             {theme === 'dark' && getIndustryDecoration()}
-            {heroTextBlock(true)}
-            <div className="mt-12 max-w-5xl mx-auto">
+            <motion.div variants={staggeredVariants}>{heroTextBlock(true)}</motion.div>
+            <motion.div
+              variants={itemVariants}
+              className="mt-12 max-w-5xl mx-auto"
+              whileHover={{ scale: 1.02 }}
+            >
               <div
                 className={`rounded-[32px] p-1.5 shadow-2xl ${
                   theme === 'dark' ? '' : ''
@@ -331,21 +428,27 @@ const IndustryDetail = () => {
                       }
                 }
               >
-                <img
+                <motion.img
                   src={industry.hero.image}
                   alt={industry.name}
                   className="rounded-[28px] w-full object-cover"
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ duration: 0.6, ease: 'easeOut' }}
                 />
               </div>
-            </div>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
       );
     }
 
     if (heroStyle === 'overlap') {
       return (
-        <section
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportConfig}
+          variants={sectionContainerVariants}
           style={theme === 'dark' ? darkModeGradientStyle : heroGradientStyle}
           className={`py-16 relative overflow-hidden ${theme === 'dark' ? '' : ''}`}
         >
@@ -359,9 +462,11 @@ const IndustryDetail = () => {
           )}
           <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
             {theme === 'dark' && getIndustryDecoration()}
-            <div>{heroTextBlock(false)}</div>
+            <motion.div variants={staggeredVariants}>{heroTextBlock(false)}</motion.div>
             <div className="relative pb-12">
-              <div
+              <motion.div
+                variants={itemVariants}
+                whileHover={{ scale: 1.02 }}
                 className={`rounded-[32px] p-1.5 shadow-2xl ${
                   theme === 'dark' ? '' : ''
                 }`}
@@ -375,16 +480,22 @@ const IndustryDetail = () => {
                       }
                 }
               >
-                <img
+                <motion.img
                   src={industry.hero.image}
                   alt={industry.name}
                   className="rounded-[28px] w-full object-cover"
+                  whileHover={{ scale: 1.04 }}
+                  transition={{ duration: 0.6, ease: 'easeOut' }}
                 />
-              </div>
+              </motion.div>
               <div className="absolute -bottom-6 left-6 right-6 flex gap-4 flex-wrap">
-                {industry.stats.slice(0, 2).map((stat) => (
-                  <div
+                {industry.stats.slice(0, 2).map((stat, index) => (
+                  <motion.div
                     key={stat.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={viewportConfig}
+                    transition={{ delay: 0.1 * index }}
                     className="rounded-2xl px-6 py-5 shadow-2xl border flex-1 min-w-[180px] backdrop-blur-sm"
                     style={
                       theme === 'dark'
@@ -411,17 +522,21 @@ const IndustryDetail = () => {
                     >
                       {stat.label}
                     </p>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
           </div>
-        </section>
+        </motion.section>
       );
     }
 
     return (
-      <section
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportConfig}
+        variants={sectionContainerVariants}
         style={theme === 'dark' ? darkModeGradientStyle : heroGradientStyle}
         className={`py-16 relative overflow-hidden ${theme === 'dark' ? '' : ''}`}
       >
@@ -435,9 +550,11 @@ const IndustryDetail = () => {
         )}
         <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
           {theme === 'dark' && getIndustryDecoration()}
-          <div>{heroTextBlock(false)}</div>
+          <motion.div variants={staggeredVariants}>{heroTextBlock(false)}</motion.div>
           <div className="relative">
-            <div
+            <motion.div
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
               className={`rounded-[32px] p-1.5 shadow-2xl ${
                 theme === 'dark' ? '' : ''
               }`}
@@ -451,15 +568,17 @@ const IndustryDetail = () => {
                     }
               }
             >
-              <img
+              <motion.img
                 src={industry.hero.image}
                 alt={industry.name}
                 className="rounded-[28px] w-full object-cover max-h-[450px]"
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
               />
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
     );
   };
 
@@ -468,40 +587,42 @@ const IndustryDetail = () => {
       ? 'bg-dark-card/80 backdrop-blur-sm'
       : 'bg-white border-gray-200 shadow-sm';
 
-  const servicesIntro = (
-    <div className="text-center max-w-3xl mx-auto">
-      <p
-        className={`text-sm font-orbitron uppercase tracking-[0.4em] ${
-          theme === 'dark' ? 'text-electric-blue' : 'text-accent-red'
-        }`}
-      >
+  const ServicesIntro = () => (
+    <motion.div variants={staggeredVariants} className="text-center max-w-3xl mx-auto">
+      <motion.p variants={itemVariants} className={kickerTextClass}>
         Services We Offer
-      </p>
-      <h2 className="mt-3 text-2xl font-orbitron font-semibold">
+      </motion.p>
+      <motion.h2 variants={itemVariants} className={`mt-3 text-2xl font-orbitron font-semibold ${headingColor}`}>
         {industry.name} programs engineered for impact
-      </h2>
-      <p
-        className={`mt-3 ${
-          theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-        }`}
-      >
+      </motion.h2>
+      <motion.p variants={itemVariants} className={`mt-3 ${bodyColor}`}>
         Cross-functional pods cover discovery, build, and growth initiatives tailored to
         each industry.
-      </p>
-    </div>
+      </motion.p>
+    </motion.div>
   );
 
   const renderServices = () => {
     if (servicesStyle === 'timeline') {
       return (
-        <section className="container mx-auto px-6 mt-10">
-          {servicesIntro}
-          <div className="mt-8 space-y-4">
+        <motion.section
+          className="container mx-auto px-6 mt-10"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportConfig}
+          variants={sectionContainerVariants}
+        >
+          <ServicesIntro />
+          <motion.div className="mt-8 space-y-4" variants={staggeredVariants}>
             {industry.services.map((service, index) => (
-              <div key={service.title} className="flex gap-4">
+              <motion.div key={service.title} className="flex gap-4" variants={itemVariants}>
                 <div className="flex flex-col items-center">
-                  <span
+                  <motion.span
                     className="w-10 h-10 rounded-full text-sm font-bold flex items-center justify-center"
+                    animate={{
+                      boxShadow: glowPulseAnimation(theme, palette.primary).boxShadow,
+                    }}
+                    transition={{ duration: 3, repeat: Infinity, delay: index * 0.2 }}
                     style={{
                       backgroundColor:
                         theme === 'dark' ? palette.surface : accent.surface,
@@ -509,13 +630,16 @@ const IndustryDetail = () => {
                     }}
                   >
                     {index + 1}
-                  </span>
+                  </motion.span>
                   {index !== industry.services.length - 1 && (
                     <span className="w-px flex-1 bg-gradient-to-b from-transparent via-accent-blue to-transparent opacity-40" />
                   )}
                 </div>
-                <div
-                  className={`flex-1 rounded-2xl border px-5 py-4 ${servicesCardClass} hover:shadow-lg transition-all duration-300`}
+                <motion.div
+                  variants={scaleHoverVariants}
+                  initial="rest"
+                  whileHover="hover"
+                  className={`flex-1 rounded-2xl border px-5 py-4 ${servicesCardClass} transition-all duration-300`}
                   style={
                     theme === 'dark'
                       ? {
@@ -525,30 +649,34 @@ const IndustryDetail = () => {
                       : { backgroundColor: accent.muted }
                   }
                 >
-                  <h3 className="text-xl font-semibold">{service.title}</h3>
-                  <p
-                    className={`mt-2 ${
-                      theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                    }`}
-                  >
+                  <h3 className={`text-xl font-semibold ${headingColor}`}>{service.title}</h3>
+                  <p className={`mt-2 ${bodyColor}`}>
                     {service.description}
                   </p>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             ))}
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
       );
     }
 
     if (servicesStyle === 'stacked') {
       return (
-        <section className="container mx-auto px-6 mt-10">
-          {servicesIntro}
-          <div className="mt-6 space-y-4">
+        <motion.section
+          className="container mx-auto px-6 mt-10"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportConfig}
+          variants={sectionContainerVariants}
+        >
+          <ServicesIntro />
+          <motion.div className="mt-6 space-y-4" variants={staggeredVariants}>
             {industry.services.map((service) => (
-              <div
+              <motion.div
                 key={service.title}
+                variants={itemVariants}
+                whileHover={{ y: -6 }}
                 className={`rounded-3xl border p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 ${servicesCardClass} hover:shadow-lg transition-all duration-300`}
                 style={
                   theme === 'dark'
@@ -562,12 +690,8 @@ const IndustryDetail = () => {
                 }
               >
                 <div>
-                  <h3 className="text-xl font-semibold">{service.title}</h3>
-                  <p
-                    className={`mt-2 ${
-                      theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-                    }`}
-                  >
+                  <h3 className={`text-xl font-semibold ${headingColor}`}>{service.title}</h3>
+                  <p className={`mt-2 ${bodyColor}`}>
                     {service.description}
                   </p>
                 </div>
@@ -587,21 +711,32 @@ const IndustryDetail = () => {
                 >
                   Signature program
                 </span>
-              </div>
+              </motion.div>
             ))}
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
       );
     }
 
     return (
-      <section className="container mx-auto px-6 mt-10">
-        {servicesIntro}
-        <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <motion.section
+        className="container mx-auto px-6 mt-10"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportConfig}
+        variants={sectionContainerVariants}
+      >
+        <ServicesIntro />
+        <motion.div
+          className="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4"
+          variants={staggeredVariants}
+        >
           {industry.services.map((service, index) => (
-            <div
+            <motion.div
               key={service.title}
-              className={`rounded-2xl border px-4 py-5 ${servicesCardClass} hover:shadow-lg hover:scale-[1.02] transition-all duration-300`}
+              variants={itemVariants}
+              whileHover={{ y: -6, scale: 1.02 }}
+              className={`rounded-2xl border px-4 py-5 ${servicesCardClass} transition-all duration-300`}
               style={
                 theme === 'dark'
                   ? {
@@ -612,34 +747,32 @@ const IndustryDetail = () => {
               }
             >
               <div className="flex items-center justify-between">
-                <span
-                  className={`text-xs font-orbitron tracking-[0.4em] ${
-                    theme === 'dark' ? 'text-electric-blue' : 'text-accent-red'
-                  }`}
-                >
+                <span className={kickerTextClass}>
                   {String(index + 1).padStart(2, '0')}
                 </span>
                 <Layers3 className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'} size={22} />
               </div>
-              <h3 className="mt-4 text-xl font-semibold leading-tight">
+              <h3 className={`mt-4 text-xl font-semibold leading-tight ${headingColor}`}>
                 {service.title}
               </h3>
-              <p
-                className={`mt-3 text-sm ${
-                  theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-                }`}
-              >
+              <p className={`mt-3 text-sm ${bodyColor}`}>
                 {service.description}
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
     );
   };
 
   const renderStats = () => (
-    <section className="mt-12">
+    <motion.section
+      className="mt-12"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportConfig}
+      variants={sectionContainerVariants}
+    >
       <div
         className="py-12"
         style={
@@ -649,10 +782,12 @@ const IndustryDetail = () => {
         }
       >
         <div className="container mx-auto px-6">
-          <div className="flex flex-wrap gap-4 justify-center">
+          <motion.div className="flex flex-wrap gap-4 justify-center" variants={staggeredVariants}>
             {industry.stats.map((stat) => (
-              <div
+              <motion.div
                 key={stat.label}
+                variants={itemVariants}
+                whileHover={{ y: -5, scale: 1.02 }}
                 className={`rounded-2xl px-6 py-4 border ${
                   theme === 'dark'
                     ? 'border-electric-blue/40 text-white'
@@ -661,16 +796,22 @@ const IndustryDetail = () => {
               >
                 <p className="text-2xl font-orbitron font-semibold">{stat.value}</p>
                 <p className="text-sm opacity-80">{stat.label}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 
   const renderLeadership = () => (
-    <section className="mt-12">
+    <motion.section
+      className="mt-12"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportConfig}
+      variants={sectionContainerVariants}
+    >
       <div
         className="py-12"
         style={
@@ -680,39 +821,44 @@ const IndustryDetail = () => {
         }
       >
         <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-8 items-center">
-          <div>
-            <h3 className="text-3xl font-orbitron font-semibold">
+          <motion.div variants={staggeredVariants}>
+            <motion.h3 variants={itemVariants} className={`text-3xl font-orbitron font-semibold ${headingColor}`}>
               {industry.leadership.highlight}
-            </h3>
-            <p
+            </motion.h3>
+            <motion.p
+              variants={itemVariants}
               className={`mt-4 text-base ${
                 theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
               }`}
             >
               {industry.leadership.description}
-            </p>
-            <Link
-              to="/#contact"
-              className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-xl font-semibold transition-all hover:opacity-90 shadow-lg"
-              style={{
-                backgroundColor: palette.primary,
-                color: theme === 'dark' ? '#0f172a' : '#ffffff',
-                boxShadow: theme === 'dark' ? `0 0 25px ${palette.primary}40` : `0 8px 24px ${palette.primary}33`,
-              }}
-            >
-              Get in touch <ArrowRight size={18} />
-            </Link>
-          </div>
-          <div>
-            <img
+            </motion.p>
+            <motion.div variants={itemVariants}>
+              <Link
+                to="/#contact"
+                className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-xl font-semibold transition-all hover:opacity-90 shadow-lg"
+                style={{
+                  backgroundColor: palette.primary,
+                  color: theme === 'dark' ? '#0f172a' : '#ffffff',
+                  boxShadow: theme === 'dark' ? `0 0 25px ${palette.primary}40` : `0 8px 24px ${palette.primary}33`,
+                }}
+              >
+                Get in touch <ArrowRight size={18} />
+              </Link>
+            </motion.div>
+          </motion.div>
+          <motion.div variants={itemVariants} whileHover={{ scale: 1.02 }}>
+            <motion.img
               src={industry.leadership.image}
               alt={industry.name}
               className="rounded-[32px] w-full object-cover shadow-2xl"
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
             />
-          </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 
   const highlightCardClass =
@@ -723,19 +869,27 @@ const IndustryDetail = () => {
   const renderHighlights = () => {
     if (highlightStyle === 'list') {
       return (
-        <section className="container mx-auto px-6 mt-12">
-          <h3 className="text-3xl font-orbitron font-semibold">
-            Why choose HashStudioz?
+        <motion.section
+          className="container mx-auto px-6 mt-12"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportConfig}
+          variants={sectionContainerVariants}
+        >
+          <h3 className={`text-3xl font-orbitron font-semibold ${headingColor}`}>
+            Why choose NanoFlows?
           </h3>
-          <div className="mt-6 space-y-4">
+          <motion.div className="mt-6 space-y-4" variants={staggeredVariants}>
             {industry.highlights.map((highlight) => {
               const Icon =
                 (highlight.icon && iconMap[highlight.icon]) || Sparkles;
               return (
-                <div key={highlight.title} className="flex gap-4">
+                <motion.div key={highlight.title} className="flex gap-4" variants={itemVariants}>
                   <div className="flex flex-col items-center">
-                    <span
+                    <motion.span
                       className="w-12 h-12 rounded-full flex items-center justify-center"
+                      animate={glowPulseAnimation(theme, palette.primary)}
+                      transition={{ duration: 3, repeat: Infinity }}
                       style={{
                         backgroundColor:
                           theme === 'dark' ? '#1e293b' : accent.surface,
@@ -743,10 +897,13 @@ const IndustryDetail = () => {
                       }}
                     >
                       <Icon size={20} />
-                    </span>
+                    </motion.span>
                     <span className="w-px flex-1 bg-gray-200 dark:bg-electric-blue/40" />
                   </div>
-                  <div
+                  <motion.div
+                    variants={scaleHoverVariants}
+                    initial="rest"
+                    whileHover="hover"
                     className={`flex-1 rounded-2xl border p-4 ${highlightCardClass}`}
                     style={
                       theme === 'dark'
@@ -754,40 +911,44 @@ const IndustryDetail = () => {
                         : { backgroundColor: accent.surface }
                     }
                   >
-                    <h4 className="text-xl font-semibold">{highlight.title}</h4>
-                    <p
-                      className={`mt-2 ${
-                        theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-                      }`}
-                    >
+                    <h4 className={`text-xl font-semibold ${headingColor}`}>{highlight.title}</h4>
+                    <p className={`mt-2 ${bodyColor}`}>
                       {highlight.description}
                     </p>
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
               );
             })}
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
       );
     }
 
     return (
-      <section className="container mx-auto px-6 mt-14">
+      <motion.section
+        className="container mx-auto px-6 mt-14"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportConfig}
+        variants={sectionContainerVariants}
+      >
         <div className="mb-8">
-          <h3 className="text-3xl font-orbitron font-semibold">
+          <h3 className={`text-3xl font-orbitron font-semibold ${headingColor}`}>
             Why choose NanoFlows?
           </h3>
-          <p className={`mt-2 text-lg ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+          <p className={`mt-2 text-lg ${bodyColor}`}>
             Partner with excellence for your {industry.name.toLowerCase()} initiatives
           </p>
         </div>
-        <div className="grid lg:grid-cols-2 gap-6">
-          {industry.highlights.map((highlight) => {
+        <motion.div className="grid lg:grid-cols-2 gap-6" variants={staggeredVariants}>
+          {industry.highlights.map((highlight, index) => {
             const Icon =
               (highlight.icon && iconMap[highlight.icon]) || Sparkles;
             return (
-              <div
+              <motion.div
                 key={highlight.title}
+                variants={itemVariants}
+                whileHover={{ y: -6 }}
                 className={`rounded-3xl border p-6 flex gap-5 transition-all hover:shadow-lg ${highlightCardClass}`}
                 style={
                   theme === 'dark'
@@ -795,10 +956,12 @@ const IndustryDetail = () => {
                     : { backgroundColor: accent.surface }
                 }
               >
-                <div
+                <motion.div
                   className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md ${
                     theme === 'dark' ? '' : ''
                   }`}
+                  animate={glowPulseAnimation(theme, palette.primary)}
+                  transition={{ duration: 3.5, repeat: Infinity, delay: index * 0.2 }}
                   style={
                     theme === 'dark'
                       ? {
@@ -809,26 +972,24 @@ const IndustryDetail = () => {
                         }
                   }
                 >
-                  <Icon 
+                  <Icon
                     size={28}
                     style={{ color: palette.primary }}
                   />
-                </div>
+                </motion.div>
                 <div className="flex-1">
-                  <h4 className="text-xl font-semibold">{highlight.title}</h4>
+                  <h4 className={`text-xl font-semibold ${headingColor}`}>{highlight.title}</h4>
                   <p
-                    className={`mt-2.5 leading-relaxed ${
-                      theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-                    }`}
+                    className={`mt-2.5 leading-relaxed ${bodyColor}`}
                   >
                     {highlight.description}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
     );
   };
 
@@ -840,23 +1001,28 @@ const IndustryDetail = () => {
   const renderSolutions = () => {
     if (solutionsStyle === 'panels') {
       return (
-        <section className="container mx-auto px-6 mt-12" id="solutions">
-          <div className="text-center max-w-2xl mx auto mb-8">
-            <p
-              className={`text-sm font-orbitron uppercase tracking-[0.4em] ${
-                theme === 'dark' ? 'text-electric-blue' : 'text-accent-red'
-              }`}
-            >
+        <motion.section
+          className="container mx-auto px-6 mt-12"
+          id="solutions"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportConfig}
+          variants={sectionContainerVariants}
+        >
+          <motion.div className="text-center max-w-2xl mx auto mb-8" variants={staggeredVariants}>
+            <motion.p variants={itemVariants} className={kickerTextClass}>
               Solution Accelerators
-            </p>
-            <h3 className="mt-3 text-3xl font-orbitron font-semibold">
+            </motion.p>
+            <motion.h3 variants={itemVariants} className={`mt-3 text-3xl font-orbitron font-semibold ${headingColor}`}>
               Comprehensive programs across the lifecycle
-            </h3>
-          </div>
-          <div className="grid md:grid-cols-2 gap-5">
+            </motion.h3>
+          </motion.div>
+          <motion.div className="grid md:grid-cols-2 gap-5" variants={staggeredVariants}>
             {industry.solutions.map((solution) => (
-              <div
+              <motion.div
                 key={solution.title}
+                variants={itemVariants}
+                whileHover={{ y: -6 }}
                 className={`rounded-3xl border p-5 ${solutionCardClass}`}
                 style={
                   theme === 'dark'
@@ -867,26 +1033,23 @@ const IndustryDetail = () => {
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <Building2 className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'} />
-                    <h4 className="text-xl font-semibold">{solution.title}</h4>
+                    <h4 className={`text-xl font-semibold ${headingColor}`}>{solution.title}</h4>
                   </div>
                   <span
-                    className="text-xs uppercase tracking-[0.3em]"
-                    style={{ color: accent.secondary }}
+                    className={kickerTextClass}
+                    style={{ color: theme === 'dark' ? palette.primary : accent.secondary }}
                   >
                     Launch-ready
                   </span>
                 </div>
-                <p
-                  className={`mt-3 ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-                  }`}
-                >
+                <p className={`mt-3 ${bodyColor}`}>
                   {solution.description}
                 </p>
                 <div className="mt-4 grid sm:grid-cols-3 gap-3">
                   {solution.bullets.map((bullet) => (
-                    <div
+                    <motion.div
                       key={bullet}
+                      whileHover={{ scale: 1.03 }}
                       className={`rounded-2xl px-4 py-2 text-sm ${
                         theme === 'dark'
                           ? 'bg-white/5 text-white'
@@ -894,50 +1057,56 @@ const IndustryDetail = () => {
                       }`}
                     >
                       {bullet}
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
       );
     }
 
     return (
-      <section className="container mx-auto px-6 mt-12" id="solutions">
-        <div className="text-center max-w-2xl mx-auto mb-8">
-          <p
-            className={`text-sm font-orbitron uppercase tracking-[0.4em] ${
-              theme === 'dark' ? 'text-electric-blue' : 'text-accent-red'
-            }`}
-          >
+      <motion.section
+        className="container mx-auto px-6 mt-12"
+        id="solutions"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportConfig}
+        variants={sectionContainerVariants}
+      >
+        <motion.div className="text-center max-w-2xl mx-auto mb-8" variants={staggeredVariants}>
+          <motion.p variants={itemVariants} className={kickerTextClass}>
             Solution Accelerators
-          </p>
-          <h3 className="mt-4 text-3xl font-orbitron font-semibold">
+          </motion.p>
+          <motion.h3 variants={itemVariants} className={`mt-4 text-3xl font-orbitron font-semibold ${headingColor}`}>
             Comprehensive programs across the lifecycle
-          </h3>
-        </div>
-        <div className="grid lg:grid-cols-2 gap-5">
+          </motion.h3>
+        </motion.div>
+        <motion.div className="grid lg:grid-cols-2 gap-5" variants={staggeredVariants}>
           {industry.solutions.map((solution) => (
-            <div
+            <motion.div
               key={solution.title}
+              variants={itemVariants}
+              whileHover={{ y: -6 }}
               className={`rounded-3xl border p-5 ${solutionCardClass}`}
             >
               <div className="flex items-center gap-3">
                 <Building2 className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'} />
-                <h4 className="text-xl font-semibold">{solution.title}</h4>
+                <h4 className={`text-xl font-semibold ${headingColor}`}>{solution.title}</h4>
               </div>
-              <p
-                className={`mt-2 ${
-                  theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-                }`}
-              >
+              <p className={`mt-2 ${bodyColor}`}>
                 {solution.description}
               </p>
-              <ul className="mt-4 space-y-2">
+              <motion.ul className="mt-4 space-y-2" variants={staggeredVariants}>
                 {solution.bullets.map((bullet) => (
-                  <li key={bullet} className="flex items-center gap-2 text-sm">
+                  <motion.li
+                    key={bullet}
+                    variants={itemVariants}
+                    className="flex items-center gap-2 text-sm"
+                    whileHover={{ x: 4 }}
+                  >
                     <CheckCircle2
                       size={16}
                       className={
@@ -951,13 +1120,13 @@ const IndustryDetail = () => {
                     >
                       {bullet}
                     </span>
-                  </li>
+                  </motion.li>
                 ))}
-              </ul>
-            </div>
+              </motion.ul>
+            </motion.div>
           ))}
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
     );
   };
 
@@ -968,7 +1137,7 @@ const IndustryDetail = () => {
       }`}
     >
       <Header />
-      <main className="flex-1 pt-16 pb-10">
+      <main className="flex-1 pt-24 lg:pt-32 pb-10">
         {renderHero()}
         {renderStats()}
         {renderServices()}
@@ -977,56 +1146,59 @@ const IndustryDetail = () => {
         {renderLeadership()}
 
         {/* Engagement Models */}
-        <section className="container mx-auto px-6 mt-12">
-          <div className="grid md:grid-cols-3 gap-4">
+        <motion.section
+          className="container mx-auto px-6 mt-12"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportConfig}
+          variants={sectionContainerVariants}
+        >
+          <motion.div className="grid md:grid-cols-3 gap-4" variants={staggeredVariants}>
             {industry.engagementModels.map((model) => (
-              <div
+              <motion.div
                 key={model.title}
+                variants={itemVariants}
+                whileHover={{ y: -6 }}
                 className={`rounded-3xl border p-5 ${
                   theme === 'dark'
                     ? 'bg-dark-card border-electric-blue/30'
                     : 'bg-white border-gray-200 shadow-sm'
                 }`}
               >
-                <p
-                  className={`inline-flex items-center text-xs font-orbitron uppercase tracking-[0.4em] ${
-                    theme === 'dark' ? 'text-electric-blue' : 'text-accent-red'
-                  }`}
-                >
+                <p className={`inline-flex items-center ${kickerTextClass}`}>
                   {model.badge}
                 </p>
-                <h4 className="mt-3 text-xl font-semibold">{model.title}</h4>
-                <p
-                  className={`mt-2 ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-                  }`}
-                >
+                <h4 className={`mt-3 text-xl font-semibold ${headingColor}`}>{model.title}</h4>
+                <p className={`mt-2 ${bodyColor}`}>
                   {model.description}
                 </p>
-              </div>
+              </motion.div>
             ))}
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
 
         {/* Tech Stacks */}
-        <section className="container mx-auto px-6 mt-12">
-          <div
+        <motion.section
+          className="container mx-auto px-6 mt-12"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportConfig}
+          variants={sectionContainerVariants}
+        >
+          <motion.div
             className={`rounded-3xl border p-5 ${
               theme === 'dark'
                 ? 'bg-dark-card border-electric-blue/30'
                 : 'bg-white border-gray-200 shadow-sm'
             }`}
+            variants={staggeredVariants}
           >
-            <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
+            <motion.div className="flex flex-wrap items-center justify-between gap-4 mb-5" variants={itemVariants}>
               <div>
-                <p
-                  className={`text-xs font-orbitron uppercase tracking-[0.4em] ${
-                    theme === 'dark' ? 'text-electric-blue' : 'text-accent-red'
-                  }`}
-                >
+                <p className={kickerTextClass}>
                   Various Technology We Work With
                 </p>
-                <h4 className="mt-2 text-2xl font-orbitron font-semibold">
+                <h4 className={`mt-2 text-2xl font-orbitron font-semibold ${headingColor}`}>
                   Tech stacks, frameworks, and platforms
                 </h4>
               </div>
@@ -1035,49 +1207,63 @@ const IndustryDetail = () => {
               }`}>
                 Explore capabilities <ChevronRight size={16} />
               </span>
-            </div>
-            <div className="grid md:grid-cols-3 gap-4">
-              {industry.techStacks.map((category) => (
-                <div key={category.name}>
-                  <h5 className="font-semibold text-lg mb-3">{category.name}</h5>
-                  <div className="flex flex-wrap gap-2">
-                    {category.items.map((item) => (
-                      <span
-                        key={item}
-                        className={`px-3 py-1 rounded-full text-sm border ${
-                          theme === 'dark'
-                            ? 'border-electric-blue/30 text-gray-200'
-                            : 'border-gray-200 text-gray-700'
-                        }`}
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+            </motion.div>
+            <motion.div className="grid md:grid-cols-3 gap-4" variants={staggeredVariants}>
+      {industry.techStacks.map((category) => {
+                return (
+                  <motion.div key={category.name} variants={itemVariants}>
+                    <h5 className={`font-semibold text-lg mb-3 ${headingColor}`}>{category.name}</h5>
+                    <div className="flex flex-wrap gap-2">
+                      {category.items.map((item) => {
+                        const ItemIcon = techItemIcons[item] || Layers3;
+                        return (
+                          <motion.span
+                            key={item}
+                            whileHover={{ scale: 1.07 }}
+                            className={`px-3 py-1 rounded-full text-sm border inline-flex items-center gap-2 ${
+                              theme === 'dark'
+                                ? 'border-electric-blue/30 text-gray-200'
+                                : 'border-gray-200 text-gray-700'
+                            }`}
+                          >
+                            <ItemIcon
+                              size={14}
+                              className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}
+                            />
+                            <span>{item}</span>
+                          </motion.span>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          </motion.div>
+        </motion.section>
 
         {/* FAQ */}
-        <section className="container mx-auto px-6 mt-14">
-          <div className="mb-6">
-            <p
-              className={`text-xs font-orbitron uppercase tracking-[0.4em] ${
-                theme === 'dark' ? 'text-electric-blue' : 'text-accent-red'
-              }`}
-            >
+        <motion.section
+          className="container mx-auto px-6 mt-14"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportConfig}
+          variants={sectionContainerVariants}
+        >
+          <motion.div className="mb-6" variants={staggeredVariants}>
+            <motion.p variants={itemVariants} className={kickerTextClass}>
               Frequently Asked Questions
-            </p>
-            <h4 className="text-2xl font-orbitron font-semibold">
+            </motion.p>
+            <motion.h4 variants={itemVariants} className={`text-2xl font-orbitron font-semibold ${headingColor}`}>
               Answers to common {industry.name} questions
-            </h4>
-          </div>
-          <div className="space-y-3">
+            </motion.h4>
+          </motion.div>
+          <motion.div className="space-y-3" variants={staggeredVariants}>
             {industry.faqs.map((faq) => (
-              <details
+              <motion.details
                 key={faq.question}
+                variants={itemVariants}
+                whileHover={{ scale: 1.01 }}
                 className={`rounded-2xl border px-5 py-3 ${
                   theme === 'dark'
                     ? 'bg-dark-card border-electric-blue/30 text-white'
@@ -1087,11 +1273,13 @@ const IndustryDetail = () => {
                 <summary className="cursor-pointer font-semibold text-lg">
                   {faq.question}
                 </summary>
-                <p className="mt-3 text-sm opacity-80">{faq.answer}</p>
-              </details>
+                <p className="mt-3 text-sm opacity-80 whitespace-nowrap overflow-hidden text-ellipsis">
+                  {faq.answer}
+                </p>
+              </motion.details>
             ))}
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
       </main>
       <Footer />
     </div>

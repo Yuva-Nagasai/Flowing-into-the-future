@@ -1,8 +1,8 @@
-import { Link, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { getTheme } from '../../themes/theme';
+import { getTheme } from '../..//themes/theme';
 import { GraduationCap, Brain, LogOut, Sun, Moon, Sparkles, TrendingUp, Users, Award, Cpu, Zap, Target, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -62,6 +62,12 @@ const PlatformSelection = () => {
     }
   ];
 
+  // helper to navigate from card or CTA
+  const goTo = (link) => {
+    if (!link) return;
+    navigate(link);
+  };
+
   return (
     <div className={`relative h-screen overflow-hidden ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'} transition-colors duration-300`}>
       {/* Background Gradient Mesh */}
@@ -75,11 +81,7 @@ const PlatformSelection = () => {
       <div className={`absolute bottom-0 left-0 h-[700px] w-[700px] rounded-full blur-3xl ${theme === 'dark' ? 'bg-electric-green/10' : 'bg-accent-blue/10'}`} />
 
       {/* Header */}
-      <header className={`relative z-10 border-b backdrop-blur-xl ${
-        theme === 'dark'
-          ? 'border-gray-800 bg-dark-card'
-          : 'border-gray-200 bg-white'
-      }`}>
+      <header className={`relative z-10 border-b backdrop-blur-xl ${theme === 'dark' ? 'border-gray-800 bg-dark-card' : 'border-gray-200 bg-white'}`}>
         <div className="mx-auto max-w-7xl px-3 sm:px-4 py-3 sm:py-4 lg:px-8">
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Back Button - Total Left */}
@@ -119,11 +121,8 @@ const PlatformSelection = () => {
               >
                 <ArrowLeft className="h-5 w-5" />
               </motion.div>
-              {/* Animated background effect on hover */}
               <motion.div
-                className={`absolute inset-0 rounded-xl ${
-                  theme === 'dark' ? 'bg-electric-green/20' : 'bg-accent-red/20'
-                }`}
+                className={`absolute inset-0 rounded-xl ${theme === 'dark' ? 'bg-electric-green/20' : 'bg-accent-red/20'}`}
                 initial={{ scale: 0, opacity: 0 }}
                 whileHover={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3 }}
@@ -139,14 +138,10 @@ const PlatformSelection = () => {
                 <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className={`text-[10px] sm:text-xs font-bold uppercase tracking-[0.25em] truncate ${
-                  theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
-                }`}>
+                <p className={`text-[10px] sm:text-xs font-bold uppercase tracking-[0.25em] truncate ${theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}`}>
                   NanoFlows Platform
                 </p>
-                <h1 className={`text-sm sm:text-xl font-bold truncate ${
-                  theme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                <h1 className={`text-sm sm:text-xl font-bold truncate ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
                   Welcome, {loading ? '...' : (user?.name || 'User')}
                 </h1>
               </div>
@@ -200,14 +195,10 @@ const PlatformSelection = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-8 sm:mb-12"
         >
-          <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${
-            theme === 'dark' ? 'text-white' : 'text-gray-900'
-          } mb-3 sm:mb-4 px-2`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
+          <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-3 sm:mb-4 px-2`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
             Choose Your Platform
           </h2>
-          <p className={`text-sm sm:text-base lg:text-lg ${
-            theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
-          } max-w-2xl mx-auto px-4`}>
+          <p className={`text-sm sm:text-base lg:text-lg ${theme === 'dark' ? 'text-gray-300' : 'text-gray-800'} max-w-2xl mx-auto px-4`}>
             Select the platform you want to access. You can switch between them anytime.
           </p>
         </motion.div>
@@ -220,8 +211,18 @@ const PlatformSelection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
+              {/* Make whole card clickable and keyboard accessible */}
               <div
-                className={`group relative block h-full overflow-hidden rounded-xl border-2 p-4 sm:p-6 transition-all duration-300 hover:scale-[1.02] ${
+                role="button"
+                tabIndex={0}
+                onClick={() => goTo(platform.link)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    goTo(platform.link);
+                  }
+                }}
+                className={`group relative block h-full overflow-hidden rounded-xl border-2 p-4 sm:p-6 transition-all duration-300 hover:scale-[1.02] cursor-pointer ${
                   theme === 'dark'
                     ? `bg-dark-lighter border-gray-700 hover:border-electric-blue hover:shadow-[0_0_30px_rgba(10,186,181,0.3)]`
                     : `bg-white border-gray-200 hover:border-accent-red hover:shadow-xl`
@@ -238,16 +239,12 @@ const PlatformSelection = () => {
                   </div>
 
                   {/* Title */}
-                  <h3 className={`mb-3 text-2xl font-bold ${
-                    theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                  <h3 className={`mb-3 text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
                     {platform.title}
                   </h3>
 
                   {/* Description */}
-                  <p className={`mb-6 ${
-                    theme === 'dark' ? 'text-gray-400' : 'text-gray-900'
-                  }`}>
+                  <p className={`mb-6 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-900'}`}>
                     {platform.description}
                   </p>
 
@@ -255,31 +252,31 @@ const PlatformSelection = () => {
                   <div className="space-y-2 mb-4">
                     {platform.features.map((feature, idx) => (
                       <div key={idx} className="flex items-center gap-2">
-                        <div className={`w-1.5 h-1.5 rounded-full ${
-                          theme === 'dark' ? 'bg-electric-blue' : 'bg-accent-blue'
-                        }`} />
-                        <span className={`text-xs ${
-                          theme === 'dark' ? 'text-gray-500' : 'text-gray-800'
-                        }`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${theme === 'dark' ? 'bg-electric-blue' : 'bg-accent-blue'}`} />
+                        <span className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-800'}`}>
                           {feature.text}
                         </span>
                       </div>
                     ))}
                   </div>
 
-                  {/* CTA Button */}
-                  <Link
-                    to={platform.link}
-                    onClick={(e) => e.stopPropagation()}
-                    className={`block w-full py-2.5 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all group/button ${
+                  {/* CTA Button (uses navigate, not nested Link) */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation(); // stop outer handler briefly while we navigate — prevents double calls
+                      goTo(platform.link);
+                    }}
+                    className={`w-full py-2.5 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all group/button ${
                       theme === 'dark'
                         ? 'bg-electric-green text-black hover:bg-electric-blue'
                         : 'bg-accent-red text-white hover:bg-accent-blue'
                     }`}
+                    aria-label={`Access ${platform.title}`}
                   >
                     <span>Access Platform</span>
                     <span className="transition-transform group-hover/button:translate-x-1">→</span>
-                  </Link>
+                  </button>
 
                   {/* Role Badge */}
                   {platform.id === 'academy' && user?.role === 'admin' && (

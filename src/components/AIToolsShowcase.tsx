@@ -5,7 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { getTheme } from '../themes/theme';
 // @ts-expect-error - JSX module
-import { aiToolsAPI } from '../utils/api';
+import { aiToolsAPI } from '../utils/api.js';
 import {
   ArrowLeft,
   Search,
@@ -69,8 +69,10 @@ const AIToolsShowcase = () => {
     }
   };
 
+  // Use the icons you already imported. Fallback to Brain.
   const getCategoryIcon = (category: string) => {
-    const iconMap: { [key: string]: React.ComponentType<{ className?: string; size?: number }> } = {
+    const iconMap: Record<string, any> = {
+      all: Sparkles,
       text: FileText,
       image: Image,
       code: Code,
@@ -93,13 +95,14 @@ const AIToolsShowcase = () => {
     { id: 'translation', label: 'Translation', icon: Languages }
   ];
 
-
   const filteredTools = useMemo(() => {
     return tools.filter(tool => {
       const matchesCategory = selectedCategory === 'all' || tool.category === selectedCategory;
-      const matchesSearch = tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           tool.features.some(f => f.toLowerCase().includes(searchQuery.toLowerCase()));
+      const q = searchQuery.toLowerCase();
+      const matchesSearch =
+        tool.name.toLowerCase().includes(q) ||
+        tool.description.toLowerCase().includes(q) ||
+        tool.features.some(f => f.toLowerCase().includes(q));
       return matchesCategory && matchesSearch;
     });
   }, [selectedCategory, searchQuery, tools]);
@@ -114,14 +117,14 @@ const AIToolsShowcase = () => {
     <div className={`relative min-h-screen overflow-hidden ${currentTheme.classes.containerBg}`}>
       {/* Background Gradient Mesh */}
       <div className={`absolute inset-0 ${currentTheme.classes.mesh}`} />
-      
+
       {/* Gradient Blurs */}
       <div className={`absolute right-0 top-0 h-[600px] w-[600px] rounded-full blur-3xl ${currentTheme.classes.blurPrimary}`} />
       <div className={`absolute bottom-0 left-0 h-[500px] w-[500px] rounded-full blur-3xl ${currentTheme.classes.blurSecondary}`} />
 
       <div className={`relative z-10 border-b backdrop-blur-md ${
-        theme === 'dark' 
-          ? 'border-gray-800/50 bg-dark-card/90 shadow-lg shadow-black/20' 
+        theme === 'dark'
+          ? 'border-gray-800/50 bg-dark-card/90 shadow-lg shadow-black/20'
           : 'border-gray-200/50 bg-white/90 shadow-md shadow-gray-200/20'
       }`}>
         <div className="mx-auto max-w-7xl px-3 sm:px-4 py-2.5 sm:py-3 lg:px-8">
@@ -132,12 +135,12 @@ const AIToolsShowcase = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
-              whileHover={{ 
-                scale: 1.1, 
+              whileHover={{
+                scale: 1.1,
                 x: -8,
                 transition: { duration: 0.2, ease: "easeOut" }
               }}
-              whileTap={{ 
+              whileTap={{
                 scale: 0.95,
                 x: -12,
                 transition: { duration: 0.1 }
@@ -163,44 +166,41 @@ const AIToolsShowcase = () => {
               >
                 <ArrowLeft className="h-5 w-5" />
               </motion.div>
-              {/* Animated background effect on hover */}
               <motion.div
-                className={`absolute inset-0 rounded-xl ${
-                  theme === 'dark' ? 'bg-electric-green/20' : 'bg-accent-red/20'
-                }`}
+                className={`absolute inset-0 rounded-xl ${theme === 'dark' ? 'bg-electric-green/20' : 'bg-accent-red/20'}`}
                 initial={{ scale: 0, opacity: 0 }}
                 whileHover={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3 }}
               />
             </motion.button>
-            
+
             <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
-            {/* Logo and Branding */}
-            <Link to="/ai-tools" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
-              <motion.div 
-                whileHover={{ scale: 1.05, rotate: 5 }}
-                whileTap={{ scale: 0.95 }}
-                className={`flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-lg bg-gradient-to-br shadow-md transition-all duration-300 ${
-                  theme === 'dark'
-                    ? 'from-electric-blue to-electric-green shadow-electric-blue/30 group-hover:shadow-electric-blue/50'
-                    : 'from-accent-red to-accent-blue shadow-accent-red/30 group-hover:shadow-accent-red/50'
-                }`}
-              >
-                <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-              </motion.div>
-              <div className="hidden sm:block min-w-0">
-                <p className={`text-[10px] font-bold uppercase tracking-wider ${
-                  theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
-                }`}>
-                  NanoFlows
-                </p>
-                <h1 className={`text-sm sm:text-base font-bold leading-tight truncate ${
-                  theme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                  AI Tools
-                </h1>
-              </div>
-            </Link>
+              {/* Logo and Branding */}
+              <Link to="/ai-tools" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
+                <motion.div
+                  whileHover={{ scale: 1.05, rotate: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-lg bg-gradient-to-br shadow-md transition-all duration-300 ${
+                    theme === 'dark'
+                      ? 'from-electric-blue to-electric-green shadow-electric-blue/30 group-hover:shadow-electric-blue/50'
+                      : 'from-accent-red to-accent-blue shadow-accent-red/30 group-hover:shadow-accent-red/50'
+                  }`}
+                >
+                  <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                </motion.div>
+                <div className="hidden sm:block min-w-0">
+                  <p className={`text-[10px] font-bold uppercase tracking-wider ${
+                    theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+                  }`}>
+                    NanoFlows
+                  </p>
+                  <h1 className={`text-sm sm:text-base font-bold leading-tight truncate ${
+                    theme === 'dark' ? 'text-white' : 'text-gray-900'
+                  }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                    AI Tools
+                  </h1>
+                </div>
+              </Link>
             </div>
 
             {/* Right Side Actions */}
@@ -211,15 +211,15 @@ const AIToolsShowcase = () => {
               }`}>
                 <div className="text-right">
                   <p className={`text-xs font-semibold ${
-                    theme === 'dark' 
-                      ? 'bg-gradient-to-r from-electric-blue to-electric-green bg-clip-text text-transparent' 
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-electric-blue to-electric-green bg-clip-text text-transparent'
                       : 'bg-gradient-to-r from-accent-red to-accent-blue bg-clip-text text-transparent'
                   }`}>
                     Welcome back
                   </p>
                   <p className={`text-sm font-bold ${
-                    theme === 'dark' 
-                      ? 'bg-gradient-to-r from-electric-green to-electric-blue bg-clip-text text-transparent' 
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-electric-green to-electric-blue bg-clip-text text-transparent'
                       : 'bg-gradient-to-r from-accent-blue to-accent-red bg-clip-text text-transparent'
                   }`}>
                     {authLoading ? '...' : (user?.name?.split(' ')[0] || 'User')}
@@ -242,7 +242,7 @@ const AIToolsShowcase = () => {
               >
                 {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
               </motion.button>
-              
+
               {/* Logout Button */}
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -261,7 +261,6 @@ const AIToolsShowcase = () => {
             </div>
           </div>
         </div>
-
       </div>
 
       <div className="relative z-10">
@@ -324,7 +323,7 @@ const AIToolsShowcase = () => {
                       : 'bg-white border-gray-300 text-gray-900 focus:border-accent-blue'
                   }`}
                 />
-                
+
                 {showDropdown && searchQuery.length > 0 && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -398,6 +397,7 @@ const AIToolsShowcase = () => {
               </motion.button>
             </div>
 
+            {/* Categories row - centered */}
             <div className="flex flex-wrap items-center justify-center gap-3">
               {categories.map((category) => {
                 const Icon = category.icon;
@@ -431,9 +431,7 @@ const AIToolsShowcase = () => {
                 ? 'bg-dark-lighter border-gray-700'
                 : 'bg-white border-gray-200'
             }`}>
-              <div className={`text-lg ${
-                theme === 'dark' ? 'text-gray-200' : 'text-gray-800'
-              }`}>Loading AI tools...</div>
+              <div className={`text-lg ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>Loading AI tools...</div>
             </div>
           ) : (
             <AnimatePresence mode="wait">
@@ -492,9 +490,7 @@ const AIToolsShowcase = () => {
                       <div className="space-y-2 mb-4">
                         {tool.features.map((feature, idx) => (
                           <div key={idx} className="flex items-center gap-2">
-                            <div className={`w-1.5 h-1.5 rounded-full ${
-                              theme === 'dark' ? 'bg-electric-blue' : 'bg-accent-blue'
-                            }`} />
+                            <div className={`w-1.5 h-1.5 rounded-full ${theme === 'dark' ? 'bg-electric-blue' : 'bg-accent-blue'}`} />
                             <span className={`text-xs ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>
                               {feature}
                             </span>
@@ -554,9 +550,7 @@ const AIToolsShowcase = () => {
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
               Ready to Transform Your Workflow?
             </h2>
-            <p className={`text-lg md:text-xl mb-8 max-w-2xl mx-auto ${
-              theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
-            }`}>
+            <p className={`text-lg md:text-xl mb-8 max-w-2xl mx-auto ${theme === 'dark' ? 'text-gray-300' : 'text-gray-800'}`}>
               Join thousands of users leveraging our AI tools to boost productivity and unlock creative potential.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

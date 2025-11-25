@@ -199,6 +199,7 @@ table {
 /* Hide scrollbar on auth pages */
 body.auth-page {
   overflow: hidden;
+  padding-top: 0;
 }
 
 /* Auto-scrolling animation for image galleries */

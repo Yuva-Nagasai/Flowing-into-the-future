@@ -1,5 +1,6 @@
 -- Create videos table for backward compatibility
 -- Note: New structure uses lessons table, but videos table is kept for legacy support
+
 CREATE TABLE IF NOT EXISTS videos (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   course_id UUID REFERENCES courses(id) ON DELETE CASCADE,

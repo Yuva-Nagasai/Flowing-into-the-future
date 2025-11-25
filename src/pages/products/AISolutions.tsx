@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Brain, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Brain, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 const AISolutions = () => {
   const { theme } = useTheme();
@@ -17,68 +19,51 @@ const AISolutions = () => {
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
-      {/* Back Button */}
-      <div className={`sticky top-0 z-50 border-b backdrop-blur-md ${
-        theme === 'dark' ? 'bg-dark-card/90 border-gray-800' : 'bg-white/90 border-gray-200'
-      }`}>
-        <div className="container mx-auto px-4 sm:px-6 py-4">
-          <Link
-            to="/"
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${
-              theme === 'dark'
-                ? 'bg-electric-green text-black hover:bg-electric-blue hover:glow-green'
-                : 'bg-accent-red text-white hover:bg-accent-blue hover:glow-red'
-            }`}
-          >
-            <ArrowLeft size={20} />
-            <span>Back to Website</span>
-          </Link>
-        </div>
-      </div>
+      <Header />
+      <main className="pt-24 lg:pt-32">
+        {/* Hero Section */}
+        <section className={`relative py-12 sm:py-16 md:py-20 overflow-hidden ${
+          theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'
+        }`}>
+          <div className={`absolute inset-0 ${theme === 'dark' ? 'gradient-mesh' : 'gradient-mesh-light'}`} />
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center max-w-4xl mx-auto"
+            >
+              <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-6 ${
+                theme === 'dark' ? 'border-electric-blue/30 bg-electric-blue/10' : 'border-accent-red/30 bg-accent-red/10'
+              }`}>
+                <Brain className={`w-5 h-5 ${theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}`} />
+                <span className={`font-semibold ${theme === 'dark' ? 'text-electric-blue' : 'text-accent-red'}`}>
+                  AI Solutions
+                </span>
+              </div>
+              <h1 className={`text-4xl sm:text-5xl md:text-6xl font-bold mb-6 ${
+                theme === 'dark' ? 'text-white' : 'text-gray-900'
+              }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                Artificial Intelligence{' '}
+                <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>
+                  Solutions
+                </span>
+              </h1>
+              <p className={`text-lg sm:text-xl md:text-2xl mb-8 ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+              }`}>
+                Transform your business with cutting-edge AI solutions powered by machine learning, 
+                deep learning, and advanced neural networks. Nano Flows delivers intelligent automation 
+                that drives measurable results.
+              </p>
+            </motion.div>
+          </div>
+        </section>
 
-      {/* Hero Section */}
-      <section className={`relative py-12 sm:py-16 md:py-20 overflow-hidden ${
-        theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'
-      }`}>
-        <div className={`absolute inset-0 ${theme === 'dark' ? 'gradient-mesh' : 'gradient-mesh-light'}`} />
-        <div className="container mx-auto px-4 sm:px-6 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center max-w-4xl mx-auto"
-          >
-            <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-6 ${
-              theme === 'dark' ? 'border-electric-blue/30 bg-electric-blue/10' : 'border-accent-red/30 bg-accent-red/10'
-            }`}>
-              <Brain className={`w-5 h-5 ${theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}`} />
-              <span className={`font-semibold ${theme === 'dark' ? 'text-electric-blue' : 'text-accent-red'}`}>
-                AI Solutions
-              </span>
-            </div>
-            <h1 className={`text-4xl sm:text-5xl md:text-6xl font-bold mb-6 ${
-              theme === 'dark' ? 'text-white' : 'text-gray-900'
-            }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
-              Artificial Intelligence{' '}
-              <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>
-                Solutions
-              </span>
-            </h1>
-            <p className={`text-lg sm:text-xl md:text-2xl mb-8 ${
-              theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-              Transform your business with cutting-edge AI solutions powered by machine learning, 
-              deep learning, and advanced neural networks. Nano Flows delivers intelligent automation 
-              that drives measurable results.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <section className="py-12 sm:py-16 md:py-20">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="max-w-4xl mx-auto">
+        {/* Main Content */}
+        <section className="py-12 sm:py-16 md:py-20">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="max-w-4xl mx-auto">
             {/* How We Relate */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -233,7 +218,9 @@ const AISolutions = () => {
             </motion.div>
           </div>
         </div>
-      </section>
+        </section>
+      </main>
+      <Footer />
     </div>
   );
 };

@@ -207,4 +207,11 @@ export const notificationsAPI = {
   getAllAdmin: () => api.get('/notifications/admin/all')
 };
 
+export const heroSlidesAPI = {
+  getAll: () => api.get('/hero-slides'),
+  create: (data) => api.post('/hero-slides', data),
+  update: (id, data) => api.put(`/hero-slides/${id}`, data),
+  delete: (id) => api.delete(`/hero-slides/${id}`)
+};
+
 export default api;

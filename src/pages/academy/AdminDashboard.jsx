@@ -16,6 +16,7 @@ import {
   FiFilter,
   FiSearch,
   FiZap,
+  FiSliders,
   FiBriefcase,
   FiBarChart2,
   FiHome,
@@ -32,6 +33,7 @@ import {
   FiAward,
   FiLayers,
   FiHelpCircle,
+  FiUserPlus,
   FiAward as FiCertificate
 } from 'react-icons/fi';
 import { Sun, Moon, Bell, Settings, Shield } from 'lucide-react';
@@ -43,6 +45,7 @@ const AdminDashboard = () => {
   const [courses, setCourses] = useState([]);
   const [purchases, setPurchases] = useState([]);
   const [studentProgress, setStudentProgress] = useState([]);
+  const [signups, setSignups] = useState([]);
   const [elearningStats, setElearningStats] = useState({
     totalModules: 0,
     totalLessons: 0,
@@ -102,6 +105,7 @@ const AdminDashboard = () => {
 
         const allProgress = progressRes.data.courses || [];
         setStudentProgress(allProgress);
+        setSignups(progressRes.data.signups || []);
 
         // Calculate eLearning stats
         let totalModules = 0;
@@ -218,8 +222,30 @@ const AdminDashboard = () => {
     return matchesQuery && matchesStatus;
   });
 
-  // Get recent activity (last 10 purchases)
-  const recentActivity = purchases.slice(0, 10);
+  // Build recent activity feed combining signups and enrollments
+  const activityFeed = (() => {
+    const signupItems = (signups || []).map((signup) => ({
+      type: 'signup',
+      id: `signup-${signup.user_id}-${signup.created_at}`,
+      name: signup.user_name || 'New Student',
+      detail: signup.user_email || 'N/A',
+      date: signup.created_at
+    }));
+
+    const enrollmentItems = (purchases || []).map((purchase) => ({
+      type: 'enrollment',
+      id: `enrollment-${purchase.id}`,
+      name: purchase.user_name || 'Student',
+      detail: purchase.course_title || 'Course enrollment',
+      amount: purchase.amount,
+      date: purchase.purchased_at
+    }));
+
+    return [...signupItems, ...enrollmentItems]
+      .filter((item) => !!item.date)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 10);
+  })();
 
   // Calculate growth percentage (mock for now, can be enhanced)
   const revenueGrowth = stats.monthlyRevenue > 0 ? 18 : 0;
@@ -435,6 +461,19 @@ const AdminDashboard = () => {
             <FiBook size={20} />
             About Sections
           </Link>
+
+          {/* Hero Slides */}
+          <Link
+            to="/academy/admin/hero-slides"
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all ${
+              theme === 'dark'
+                ? 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            }`}
+          >
+            <FiSliders size={20} />
+            Hero Slides
+          </Link>
           
           {/* Manage Jobs */}
           <Link
@@ -455,7 +494,7 @@ const AdminDashboard = () => {
         <div className={`px-4 py-4 border-t ${
           theme === 'dark' ? 'border-gray-800 bg-dark-lighter' : 'border-gray-200 bg-gray-50'
         }`}>
-          <div className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-3 ${
+          <div className={`flex items-center gap-3 px-4 py-3 rounded-xl ${
             theme === 'dark' ? 'bg-dark-lighter' : 'bg-white'
           }`}>
             <div className={`flex h-10 w-10 items-center justify-center rounded-full ${
@@ -476,21 +515,6 @@ const AdminDashboard = () => {
               </p>
             </div>
           </div>
-          
-          {/* Logout Button */}
-          <motion.button
-            onClick={handleLogout}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className={`w-full flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-              theme === 'dark'
-                ? 'bg-gray-800/50 text-gray-300 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-700 hover:text-white'
-                : 'bg-white text-gray-800 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-900'
-            }`}
-          >
-            <FiLogOut size={16} className="opacity-70" />
-            <span>Logout</span>
-          </motion.button>
         </div>
       </aside>
 
@@ -670,6 +694,20 @@ const AdminDashboard = () => {
                   About Sections
                 </Link>
                 
+                {/* Hero Slides */}
+                <Link
+                  to="/academy/admin/hero-slides"
+                  onClick={() => setSidebarOpen(false)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all ${
+                    theme === 'dark'
+                      ? 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
+                >
+                  <FiSliders size={20} />
+                  Hero Slides
+                </Link>
+                
                 {/* Manage Jobs */}
                 <Link
                   to="/academy/admin/jobs"
@@ -689,7 +727,7 @@ const AdminDashboard = () => {
               <div className={`px-4 py-4 border-t ${
                 theme === 'dark' ? 'border-gray-800 bg-dark-lighter' : 'border-gray-200 bg-gray-50'
               }`}>
-                <div className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-3 ${
+                <div className={`flex items-center gap-3 px-4 py-3 rounded-xl ${
                   theme === 'dark' ? 'bg-dark-lighter' : 'bg-white'
                 }`}>
                   <div className={`flex h-10 w-10 items-center justify-center rounded-full ${
@@ -710,24 +748,6 @@ const AdminDashboard = () => {
                     </p>
                   </div>
                 </div>
-                
-                {/* Logout Button */}
-                <motion.button
-                  onClick={() => {
-                    handleLogout();
-                    setSidebarOpen(false);
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`w-full flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    theme === 'dark'
-                      ? 'bg-gray-800/50 text-gray-300 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-700 hover:text-white'
-                      : 'bg-white text-gray-800 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-900'
-                  }`}
-                >
-                  <FiLogOut size={16} className="opacity-70" />
-                  <span>Logout</span>
-                </motion.button>
               </div>
             </motion.aside>
           </>
@@ -774,6 +794,19 @@ const AdminDashboard = () => {
               >
                 {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
               </button>
+              <motion.button
+                onClick={handleLogout}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${
+                  theme === 'dark'
+                    ? 'bg-red-500/20 border-2 border-red-500/50 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 hover:shadow-lg hover:shadow-red-500/30'
+                    : 'bg-red-50 border-2 border-red-200 text-red-600 hover:bg-red-500 hover:text-white hover:border-red-500 hover:shadow-lg hover:shadow-red-500/30'
+                }`}
+              >
+                <FiLogOut size={18} />
+                <span className="hidden sm:inline">Logout</span>
+              </motion.button>
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -944,6 +977,22 @@ const AdminDashboard = () => {
                         whileTap={{ scale: 0.98 }}
                       >
                         <Link
+                          to="/academy/admin/hero-slides"
+                          className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 font-semibold transition-all ${
+                            theme === 'dark'
+                              ? 'border-gray-700 text-gray-300 hover:border-electric-blue hover:bg-gray-800 hover:text-white'
+                              : 'border-gray-200 text-gray-800 hover:border-accent-red hover:bg-gray-100 hover:text-gray-900'
+                          }`}
+                        >
+                          <FiSliders size={18} />
+                          Manage Hero Slides
+                        </Link>
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <Link
                           to="/academy/admin/jobs"
                           className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 font-semibold transition-all ${
                             theme === 'dark'
@@ -973,47 +1022,66 @@ const AdminDashboard = () => {
                       <FiActivity className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} size={20} />
                     </div>
                     <div className="space-y-3 max-h-96 overflow-y-auto">
-                      {recentActivity.length > 0 ? (
-                        recentActivity.map((purchase) => (
-                          <div
-                            key={purchase.id}
-                            className={`flex items-center gap-4 p-4 rounded-xl transition-all ${
-                              theme === 'dark'
-                                ? 'bg-dark-lighter hover:bg-gray-800'
-                                : 'bg-gray-50 hover:bg-gray-100'
-                            }`}
-                          >
-                            <div className={`flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-full ${
-                              theme === 'dark' ? 'bg-electric-green/20 text-electric-green' : 'bg-accent-red/20 text-accent-red'
-                            }`}>
-                              <FiCheckCircle size={18} />
+                      {activityFeed.length > 0 ? (
+                        activityFeed.map((event) => {
+                          const isSignup = event.type === 'signup';
+                          return (
+                            <div
+                              key={event.id}
+                              className={`flex items-center gap-4 p-4 rounded-xl transition-all ${
+                                theme === 'dark'
+                                  ? 'bg-dark-lighter hover:bg-gray-800'
+                                  : 'bg-gray-50 hover:bg-gray-100'
+                              }`}
+                            >
+                              <div className={`flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-full ${
+                                theme === 'dark'
+                                  ? isSignup
+                                    ? 'bg-electric-blue/20 text-electric-blue'
+                                    : 'bg-electric-green/20 text-electric-green'
+                                  : isSignup
+                                    ? 'bg-accent-blue/20 text-accent-blue'
+                                    : 'bg-accent-red/20 text-accent-red'
+                              }`}>
+                                {isSignup ? <FiUserPlus size={18} /> : <FiCheckCircle size={18} />}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-sm font-semibold ${
+                                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                                }`}>
+                                  {isSignup ? `${event.name} joined NanoFlows` : `${event.name} enrolled in`}
+                                </p>
+                                <p className={`text-sm truncate ${
+                                  theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                                }`}>
+                                  {event.detail}
+                                </p>
+                              </div>
+                              <div className="flex-shrink-0 text-right">
+                                {isSignup ? (
+                                  <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-bold ${
+                                    theme === 'dark'
+                                      ? 'bg-electric-blue/10 text-electric-blue border border-electric-blue/40'
+                                      : 'bg-blue-100 text-blue-700 border border-blue-200'
+                                  }`}>
+                                    New signup
+                                  </span>
+                                ) : (
+                                  <p className={`text-sm font-bold ${
+                                    theme === 'dark' ? 'text-white' : 'text-gray-900'
+                                  }`}>
+                                    ₹{event.amount}
+                                  </p>
+                                )}
+                                <p className={`text-xs mt-1 ${
+                                  theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
+                                }`}>
+                                  {new Date(event.date).toLocaleString()}
+                                </p>
+                              </div>
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <p className={`text-sm font-semibold ${
-                                theme === 'dark' ? 'text-white' : 'text-gray-900'
-                              }`}>
-                                {purchase.user_name} enrolled in
-                              </p>
-                              <p className={`text-sm truncate ${
-                                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                              }`}>
-                                {purchase.course_title}
-                              </p>
-                            </div>
-                            <div className="flex-shrink-0 text-right">
-                              <p className={`text-sm font-bold ${
-                                theme === 'dark' ? 'text-white' : 'text-gray-900'
-                              }`}>
-                                ₹{purchase.amount}
-                              </p>
-                              <p className={`text-xs ${
-                                theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-                              }`}>
-                                {new Date(purchase.purchased_at).toLocaleDateString()}
-                              </p>
-                            </div>
-                          </div>
-                        ))
+                          );
+                        })
                       ) : (
                         <div className={`text-center py-8 ${
                           theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
@@ -1349,7 +1417,61 @@ const AdminDashboard = () => {
                                 progress.course_title?.toLowerCase().includes(searchLower)
                               );
                             })
-                            .map((progress) => (
+                            .map((progress) => {
+                              const progressValue = Number(progress.progress_percentage) || 0;
+                              const isEnrolled = Boolean(progress.course_id);
+                              const joinedDate = progress.signup_date
+                                ? new Date(progress.signup_date).toLocaleDateString()
+                                : null;
+                              const enrolledDate = progress.enrollment_date
+                                ? new Date(progress.enrollment_date).toLocaleDateString()
+                                : null;
+                              const statusKey = progress.status || (!isEnrolled
+                                ? 'not_enrolled'
+                                : progressValue >= 100
+                                  ? 'completed'
+                                  : progressValue > 0
+                                    ? 'in_progress'
+                                    : 'enrolled');
+
+                              const statusConfig = {
+                                not_enrolled: {
+                                  label: 'Not Enrolled',
+                                  icon: <FiUserPlus size={14} />,
+                                  className: theme === 'dark'
+                                    ? 'bg-gray-800 text-gray-300 border border-gray-700'
+                                    : 'bg-gray-100 text-gray-600 border border-gray-200'
+                                },
+                                enrolled: {
+                                  label: 'Enrolled',
+                                  icon: <FiAlertCircle size={14} />,
+                                  className: theme === 'dark'
+                                    ? 'bg-gray-700 text-gray-200'
+                                    : 'bg-gray-200 text-gray-700'
+                                },
+                                in_progress: {
+                                  label: 'In Progress',
+                                  icon: <FiClock size={14} />,
+                                  className: theme === 'dark'
+                                    ? 'bg-electric-blue/20 text-electric-blue'
+                                    : 'bg-blue-100 text-blue-700'
+                                },
+                                completed: {
+                                  label: 'Completed',
+                                  icon: <FiCheckCircle size={14} />,
+                                  className: theme === 'dark'
+                                    ? 'bg-electric-green/20 text-electric-green'
+                                    : 'bg-green-100 text-green-700'
+                                }
+                              }[statusKey] || {
+                                label: 'Enrolled',
+                                icon: <FiAlertCircle size={14} />,
+                                className: theme === 'dark'
+                                  ? 'bg-gray-700 text-gray-200'
+                                  : 'bg-gray-200 text-gray-700'
+                              };
+
+                              return (
                               <tr
                                 key={progress.id}
                                 className={`border-b transition-all hover:bg-opacity-50 ${
@@ -1369,20 +1491,34 @@ const AdminDashboard = () => {
                                   }`}>
                                     {progress.user_email || 'N/A'}
                                   </div>
+                                  {joinedDate && (
+                                    <div className={`text-xs mt-0.5 ${
+                                      theme === 'dark' ? 'text-gray-600' : 'text-gray-500'
+                                    }`}>
+                                      Joined {joinedDate}
+                                    </div>
+                                  )}
                                 </td>
                                 <td className="py-4 px-4">
                                   <div className={`font-medium ${
                                     theme === 'dark' ? 'text-white' : 'text-gray-900'
                                   }`}>
-                                    {progress.course_title || 'Unknown Course'}
+                                    {progress.course_title || 'Not enrolled yet'}
                                   </div>
+                                  {enrolledDate && (
+                                    <div className={`text-xs mt-1 ${
+                                      theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
+                                    }`}>
+                                      Enrolled {enrolledDate}
+                                    </div>
+                                  )}
                                 </td>
                                 <td className="py-4 px-4 text-center">
                                   <div className="flex flex-col items-center gap-2">
                                     <span className={`text-sm font-bold ${
                                       theme === 'dark' ? 'text-white' : 'text-gray-900'
                                     }`}>
-                                      {progress.progress_percentage || 0}%
+                                      {isEnrolled ? `${progressValue}%` : '—'}
                                     </span>
                                     <div className={`h-2 w-24 overflow-hidden rounded-full ${
                                       theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'
@@ -1392,8 +1528,8 @@ const AdminDashboard = () => {
                                           theme === 'dark'
                                             ? 'from-electric-blue to-electric-green'
                                             : 'from-accent-red to-accent-blue'
-                                        }`}
-                                        style={{ width: `${progress.progress_percentage || 0}%` }}
+                                        } ${!isEnrolled ? 'opacity-30' : ''}`}
+                                        style={{ width: isEnrolled ? `${progressValue}%` : '0%' }}
                                       />
                                     </div>
                                   </div>
@@ -1402,45 +1538,22 @@ const AdminDashboard = () => {
                                   <span className={`text-sm ${
                                     theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                                   }`}>
-                                    {progress.total_time_spent 
-                                      ? `${Math.round(progress.total_time_spent / 60)}m`
-                                      : '0m'}
+                                    {isEnrolled && progress.total_time_spent
+                                      ? `${Math.round(Number(progress.total_time_spent) / 60)}m`
+                                      : '—'}
                                   </span>
                                 </td>
                                 <td className="py-4 px-4 text-center">
-                                  <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${
-                                    (progress.progress_percentage || 0) >= 100
-                                      ? theme === 'dark'
-                                        ? 'bg-electric-green/20 text-electric-green'
-                                        : 'bg-green-100 text-green-700'
-                                      : (progress.progress_percentage || 0) >= 50
-                                      ? theme === 'dark'
-                                        ? 'bg-electric-blue/20 text-electric-blue'
-                                        : 'bg-blue-100 text-blue-700'
-                                      : theme === 'dark'
-                                        ? 'bg-gray-700 text-gray-400'
-                                        : 'bg-gray-200 text-gray-600'
+                                  <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold border ${
+                                    statusConfig.className
                                   }`}>
-                                    {(progress.progress_percentage || 0) >= 100 ? (
-                                      <>
-                                        <FiCheckCircle size={14} />
-                                        Completed
-                                      </>
-                                    ) : (progress.progress_percentage || 0) > 0 ? (
-                                      <>
-                                        <FiClock size={14} />
-                                        In Progress
-                                      </>
-                                    ) : (
-                                      <>
-                                        <FiAlertCircle size={14} />
-                                        Not Started
-                                      </>
-                                    )}
+                                    {statusConfig.icon}
+                                    {statusConfig.label}
                                   </span>
                                 </td>
                               </tr>
-                            ))
+                              );
+                            })
                         ) : (
                           <tr>
                             <td colSpan="5" className="py-12 text-center">

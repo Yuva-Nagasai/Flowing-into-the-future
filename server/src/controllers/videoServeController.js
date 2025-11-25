@@ -18,14 +18,14 @@ const serveVideo = async (req, res) => {
       `SELECT l.*, m.course_id 
        FROM lessons l
        JOIN modules m ON l.module_id = m.id
-       WHERE l.video_url LIKE $1`,
+       WHERE l.video_url LIKE ?`,
       [`%/uploads/${filename}%`]
     );
 
     if (lessonResult.rows.length === 0) {
       // Check if it's a course promotional video
       const courseResult = await pool.query(
-        `SELECT id FROM courses WHERE promotional_video LIKE $1`,
+        `SELECT id FROM courses WHERE promotional_video LIKE ?`,
         [`%/uploads/${filename}%`]
       );
 
@@ -37,7 +37,7 @@ const serveVideo = async (req, res) => {
       
       // Check if user purchased the course
       const purchaseResult = await pool.query(
-        'SELECT id FROM purchases WHERE user_id = $1 AND course_id = $2',
+        'SELECT id FROM purchases WHERE user_id = ? AND course_id = ?',
         [userId, courseId]
       );
 
@@ -49,7 +49,7 @@ const serveVideo = async (req, res) => {
 
       // Check if user purchased the course
       const purchaseResult = await pool.query(
-        'SELECT id FROM purchases WHERE user_id = $1 AND course_id = $2',
+        'SELECT id FROM purchases WHERE user_id = ? AND course_id = ?',
         [userId, courseId]
       );
 
@@ -125,7 +125,7 @@ const serveFile = async (req, res) => {
     const resourceResult = await pool.query(
       `SELECT r.*, r.course_id 
        FROM resources r
-       WHERE r.file_url LIKE $1`,
+       WHERE r.file_url LIKE ?`,
       [`%/uploads/${filename}%`]
     );
 
@@ -137,7 +137,7 @@ const serveFile = async (req, res) => {
 
     // Check if user purchased the course
     const purchaseResult = await pool.query(
-      'SELECT id FROM purchases WHERE user_id = $1 AND course_id = $2',
+      'SELECT id FROM purchases WHERE user_id = ? AND course_id = ?',
       [userId, courseId]
     );
 

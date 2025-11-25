@@ -209,254 +209,221 @@ const buildHero = (
   image,
 });
 
+type AccentPalette = IndustryPresentation['accent'];
+type DarkAccentPalette = NonNullable<IndustryPresentation['darkAccent']>;
+
+const baseLayoutConfig = {
+  heroStyle: 'split' as HeroStyle,
+  servicesStyle: 'grid' as ServicesStyle,
+  highlightStyle: 'grid' as HighlightStyle,
+  solutionsStyle: 'cards' as SolutionsStyle,
+};
+
+const createPresentation = (
+  accent: AccentPalette,
+  darkAccent?: DarkAccentPalette
+): IndustryPresentation => ({
+  ...baseLayoutConfig,
+  accent,
+  ...(darkAccent ? { darkAccent } : {}),
+});
+
 const presentationThemes: Record<string, IndustryPresentation> = {
-  default: {
-    heroStyle: 'split',
-    servicesStyle: 'grid',
-    highlightStyle: 'grid',
-    solutionsStyle: 'cards',
-    accent: {
-      gradient: ['#fff5ec', '#ffe7c9', '#ffffff'],
-      primary: '#f97316',
-      secondary: '#2563eb',
+  default: createPresentation(
+    {
+      gradient: ['#f0f9ff', '#dbeafe', '#ffffff'],
+      primary: '#0ea5e9',
+      secondary: '#f97316',
       surface: '#ffffff',
-      muted: '#fff1e6',
+      muted: '#e8f3ff',
     },
-    darkAccent: {
-      primary: '#fb923c',
-      secondary: '#60a5fa',
+    {
+      primary: '#38bdf8',
+      secondary: '#fb923c',
       surface: '#1e293b',
       muted: '#334155',
-    },
-  },
-  'agritech-application-development': {
-    heroStyle: 'split',
-    servicesStyle: 'grid',
-    highlightStyle: 'grid',
-    solutionsStyle: 'cards',
-    accent: {
-      gradient: ['#fff5ec', '#ffe7c9', '#ffffff'],
+    }
+  ),
+  'agritech-application-development': createPresentation(
+    {
+      gradient: ['#fff7ed', '#ffedd5', '#ffffff'],
       primary: '#f97316',
       secondary: '#10b981',
       surface: '#ffffff',
       muted: '#fff7ed',
     },
-    darkAccent: {
+    {
       primary: '#fb923c',
       secondary: '#34d399',
       surface: '#1e293b',
       muted: '#334155',
-    },
-  },
-  'dating-app-development': {
-    heroStyle: 'centered',
-    servicesStyle: 'timeline',
-    highlightStyle: 'list',
-    solutionsStyle: 'panels',
-    accent: {
-      gradient: ['#fff5fb', '#ffe1f2', '#ffffff'],
+    }
+  ),
+  'dating-app-development': createPresentation(
+    {
+      gradient: ['#fff0f6', '#ffe4f3', '#ffffff'],
       primary: '#ec4899',
       secondary: '#6366f1',
       surface: '#ffffff',
       muted: '#ffe8f4',
     },
-    darkAccent: {
+    {
       primary: '#f472b6',
       secondary: '#818cf8',
       surface: '#1e293b',
       muted: '#334155',
-    },
-  },
-  'ecommerce-app-development': {
-    heroStyle: 'overlap',
-    servicesStyle: 'stacked',
-    highlightStyle: 'grid',
-    solutionsStyle: 'cards',
-    accent: {
-      gradient: ['#f0f9ff', '#dbeafe', '#ffffff'],
-      primary: '#0ea5e9',
+    }
+  ),
+  'ecommerce-app-development': createPresentation(
+    {
+      gradient: ['#eef2ff', '#e0f2fe', '#f8fbff'],
+      primary: '#2563eb',
       secondary: '#9333ea',
       surface: '#f8fafc',
       muted: '#e0f2ff',
     },
-    darkAccent: {
-      primary: '#38bdf8',
-      secondary: '#a855f7',
+    {
+      primary: '#60a5fa',
+      secondary: '#a78bfa',
       surface: '#1e293b',
       muted: '#334155',
+    }
+  ),
+  'grocery-delivery-app-development': createPresentation(
+    {
+      gradient: ['#f0fdf4', '#dcfce7', '#ffffff'],
+      primary: '#22c55e',
+      secondary: '#16a34a',
+      surface: '#f9fefb',
+      muted: '#dcfce7',
     },
-  },
-  'grocery-delivery-app-development': {
-    heroStyle: 'split',
-    servicesStyle: 'timeline',
-    highlightStyle: 'list',
-    solutionsStyle: 'cards',
-    accent: {
-      gradient: ['#fff8ec', '#fde0c3', '#ffffff'],
-      primary: '#f97316',
-      secondary: '#14b8a6',
-      surface: '#fffaf5',
-      muted: '#fff1e6',
-    },
-    darkAccent: {
-      primary: '#fb923c',
-      secondary: '#2dd4bf',
+    {
+      primary: '#4ade80',
+      secondary: '#16a34a',
       surface: '#1e293b',
       muted: '#334155',
-    },
-  },
-  'educationtech-software-development': {
-    heroStyle: 'centered',
-    servicesStyle: 'grid',
-    highlightStyle: 'grid',
-    solutionsStyle: 'panels',
-    accent: {
+    }
+  ),
+  'educationtech-software-development': createPresentation(
+    {
       gradient: ['#f5f3ff', '#ede9fe', '#ffffff'],
       primary: '#7c3aed',
       secondary: '#2563eb',
       surface: '#ffffff',
       muted: '#f4f0ff',
     },
-    darkAccent: {
+    {
       primary: '#a78bfa',
       secondary: '#60a5fa',
       surface: '#1e293b',
       muted: '#334155',
+    }
+  ),
+  'financial-services-software-solutions': createPresentation(
+    {
+      gradient: ['#f0fdfa', '#ccfbf1', '#ffffff'],
+      primary: '#0f766e',
+      secondary: '#0284c7',
+      surface: '#f8fffc',
+      muted: '#d1fae5',
     },
-  },
-  'financial-services-software-solutions': {
-    heroStyle: 'overlap',
-    servicesStyle: 'stacked',
-    highlightStyle: 'list',
-    solutionsStyle: 'cards',
-    accent: {
-      gradient: ['#f0fdfa', '#e0f2fe', '#ffffff'],
-      primary: '#0ea5e9',
-      secondary: '#0f766e',
-      surface: '#f8fafc',
-      muted: '#e6fffa',
-    },
-    darkAccent: {
-      primary: '#38bdf8',
-      secondary: '#14b8a6',
-      surface: '#1e293b',
-      muted: '#334155',
-    },
-  },
-  'fitnesstech-app-development': {
-    heroStyle: 'split',
-    servicesStyle: 'stacked',
-    highlightStyle: 'grid',
-    solutionsStyle: 'panels',
-    accent: {
-      gradient: ['#fff7ed', '#fde68a', '#ffffff'],
-      primary: '#f97316',
+    {
+      primary: '#14b8a6',
       secondary: '#0ea5e9',
-      surface: '#fffdf5',
-      muted: '#fff1d6',
-    },
-    darkAccent: {
-      primary: '#fb923c',
-      secondary: '#38bdf8',
       surface: '#1e293b',
       muted: '#334155',
+    }
+  ),
+  'fitnesstech-app-development': createPresentation(
+    {
+      gradient: ['#fff5f5', '#fee2e2', '#ffffff'],
+      primary: '#ef4444',
+      secondary: '#f97316',
+      surface: '#fff7f7',
+      muted: '#fee2e2',
     },
-  },
-  'foodtech-software-solutions': {
-    heroStyle: 'centered',
-    servicesStyle: 'grid',
-    highlightStyle: 'list',
-    solutionsStyle: 'cards',
-    accent: {
-      gradient: ['#fffaf0', '#fef3c7', '#ffffff'],
-      primary: '#ea580c',
-      secondary: '#22c55e',
-      surface: '#fffdf7',
-      muted: '#fff6d8',
-    },
-    darkAccent: {
-      primary: '#fb923c',
-      secondary: '#4ade80',
+    {
+      primary: '#f87171',
+      secondary: '#fb923c',
       surface: '#1e293b',
       muted: '#334155',
+    }
+  ),
+  'foodtech-software-solutions': createPresentation(
+    {
+      gradient: ['#fffbea', '#fef3c7', '#ffffff'],
+      primary: '#c2410c',
+      secondary: '#eab308',
+      surface: '#fffaf0',
+      muted: '#fef3c7',
     },
-  },
-  'gaming-app-development': {
-    heroStyle: 'overlap',
-    servicesStyle: 'timeline',
-    highlightStyle: 'grid',
-    solutionsStyle: 'panels',
-    accent: {
-      gradient: ['#0f172a', '#1e1b4b', '#312e81'],
+    {
+      primary: '#fb923c',
+      secondary: '#fde047',
+      surface: '#1e293b',
+      muted: '#334155',
+    }
+  ),
+  'gaming-app-development': createPresentation(
+    {
+      gradient: ['#eff6ff', '#e0e7ff', '#ffffff'],
       primary: '#6366f1',
-      secondary: '#22d3ee',
-      surface: '#111827',
-      muted: '#1f2937',
+      secondary: '#c026d3',
+      surface: '#f5f3ff',
+      muted: '#e4e7ff',
     },
-    darkAccent: {
+    {
       primary: '#818cf8',
       secondary: '#67e8f9',
       surface: '#1e293b',
       muted: '#334155',
-    },
-  },
-  'healthtech-app-development': {
-    heroStyle: 'split',
-    servicesStyle: 'grid',
-    highlightStyle: 'list',
-    solutionsStyle: 'cards',
-    accent: {
-      gradient: ['#f0fdf4', '#dcfce7', '#ffffff'],
-      primary: '#16a34a',
+    }
+  ),
+  'healthtech-app-development': createPresentation(
+    {
+      gradient: ['#ecfeff', '#ccfbf1', '#ffffff'],
+      primary: '#14b8a6',
       secondary: '#0ea5e9',
-      surface: '#f7fff9',
-      muted: '#e2fbe8',
+      surface: '#f0fdfa',
+      muted: '#ccfbf1',
     },
-    darkAccent: {
-      primary: '#4ade80',
+    {
+      primary: '#2dd4bf',
       secondary: '#38bdf8',
       surface: '#1e293b',
       muted: '#334155',
-    },
-  },
-  'manufacturingtech-software-solutions': {
-    heroStyle: 'centered',
-    servicesStyle: 'stacked',
-    highlightStyle: 'grid',
-    solutionsStyle: 'panels',
-    accent: {
+    }
+  ),
+  'manufacturingtech-software-solutions': createPresentation(
+    {
       gradient: ['#eef2ff', '#e0e7ff', '#ffffff'],
       primary: '#4338ca',
       secondary: '#0ea5e9',
       surface: '#f8f9ff',
       muted: '#eaeefe',
     },
-    darkAccent: {
+    {
       primary: '#818cf8',
       secondary: '#38bdf8',
       surface: '#1e293b',
       muted: '#334155',
-    },
-  },
-  'car-rental-booking-aggregator': {
-    heroStyle: 'overlap',
-    servicesStyle: 'timeline',
-    highlightStyle: 'list',
-    solutionsStyle: 'cards',
-    accent: {
+    }
+  ),
+  'car-rental-booking-aggregator': createPresentation(
+    {
       gradient: ['#fdf2f8', '#e0f2fe', '#ffffff'],
       primary: '#be185d',
       secondary: '#2563eb',
       surface: '#fff5fa',
       muted: '#f1f5ff',
     },
-    darkAccent: {
+    {
       primary: '#f472b6',
       secondary: '#60a5fa',
       surface: '#1e293b',
       muted: '#334155',
-    },
-  },
+    }
+  ),
 };
 
 export const industriesContent: IndustryContent[] = [
@@ -505,7 +472,7 @@ export const industriesContent: IndustryContent[] = [
     leadership: {
       highlight: 'Leading Agriculture Software Development Company',
       description:
-        'Transform your farming operations with HashStudioz’s advanced agritech solutions. We blend agronomic knowledge with product engineering to modernize farm management, improve crop yield predictions, and optimize resource utilization.',
+        'Transform your farming operations with NanoFlows’ advanced agritech solutions. We blend agronomic knowledge with product engineering to modernize farm management, improve crop yield predictions, and optimize resource utilization.',
       image: '/image1.png',
     },
     highlights: [

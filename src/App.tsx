@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { ThemeProvider } from './context/ThemeContext';
@@ -10,13 +10,15 @@ import WebsiteComparison from './components/WebsiteComparison';
 import Features from './components/Features';
 import CaseStudy from './components/CaseStudy';
 import Careers from './components/Careers';
-import Contact from './components/Contact';
 import Footer from './components/Footer';
 import AIChat from './components/AIChat';
 import SocialMediaBar from './components/SocialMediaBar';
+import FloatingContactWidget from './components/FloatingContactWidget';
 import EducationDashboard from './components/EducationDashboard';
 import AIToolsShowcase from './components/AIToolsShowcase';
 import { PageTransition } from './components/animations';
+import CareersPage from './pages/CareersPage';
+import ContactPage from './pages/ContactPage';
 
 import Login from './pages/academy/Login';
 import Signup from './pages/academy/Signup';
@@ -41,6 +43,7 @@ import AdminJobsManagement from './pages/academy/AdminJobsManagement';
 import AdminJobForm from './pages/academy/AdminJobForm';
 import AdminAIToolsManagement from './pages/academy/AdminAIToolsManagement';
 import AdminAboutManagement from './pages/academy/AdminAboutManagement';
+import AdminHeroSlides from './pages/academy/AdminHeroSlides';
 import AdminAIToolForm from './pages/academy/AdminAIToolForm';
 import ProtectedRoute from './components/academy/ProtectedRoute';
 import AISolutions from './pages/products/AISolutions';
@@ -71,26 +74,34 @@ function AnimatedRoutes() {
     }
   }, [location.pathname, location.hash]);
 
+  const path = location.pathname.toLowerCase();
+  const shouldShowFloatingContact = useMemo(() => {
+    if (path === '/') return false;
+    const allowedPrefixes = ['/services', '/how-it-works', '/products', '/careers', '/industries'];
+    return allowedPrefixes.some((prefix) => path.startsWith(prefix));
+  }, [path]);
+
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
+    <>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
           {/* ✅ Main Home Page Route */}
           <Route
             path="/"
             element={
               <PageTransition>
                 <div className="relative min-h-screen flex flex-col bg-white dark:bg-dark-bg transition-colors duration-300 w-full max-w-full overflow-x-hidden">
-                <Header />
-                <SocialMediaBar />
-                <Hero />
-                <About />
-                <WebsiteComparison />
-                <Features />
-                <CaseStudy />
-                <Careers />
-                <Contact />
-                <Footer />
-                <AIChat />
+                  <Header />
+                  <div className="pt-24 lg:pt-32">
+                    <SocialMediaBar />
+                    <Hero />
+                    <About />
+                    <WebsiteComparison />
+                    <Features />
+                    <CaseStudy />
+                    <Careers />
+                    <Footer />
+                  </div>
                 </div>
               </PageTransition>
             }
@@ -112,6 +123,23 @@ function AnimatedRoutes() {
             element={
               <PageTransition>
                 <HowItWorks />
+              </PageTransition>
+            }
+          />
+
+          <Route
+            path="/careers"
+            element={
+              <PageTransition>
+                <CareersPage />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <PageTransition>
+                <ContactPage />
               </PageTransition>
             }
           />
@@ -353,6 +381,14 @@ function AnimatedRoutes() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/academy/admin/hero-slides"
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <AdminHeroSlides />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Product Pages */}
           <Route
@@ -469,8 +505,11 @@ function AnimatedRoutes() {
               </PageTransition>
             }
           />
-      </Routes>
-    </AnimatePresence>
+        </Routes>
+      </AnimatePresence>
+      <AIChat />
+      {shouldShowFloatingContact && <FloatingContactWidget />}
+    </>
   );
 }
 

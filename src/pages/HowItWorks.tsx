@@ -135,14 +135,14 @@ const HowItWorks = () => {
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
       <Header />
-      <div className="pt-20">
-        <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-16 lg:py-20">
+      <div className="pt-24 lg:pt-32 pb-16 lg:pb-24">
+        <div className="container mx-auto px-6 pb-12 lg:pb-16">
           {/* Page Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="text-center mb-16 lg:mb-20"
+            className="text-center mb-16 mt-16 lg:mb-20"
           >
             <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-orbitron font-bold mb-4 ${
               theme === 'dark' ? 'text-white' : 'text-black'
@@ -475,26 +475,28 @@ const HowItWorks = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
               {[
                 {
-                  step: '01',
+                  icon: HelpCircle,
                   title: 'Discovery',
                   description: 'We analyze your business challenges and requirements to understand your unique needs.'
                 },
                 {
-                  step: '02',
+                  icon: MapPin,
                   title: 'Strategy',
                   description: 'Our team develops a customized strategy tailored to your business goals and objectives.'
                 },
                 {
-                  step: '03',
+                  icon: Database,
                   title: 'Implementation',
                   description: 'We deploy our solutions with seamless integration and minimal disruption to your operations.'
                 },
                 {
-                  step: '04',
+                  icon: TrendingUp,
                   title: 'Optimization',
                   description: 'Continuous monitoring and optimization ensure maximum performance and ROI for your business.'
                 }
-              ].map((process, index) => (
+              ].map((process, index) => {
+                const Icon = process.icon;
+                return (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 30, scale: 0.9 }}
@@ -531,13 +533,13 @@ const HowItWorks = () => {
                       repeat: Infinity,
                       delay: index * 0.5
                     }}
-                    className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 ${
+                    className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 border ${
                       theme === 'dark'
-                        ? 'bg-electric-blue/20 text-electric-blue'
-                        : 'bg-accent-red/20 text-accent-red'
+                        ? 'bg-electric-blue/10 text-electric-blue border-electric-blue/40'
+                        : 'bg-accent-red/10 text-accent-red border-accent-red/40'
                     }`}
                   >
-                    <span className="font-orbitron font-bold text-2xl">{process.step}</span>
+                    <Icon size={32} />
                   </motion.div>
                   <motion.h3
                     initial={{ opacity: 0 }}
@@ -562,7 +564,8 @@ const HowItWorks = () => {
                     {process.description}
                   </motion.p>
                 </motion.div>
-              ))}
+              );
+              })}
             </div>
           </motion.div>
         </div>

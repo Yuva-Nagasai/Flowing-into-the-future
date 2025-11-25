@@ -13,6 +13,8 @@ import {
   Youtube,
   BookOpen,
   Wrench,
+  Cpu,
+  Layers,
   Check, 
   X, 
   Minus,
@@ -579,6 +581,114 @@ const services: ServiceData[] = [
       'AI-driven process optimization improving efficiency',
       'Enterprise-grade automation scaling with your business needs'
     ]
+  },
+  {
+    id: 'internet-of-things',
+    title: 'Internet of Things',
+    icon: Cpu,
+    description: 'Connect devices, sensors, and edge systems with secure IoT platforms that unlock real-time intelligence, automation, and predictive maintenance across your operations.',
+    features: [
+      'Edge Device Integration',
+      'Secure IoT Platforms',
+      'Predictive Maintenance',
+      'Digital Twins'
+    ],
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3A1NXRob3dxbWx6MGo4dm80Z3R2c2tmMnkwOHVyZzRna3cwMDZmMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/5Zesu5VPNGJlm/giphy.gif',
+    cta: 'Connect Devices',
+    comparison: [
+      {
+        name: 'Secure device onboarding',
+        sekeltech: { status: 'supported', text: 'Zero-touch provisioning & PKI security' },
+        others: { status: 'limited', text: 'Manual onboarding workflows' }
+      },
+      {
+        name: 'Edge analytics',
+        sekeltech: { status: 'supported', text: 'On-device inference & filtering' },
+        others: { status: 'limited', text: 'Cloud-only analytics' }
+      },
+      {
+        name: 'Predictive maintenance',
+        sekeltech: { status: 'supported', text: 'ML-driven anomaly detection' },
+        others: { status: 'not-supported', text: 'Reactive maintenance only' }
+      },
+      {
+        name: 'Digital twin modeling',
+        sekeltech: { status: 'supported', text: 'Virtual replicas of critical assets' },
+        others: { status: 'limited', text: 'Basic telemetry dashboards' }
+      },
+      {
+        name: 'Scalable device management',
+        sekeltech: { status: 'supported', text: 'Millions of devices & OTA updates' },
+        others: { status: 'limited', text: 'Manual firmware updates' }
+      },
+      {
+        name: 'Enterprise integrations',
+        sekeltech: { status: 'supported', text: 'ERP, MES, and cloud platform connectors' },
+        others: { status: 'limited', text: 'Custom integration required' }
+      }
+    ],
+    whyChooseUs: [
+      'Secure IoT architecture spanning device to cloud layers',
+      'Edge analytics reducing bandwidth costs and latency',
+      'Predictive maintenance preventing unplanned downtime',
+      'Digital twin solutions for real-time situational awareness',
+      'End-to-end device lifecycle management with OTA updates',
+      'Deep integration with enterprise platforms and workflows'
+    ]
+  },
+  {
+    id: 'saas-development',
+    title: 'SaaS Development',
+    icon: Layers,
+    description: 'Build scalable, multi-tenant SaaS platforms with seamless onboarding, subscription billing, and automated operations designed for rapid market entry and dependable growth.',
+    features: [
+      'Multi-tenant Architecture',
+      'Usage-based Billing',
+      'User Onboarding',
+      'SRE & Monitoring'
+    ],
+    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGl6dTJ6c2ZzcGE2ZXp3eGRveTVrbTgxZXRybmc4N2p3NHF5Y3I3cSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3oEduO4bAdGHjGqUru/giphy.gif',
+    cta: 'Launch SaaS',
+    comparison: [
+      {
+        name: 'Multi-tenant design',
+        sekeltech: { status: 'supported', text: 'Isolated data with shared infrastructure' },
+        others: { status: 'limited', text: 'Single-tenant deployments' }
+      },
+      {
+        name: 'Subscription & usage billing',
+        sekeltech: { status: 'supported', text: 'Stripe, Chargebee, Paddle integrations' },
+        others: { status: 'limited', text: 'Manual invoicing' }
+      },
+      {
+        name: 'Self-serve onboarding',
+        sekeltech: { status: 'supported', text: 'Guided tours, checklists, in-app tips' },
+        others: { status: 'limited', text: 'Static documentation only' }
+      },
+      {
+        name: 'Reliability engineering',
+        sekeltech: { status: 'supported', text: 'SLO/SLA tracking & incident playbooks' },
+        others: { status: 'limited', text: 'Best-effort monitoring' }
+      },
+      {
+        name: 'Security & compliance',
+        sekeltech: { status: 'supported', text: 'SOC 2, ISO 27001-ready controls' },
+        others: { status: 'limited', text: 'Ad-hoc security practices' }
+      },
+      {
+        name: 'Product analytics',
+        sekeltech: { status: 'supported', text: 'Event pipelines & growth dashboards' },
+        others: { status: 'limited', text: 'Basic reporting' }
+      }
+    ],
+    whyChooseUs: [
+      'Multi-tenant SaaS frameworks that scale from MVP to enterprise',
+      'Built-in billing, subscription, and entitlement management',
+      'User onboarding experiences that boost activation and retention',
+      'Embedded SRE practices for 99.9%+ uptime and rapid recovery',
+      'Security-first engineering aligned with industry compliance',
+      'Product analytics loops driving data-informed roadmap decisions'
+    ]
   }
 ];
 
@@ -605,10 +715,10 @@ const ServicesPage = () => {
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
       <Header />
-      <div className="pt-20">
-        <div className="container mx-auto px-6 py-18">
+      <div className="pt-24 lg:pt-32">
+        <div className="container mx-auto px-6 py-16 lg:py-20">
           {/* Page Header */}
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 mt-16">
             <h1 className={`text-5xl md:text-6xl font-orbitron font-bold mb-4 ${
               theme === 'dark' ? 'text-white' : 'text-black'
             }`}>
@@ -731,7 +841,7 @@ const ServicesPage = () => {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1">
+            <main className="flex-1 pb-12 lg:pb-16">
               <motion.div
                 key={activeService}
                 initial={{ opacity: 0, y: 20 }}

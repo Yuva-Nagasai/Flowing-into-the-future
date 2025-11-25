@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const pool = require('../config/db');
 
 const addVideo = async (req, res) => {
@@ -11,29 +12,32 @@ const addVideo = async (req, res) => {
     // Check if videos table exists, if not, suggest using modules/lessons structure
     try {
       const tableCheck = await pool.query(
-        `SELECT EXISTS (
-          SELECT FROM information_schema.tables 
-          WHERE table_schema = 'public' 
-          AND table_name = 'videos'
-        );`
+        `SELECT COUNT(*) AS count
+         FROM information_schema.tables 
+         WHERE table_schema = DATABASE()
+         AND table_name = 'videos';`
       );
 
-      if (!tableCheck.rows[0].exists) {
+      if (parseInt(tableCheck.rows[0].count, 10) === 0) {
         return res.status(400).json({ 
           error: 'Videos table does not exist. Please use the Content Management page to add videos through Modules and Lessons.',
           suggestion: 'Use /academy/admin/course/:id/content to manage course content'
         });
       }
 
-      const result = await pool.query(
-        `INSERT INTO videos (course_id, title, description, video_url, duration, order_index)
-         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-        [course_id, title, description || null, video_url, duration || '0:00', order_index || 0]
+      const videoId = uuidv4();
+
+      await pool.query(
+        `INSERT INTO videos (id, course_id, title, description, video_url, duration, order_index)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [videoId, course_id, title, description || null, video_url, duration || '0:00', order_index || 0]
       );
 
-      res.status(201).json({ message: 'Video added successfully', video: result.rows[0] });
+      const createdVideo = await pool.query('SELECT * FROM videos WHERE id = ?', [videoId]);
+
+      res.status(201).json({ message: 'Video added successfully', video: createdVideo.rows[0] });
     } catch (dbError) {
-      if (dbError.code === '42P01') {
+      if (dbError.code === 'ER_NO_SUCH_TABLE') {
         // Table does not exist
         return res.status(400).json({ 
           error: 'Videos table does not exist. Please run the videos migration or use the Content Management page.',
@@ -53,28 +57,32 @@ const updateVideo = async (req, res) => {
     const { id } = req.params;
     const { title, description, video_url, duration, order_index } = req.body;
 
+    const videoResult = await pool.query('SELECT * FROM videos WHERE id = ?', [id]);
+    if (videoResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Video not found' });
+    }
+
     const updates = [];
     const params = [];
-    let paramCount = 1;
 
     if (title !== undefined) {
-      updates.push(`title = $${paramCount++}`);
+      updates.push('title = ?');
       params.push(title);
     }
     if (description !== undefined) {
-      updates.push(`description = $${paramCount++}`);
+      updates.push('description = ?');
       params.push(description);
     }
     if (video_url !== undefined) {
-      updates.push(`video_url = $${paramCount++}`);
+      updates.push('video_url = ?');
       params.push(video_url);
     }
     if (duration !== undefined) {
-      updates.push(`duration = $${paramCount++}`);
+      updates.push('duration = ?');
       params.push(duration);
     }
     if (order_index !== undefined) {
-      updates.push(`order_index = $${paramCount++}`);
+      updates.push('order_index = ?');
       params.push(order_index);
     }
 
@@ -83,11 +91,13 @@ const updateVideo = async (req, res) => {
     }
 
     params.push(id);
-    const query = `UPDATE videos SET ${updates.join(', ')} WHERE id = $${paramCount} RETURNING *`;
+    const query = `UPDATE videos SET ${updates.join(', ')} WHERE id = ?`;
 
-    const result = await pool.query(query, params);
+    await pool.query(query, params);
 
-    res.json({ message: 'Video updated successfully', video: result.rows[0] });
+    const updatedVideo = await pool.query('SELECT * FROM videos WHERE id = ?', [id]);
+
+    res.json({ message: 'Video updated successfully', video: updatedVideo.rows[0] });
   } catch (error) {
     console.error('Update video error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -98,7 +108,7 @@ const deleteVideo = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await pool.query('DELETE FROM videos WHERE id = $1', [id]);
+    await pool.query('DELETE FROM videos WHERE id = ?', [id]);
 
     res.json({ message: 'Video deleted successfully' });
   } catch (error) {
@@ -118,29 +128,32 @@ const addResource = async (req, res) => {
     // Check if resources table exists
     try {
       const tableCheck = await pool.query(
-        `SELECT EXISTS (
-          SELECT FROM information_schema.tables 
-          WHERE table_schema = 'public' 
-          AND table_name = 'resources'
-        );`
+        `SELECT COUNT(*) AS count
+         FROM information_schema.tables 
+         WHERE table_schema = DATABASE()
+         AND table_name = 'resources';`
       );
 
-      if (!tableCheck.rows[0].exists) {
+      if (parseInt(tableCheck.rows[0].count, 10) === 0) {
         return res.status(400).json({ 
           error: 'Resources table does not exist. Please use the Content Management page to add resources through Modules and Lessons.',
           suggestion: 'Use /academy/admin/course/:id/content to manage course content'
         });
       }
 
-      const result = await pool.query(
-        `INSERT INTO resources (course_id, module_id, title, file_url, file_type)
-         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-        [course_id, module_id || null, title, file_url, file_type || 'pdf']
+      const resourceId = uuidv4();
+
+      await pool.query(
+        `INSERT INTO resources (id, course_id, module_id, title, file_url, file_type)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [resourceId, course_id, module_id || null, title, file_url, file_type || 'pdf']
       );
 
-      res.status(201).json({ message: 'Resource added successfully', resource: result.rows[0] });
+      const createdResource = await pool.query('SELECT * FROM resources WHERE id = ?', [resourceId]);
+
+      res.status(201).json({ message: 'Resource added successfully', resource: createdResource.rows[0] });
     } catch (dbError) {
-      if (dbError.code === '42P01') {
+      if (dbError.code === 'ER_NO_SUCH_TABLE') {
         return res.status(400).json({ 
           error: 'Resources table does not exist. Please run the videos migration or use the Content Management page.',
           suggestion: 'Run: node server/run-videos-migration.js'
@@ -160,7 +173,7 @@ const getResourcesByModule = async (req, res) => {
     const { module_id } = req.params;
 
     const result = await pool.query(
-      'SELECT * FROM resources WHERE module_id = $1 ORDER BY created_at DESC',
+      'SELECT * FROM resources WHERE module_id = ? ORDER BY created_at DESC',
       [module_id]
     );
 
@@ -175,7 +188,7 @@ const deleteResource = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await pool.query('DELETE FROM resources WHERE id = $1', [id]);
+    await pool.query('DELETE FROM resources WHERE id = ?', [id]);
 
     res.json({ message: 'Resource deleted successfully' });
   } catch (error) {

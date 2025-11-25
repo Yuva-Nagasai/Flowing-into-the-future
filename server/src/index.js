@@ -20,6 +20,7 @@ const paymentRoutes = require('./routes/payments');
 const quizRoutes = require('./routes/quizzes');
 const assignmentRoutes = require('./routes/assignments');
 const notificationRoutes = require('./routes/notifications');
+const heroSlidesRoutes = require('./routes/heroSlides');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -58,6 +59,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/assignments', assignmentRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/hero-slides', heroSlidesRoutes);
 
 app.use((err, req, res, next) => {
   console.error('Error:', err);

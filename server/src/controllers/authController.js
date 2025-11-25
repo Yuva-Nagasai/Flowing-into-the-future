@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid');
 const pool = require('../config/db');
 const { JWT_SECRET } = require('../middleware/auth');
 
@@ -12,7 +13,7 @@ const signup = async (req, res) => {
     }
 
     const existingUser = await pool.query(
-      'SELECT * FROM users WHERE email = $1',
+      'SELECT * FROM users WHERE email = ?',
       [email]
     );
 
@@ -22,12 +23,18 @@ const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const result = await pool.query(
-      'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, email, hashedPassword, 'user']
+    const userId = uuidv4();
+    await pool.query(
+      'INSERT INTO users (id, name, email, password, role) VALUES (?, ?, ?, ?, ?)',
+      [userId, name, email, hashedPassword, 'user']
     );
 
-    const newUser = result.rows[0];
+    const createdUserResult = await pool.query(
+      'SELECT * FROM users WHERE id = ?',
+      [userId]
+    );
+
+    const newUser = createdUserResult.rows[0];
 
     const token = jwt.sign(
       { id: newUser.id, email: newUser.email, role: newUser.role },
@@ -70,7 +77,7 @@ const login = async (req, res) => {
     }
 
     const result = await pool.query(
-      'SELECT * FROM users WHERE email = $1',
+      'SELECT * FROM users WHERE email = ?',
       [email]
     );
 

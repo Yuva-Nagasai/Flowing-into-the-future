@@ -3,15 +3,19 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, Sun, Moon, ChevronDown } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { productCategories } from '../data/productCatalog';
+import TopFeatureNav from './TopFeatureNav';
 
 const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isMobileProductsOpen, setIsMobileProductsOpen] = useState(false);
   const [isIndustriesOpen, setIsIndustriesOpen] = useState(false);
   const [isMobileIndustriesOpen, setIsMobileIndustriesOpen] = useState(false);
-  const productCloseTimer = useRef<NodeJS.Timeout | null>(null);
+  const [showTopBar, setShowTopBar] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return window.scrollY <= 24;
+  });
+  const productCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const productHoldUntil = useRef<number | null>(null);
   const productsMenuRef = useRef<HTMLDivElement | null>(null);
   const industriesMenuRef = useRef<HTMLDivElement | null>(null);
@@ -40,14 +44,21 @@ const Header = () => {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+  const [activeAnchor, setActiveAnchor] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const nearTop = window.scrollY <= 24;
+      setShowTopBar(nearTop);
     };
-    window.addEventListener('scroll', handleScroll);
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
     return () => {
-      window.removeEventListener('scroll', handleScroll);
       closeProductsMenu();
     };
   }, [closeProductsMenu]);
@@ -55,21 +66,27 @@ const Header = () => {
   // Handle smooth scroll to section
   const scrollToSection = useCallback((sectionId: string) => {
     const element = document.getElementById(sectionId);
-    if (element) {
-      const offset = 80; // Offset for sticky header
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
+    if (!element) return;
+
+    const header = document.getElementById('site-header');
+    const headerHeight = header?.offsetHeight ?? 0;
+    const safetyGap = window.innerWidth < 1024 ? 24 : 16; // give the section breathing room
+    const offset = headerHeight + safetyGap;
+
+    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+    const offsetPosition = elementPosition - offset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
   }, []);
 
   // Handle anchor link navigation
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     const sectionId = href.replace('#', '');
+    setActiveAnchor(sectionId);
     
     if (location.pathname !== '/') {
       // If not on home page, navigate to home with hash
@@ -89,9 +106,12 @@ const Header = () => {
   useEffect(() => {
     if (location.pathname === '/' && location.hash) {
       const sectionId = location.hash.replace('#', '');
+      setActiveAnchor(sectionId);
       setTimeout(() => {
         scrollToSection(sectionId);
       }, 100);
+    } else if (location.pathname !== '/') {
+      setActiveAnchor(null);
     }
   }, [location, scrollToSection]);
 
@@ -99,9 +119,21 @@ const Header = () => {
     { name: 'Home', href: '#home', type: 'anchor' },
     { name: 'Services', href: '/services', type: 'route' },
     { name: 'How it Works', href: '/how-it-works', type: 'route' },
-    { name: 'Careers', href: '#careers', type: 'anchor' },
-    { name: 'Contact', href: '#contact', type: 'anchor' }
+    { name: 'Careers', href: '/careers', type: 'route' },
+    { name: 'Contact', href: '/contact', type: 'route' }
   ];
+
+  const isRouteActive = (href: string) => {
+    if (!href.startsWith('/')) return false;
+    return location.pathname === href || location.pathname.startsWith(`${href}/`);
+  };
+
+  const getLinkClasses = (isActive: boolean) => {
+    if (theme === 'dark') {
+      return isActive ? 'text-electric-green' : 'text-white hover:text-electric-green';
+    }
+    return isActive ? 'text-accent-red' : 'text-black hover:text-accent-red';
+  };
 
   const handleProductsButtonClick = (e?: React.MouseEvent) => {
     if (e) {
@@ -186,15 +218,24 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled
-          ? theme === 'dark'
-            ? 'bg-black/90 backdrop-blur-lg shadow-lg shadow-electric-blue/10'
-            : 'bg-white/90 backdrop-blur-lg shadow-lg'
-          : 'bg-transparent'
-      }`}
+      id="site-header"
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-transparent"
     >
-      <nav className="container mx-auto px-6">
+      <div
+        className={`transition-[max-height,opacity] duration-500 ease-in-out ${
+          showTopBar ? 'max-h-32 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
+        }`}
+      >
+        <TopFeatureNav />
+      </div>
+      <div
+        className={`${
+          theme === 'dark'
+            ? 'bg-[#030b1f] border-t border-b border-electric-blue/20 shadow-[0_6px_18px_rgba(0,0,0,0.35)]'
+            : 'bg-white border-t border-b border-gray-200 shadow-[0_6px_18px_rgba(46,55,77,0.12)]'
+        }`}
+      >
+        <nav className="container mx-auto px-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
@@ -213,39 +254,41 @@ const Header = () => {
                   <a
                     href={link.href}
                     onClick={(e) => handleAnchorClick(e, link.href)}
-                    className={`font-exo font-medium transition-all duration-300 cursor-pointer ${
-                      theme === 'dark'
-                        ? 'text-white hover:text-electric-green'
-                        : 'text-black hover:text-accent-red'
-                    }`}
+                    className={`font-exo font-medium transition-all duration-300 cursor-pointer ${getLinkClasses(
+                      activeAnchor === link.href.replace('#', '')
+                    )}`}
                   >
                     {link.name}
                   </a>
                 ) : (
                   <Link
                     to={link.href}
-                    className={`font-exo font-medium transition-all duration-300 ${
-                      theme === 'dark'
-                        ? 'text-white hover:text-electric-green'
-                        : 'text-black hover:text-accent-red'
-                    }`}
+                    className={`font-exo font-medium transition-all duration-300 ${getLinkClasses(
+                      isRouteActive(link.href)
+                    )}`}
                   >
                     {link.name}
                   </Link>
                 )}
 
                 {link.name === 'How it Works' && (
-                  <div
-                    className="relative"
-                    onMouseLeave={handleProductsMouseLeave}
-                    ref={productsMenuRef}
-                  >
+                <div
+                  className="relative"
+                  onMouseLeave={handleProductsMouseLeave}
+                  ref={productsMenuRef}
+                >
                     <button
                       type="button"
                       onClick={handleProductsButtonClick}
-                      className={`flex items-center gap-1 font-exo font-medium transition-colors duration-300 ${
-                        theme === 'dark' ? 'text-white' : 'text-black'
-                      }`}
+                    className={`flex items-center gap-1 font-exo font-medium transition-colors duration-300 ${
+                      location.pathname.startsWith('/products')
+                        ? theme === 'dark'
+                          ? 'text-electric-green'
+                          : 'text-accent-red'
+                        : theme === 'dark'
+                        ? 'text-white hover:text-electric-green'
+                        : 'text-black hover:text-accent-red'
+                    }`}
                     >
                       Products <ChevronDown size={18} className="mt-0.5" />
                     </button>
@@ -320,7 +363,11 @@ const Header = () => {
                 type="button"
                 onClick={() => setIsIndustriesOpen((prev) => !prev)}
                 className={`flex items-center gap-1 font-exo font-medium transition-colors duration-300 ${
-                  theme === 'dark'
+                  location.pathname.startsWith('/industries')
+                    ? theme === 'dark'
+                      ? 'text-electric-green'
+                      : 'text-accent-red'
+                    : theme === 'dark'
                     ? 'text-white hover:text-electric-green'
                     : 'text-black hover:text-accent-red'
                 }`}
@@ -472,7 +519,11 @@ const Header = () => {
                     href={link.href}
                     onClick={(e) => handleAnchorClick(e, link.href)}
                     className={`block px-4 py-3 font-exo transition-all duration-300 cursor-pointer ${
-                      theme === 'dark'
+                      activeAnchor === link.href.replace('#', '')
+                        ? theme === 'dark'
+                          ? 'text-electric-green bg-dark-lighter/40'
+                          : 'text-accent-red bg-gray-50'
+                        : theme === 'dark'
                         ? 'text-white hover:text-electric-green hover:bg-dark-lighter'
                         : 'text-black hover:text-accent-red hover:bg-gray-50'
                     }`}
@@ -484,7 +535,11 @@ const Header = () => {
                     to={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`block px-4 py-3 font-exo transition-all duration-300 ${
-                      theme === 'dark'
+                      isRouteActive(link.href)
+                        ? theme === 'dark'
+                          ? 'text-electric-green bg-dark-lighter/40'
+                          : 'text-accent-red bg-gray-50'
+                        : theme === 'dark'
                         ? 'text-white hover:text-electric-green hover:bg-dark-lighter'
                         : 'text-black hover:text-accent-red hover:bg-gray-50'
                     }`}
@@ -666,6 +721,7 @@ const Header = () => {
           </div>
         )}
       </nav>
+      </div>
     </header>
   );
 };

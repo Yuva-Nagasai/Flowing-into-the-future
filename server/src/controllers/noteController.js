@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const pool = require('../config/db');
 
 // Create or update note
@@ -12,30 +13,34 @@ const saveNote = async (req, res) => {
 
     // Check if note exists for this lesson and timestamp
     const existingNote = await pool.query(
-      'SELECT * FROM notes WHERE user_id = $1 AND lesson_id = $2 AND timestamp = $3',
+      'SELECT * FROM notes WHERE user_id = ? AND lesson_id = ? AND timestamp = ?',
       [user_id, lesson_id, timestamp || 0]
     );
 
     if (existingNote.rows.length > 0) {
       // Update existing note
-      const result = await pool.query(
+      await pool.query(
         `UPDATE notes 
-         SET content = $1, updated_at = NOW() 
-         WHERE id = $2 
-         RETURNING *`,
+         SET content = ?, updated_at = NOW() 
+         WHERE id = ?`,
         [content, existingNote.rows[0].id]
       );
 
-      res.json({ message: 'Note updated successfully', note: result.rows[0] });
+      const updatedNote = await pool.query('SELECT * FROM notes WHERE id = ?', [existingNote.rows[0].id]);
+
+      res.json({ message: 'Note updated successfully', note: updatedNote.rows[0] });
     } else {
       // Create new note
-      const result = await pool.query(
-        `INSERT INTO notes (user_id, course_id, lesson_id, content, timestamp)
-         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-        [user_id, course_id, lesson_id, content, timestamp || 0]
+      const noteId = uuidv4();
+      await pool.query(
+        `INSERT INTO notes (id, user_id, course_id, lesson_id, content, timestamp)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [noteId, user_id, course_id, lesson_id, content, timestamp || 0]
       );
 
-      res.status(201).json({ message: 'Note saved successfully', note: result.rows[0] });
+      const newNote = await pool.query('SELECT * FROM notes WHERE id = ?', [noteId]);
+
+      res.status(201).json({ message: 'Note saved successfully', note: newNote.rows[0] });
     }
   } catch (error) {
     console.error('Save note error:', error);
@@ -51,7 +56,7 @@ const getLessonNotes = async (req, res) => {
 
     const result = await pool.query(
       `SELECT * FROM notes 
-       WHERE user_id = $1 AND lesson_id = $2 
+       WHERE user_id = ? AND lesson_id = ? 
        ORDER BY timestamp ASC, created_at ASC`,
       [user_id, lesson_id]
     );
@@ -77,7 +82,7 @@ const getCourseNotes = async (req, res) => {
        FROM notes n
        JOIN lessons l ON n.lesson_id = l.id
        JOIN modules m ON l.module_id = m.id
-       WHERE n.user_id = $1 AND n.course_id = $2
+       WHERE n.user_id = ? AND n.course_id = ?
        ORDER BY m.order_index, l.order_index, n.timestamp`,
       [user_id, course_id]
     );
@@ -95,14 +100,12 @@ const deleteNote = async (req, res) => {
     const { id } = req.params;
     const user_id = req.user.id;
 
-    const result = await pool.query(
-      'DELETE FROM notes WHERE id = $1 AND user_id = $2 RETURNING *',
-      [id, user_id]
-    );
-
-    if (result.rows.length === 0) {
+    const existingNote = await pool.query('SELECT * FROM notes WHERE id = ? AND user_id = ?', [id, user_id]);
+    if (existingNote.rows.length === 0) {
       return res.status(404).json({ error: 'Note not found' });
     }
+
+    await pool.query('DELETE FROM notes WHERE id = ? AND user_id = ?', [id, user_id]);
 
     res.json({ message: 'Note deleted successfully' });
   } catch (error) {

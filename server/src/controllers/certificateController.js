@@ -17,8 +17,8 @@ const generateCertificate = async (req, res) => {
         COUNT(DISTINCT CASE WHEN up.completed THEN l.id END) as completed_lessons
        FROM lessons l
        JOIN modules m ON l.module_id = m.id
-       LEFT JOIN user_progress up ON l.id = up.lesson_id AND up.user_id = $1
-       WHERE m.course_id = $2`,
+       LEFT JOIN user_progress up ON l.id = up.lesson_id AND up.user_id = ?
+       WHERE m.course_id = ?`,
       [user_id, course_id]
     );
 
@@ -36,7 +36,7 @@ const generateCertificate = async (req, res) => {
 
     // Check if certificate already exists
     const existingCert = await pool.query(
-      'SELECT * FROM certificates WHERE user_id = $1 AND course_id = $2',
+      'SELECT * FROM certificates WHERE user_id = ? AND course_id = ?',
       [user_id, course_id]
     );
 
@@ -48,8 +48,8 @@ const generateCertificate = async (req, res) => {
     }
 
     // Get course and user details
-    const courseResult = await pool.query('SELECT * FROM courses WHERE id = $1', [course_id]);
-    const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [user_id]);
+    const courseResult = await pool.query('SELECT * FROM courses WHERE id = ?', [course_id]);
+    const userResult = await pool.query('SELECT * FROM users WHERE id = ?', [user_id]);
 
     if (courseResult.rows.length === 0 || userResult.rows.length === 0) {
       return res.status(404).json({ error: 'Course or user not found' });
@@ -86,7 +86,7 @@ const generateCertificate = async (req, res) => {
     // Create certificate record
     const result = await pool.query(
       `INSERT INTO certificates (user_id, course_id, certificate_id, certificate_url, issued_at)
-       VALUES ($1, $2, $3, $4, NOW()) RETURNING *`,
+       VALUES (?, ?, ?, ?, NOW()) RETURNING *`,
       [user_id, course_id, certificateId, certificateUrl]
     );
 
@@ -126,7 +126,7 @@ const getUserCertificates = async (req, res) => {
         co.thumbnail
        FROM certificates c
        JOIN courses co ON c.course_id = co.id
-       WHERE c.user_id = $1
+       WHERE c.user_id = ?
        ORDER BY c.issued_at DESC`,
       [user_id]
     );
@@ -155,7 +155,7 @@ const getCertificateById = async (req, res) => {
        FROM certificates c
        JOIN courses co ON c.course_id = co.id
        JOIN users u ON c.user_id = u.id
-       WHERE c.id = $1 AND c.user_id = $2`,
+       WHERE c.id = ? AND c.user_id = ?`,
       [id, user_id]
     );
 

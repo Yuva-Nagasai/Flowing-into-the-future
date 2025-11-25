@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const pool = require('../config/db');
 
 // Get assignments by course (admin)
@@ -10,7 +11,7 @@ const getAssignmentsByCourse = async (req, res) => {
        FROM assignments a
        JOIN lessons l ON a.lesson_id = l.id
        JOIN modules m ON l.module_id = m.id
-       WHERE a.course_id = $1
+       WHERE a.course_id = ?
        ORDER BY m.order_index, l.order_index, a.created_at DESC`,
       [course_id]
     );
@@ -28,7 +29,7 @@ const getAssignmentsByLesson = async (req, res) => {
     const { lesson_id } = req.params;
 
     const result = await pool.query(
-      'SELECT * FROM assignments WHERE lesson_id = $1 ORDER BY created_at DESC',
+      'SELECT * FROM assignments WHERE lesson_id = ? ORDER BY created_at DESC',
       [lesson_id]
     );
 
@@ -45,7 +46,7 @@ const getAssignmentsByModule = async (req, res) => {
     const { module_id } = req.params;
 
     const result = await pool.query(
-      'SELECT * FROM assignments WHERE module_id = $1 ORDER BY created_at DESC',
+      'SELECT * FROM assignments WHERE module_id = ? ORDER BY created_at DESC',
       [module_id]
     );
 
@@ -66,13 +67,16 @@ const createAssignment = async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields: module_id or lesson_id, course_id, title, and description are required' });
     }
 
-    const result = await pool.query(
-      `INSERT INTO assignments (lesson_id, module_id, course_id, title, description, due_date, max_points)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [lesson_id || null, module_id || null, course_id, title, description, due_date || null, max_points || 100]
+    const assignmentId = uuidv4();
+    await pool.query(
+      `INSERT INTO assignments (id, lesson_id, module_id, course_id, title, description, due_date, max_points)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [assignmentId, lesson_id || null, module_id || null, course_id, title, description, due_date || null, max_points || 100]
     );
 
-    res.status(201).json({ message: 'Assignment created successfully', assignment: result.rows[0] });
+    const assignmentResult = await pool.query('SELECT * FROM assignments WHERE id = ?', [assignmentId]);
+
+    res.status(201).json({ message: 'Assignment created successfully', assignment: assignmentResult.rows[0] });
   } catch (error) {
     console.error('Create assignment error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -85,24 +89,28 @@ const updateAssignment = async (req, res) => {
     const { id } = req.params;
     const { title, description, due_date, max_points } = req.body;
 
+    const existingAssignment = await pool.query('SELECT * FROM assignments WHERE id = ?', [id]);
+    if (existingAssignment.rows.length === 0) {
+      return res.status(404).json({ error: 'Assignment not found' });
+    }
+
     const updates = [];
     const params = [];
-    let paramCount = 1;
 
     if (title !== undefined) {
-      updates.push(`title = $${paramCount++}`);
+      updates.push('title = ?');
       params.push(title);
     }
     if (description !== undefined) {
-      updates.push(`description = $${paramCount++}`);
+      updates.push('description = ?');
       params.push(description);
     }
     if (due_date !== undefined) {
-      updates.push(`due_date = $${paramCount++}`);
+      updates.push('due_date = ?');
       params.push(due_date);
     }
     if (max_points !== undefined) {
-      updates.push(`max_points = $${paramCount++}`);
+      updates.push('max_points = ?');
       params.push(max_points);
     }
 
@@ -111,11 +119,13 @@ const updateAssignment = async (req, res) => {
     }
 
     params.push(id);
-    const query = `UPDATE assignments SET ${updates.join(', ')} WHERE id = $${paramCount} RETURNING *`;
+    const query = `UPDATE assignments SET ${updates.join(', ')} WHERE id = ?`;
 
-    const result = await pool.query(query, params);
+    await pool.query(query, params);
 
-    res.json({ message: 'Assignment updated successfully', assignment: result.rows[0] });
+    const updatedAssignment = await pool.query('SELECT * FROM assignments WHERE id = ?', [id]);
+
+    res.json({ message: 'Assignment updated successfully', assignment: updatedAssignment.rows[0] });
   } catch (error) {
     console.error('Update assignment error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -127,7 +137,7 @@ const deleteAssignment = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await pool.query('DELETE FROM assignments WHERE id = $1', [id]);
+    await pool.query('DELETE FROM assignments WHERE id = ?', [id]);
 
     res.json({ message: 'Assignment deleted successfully' });
   } catch (error) {
@@ -152,7 +162,7 @@ const submitAssignment = async (req, res) => {
 
     // Check if already submitted
     const existingSubmission = await pool.query(
-      'SELECT * FROM assignment_submissions WHERE user_id = $1 AND assignment_id = $2',
+      'SELECT * FROM assignment_submissions WHERE user_id = ? AND assignment_id = ?',
       [user_id, assignment_id]
     );
 
@@ -160,13 +170,16 @@ const submitAssignment = async (req, res) => {
       return res.status(400).json({ error: 'Assignment already submitted' });
     }
 
-    const result = await pool.query(
-      `INSERT INTO assignment_submissions (user_id, assignment_id, lesson_id, course_id, submission_text, submission_file_url)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [user_id, assignment_id, lesson_id, course_id, submission_text || null, submission_file_url || null]
+    const submissionId = uuidv4();
+    await pool.query(
+      `INSERT INTO assignment_submissions (id, user_id, assignment_id, lesson_id, course_id, submission_text, submission_file_url)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [submissionId, user_id, assignment_id, lesson_id, course_id, submission_text || null, submission_file_url || null]
     );
 
-    res.status(201).json({ message: 'Assignment submitted successfully', submission: result.rows[0] });
+    const submissionResult = await pool.query('SELECT * FROM assignment_submissions WHERE id = ?', [submissionId]);
+
+    res.status(201).json({ message: 'Assignment submitted successfully', submission: submissionResult.rows[0] });
   } catch (error) {
     console.error('Submit assignment error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -183,18 +196,21 @@ const gradeAssignment = async (req, res) => {
       return res.status(400).json({ error: 'Score is required' });
     }
 
-    const result = await pool.query(
-      `UPDATE assignment_submissions 
-       SET score = $1, feedback = $2, graded_at = NOW() 
-       WHERE id = $3 RETURNING *`,
-      [score, feedback || null, id]
-    );
-
-    if (result.rows.length === 0) {
+    const existingSubmission = await pool.query('SELECT * FROM assignment_submissions WHERE id = ?', [id]);
+    if (existingSubmission.rows.length === 0) {
       return res.status(404).json({ error: 'Submission not found' });
     }
 
-    res.json({ message: 'Assignment graded successfully', submission: result.rows[0] });
+    await pool.query(
+      `UPDATE assignment_submissions 
+       SET score = ?, feedback = ?, graded_at = NOW() 
+       WHERE id = ?`,
+      [score, feedback || null, id]
+    );
+
+    const updatedSubmission = await pool.query('SELECT * FROM assignment_submissions WHERE id = ?', [id]);
+
+    res.json({ message: 'Assignment graded successfully', submission: updatedSubmission.rows[0] });
   } catch (error) {
     console.error('Grade assignment error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -217,7 +233,7 @@ const getSubmissionsByCourse = async (req, res) => {
        JOIN assignments a ON asub.assignment_id = a.id
        JOIN users u ON asub.user_id = u.id
        JOIN lessons l ON asub.lesson_id = l.id
-       WHERE asub.course_id = $1
+       WHERE asub.course_id = ?
        ORDER BY asub.submitted_at DESC`,
       [course_id]
     );
@@ -247,12 +263,12 @@ const getUserSubmissions = async (req, res) => {
        JOIN assignments a ON asub.assignment_id = a.id
        JOIN lessons l ON asub.lesson_id = l.id
        JOIN courses c ON asub.course_id = c.id
-       WHERE asub.user_id = $1
+       WHERE asub.user_id = ?
     `;
     const params = [user_id];
 
     if (course_id) {
-      query += ' AND asub.course_id = $2';
+      query += ' AND asub.course_id = ?';
       params.push(course_id);
     }
 

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { Link } from 'react-router-dom';
 import { ArrowUp } from 'lucide-react';
@@ -22,6 +23,14 @@ const legalRoutes: { [key: string]: string } = {
 
 const Footer = () => {
   const { theme } = useTheme();
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setShowScrollTop(window.scrollY > 600);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const scrollToSection = (sectionId: string) => {
@@ -54,12 +63,14 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: FaFacebook, href: 'https://www.facebook.com/', label: 'Facebook', color: '#1877F2' },
-    { icon: FaInstagram, href: 'https://www.instagram.com/', label: 'Instagram', color: '#E4405F' },
-    { icon: FaLinkedin, href: 'https://www.linkedin.com/', label: 'LinkedIn', color: '#0077B5' },
-    { icon: FaTwitter, href: 'https://www.twitter.com/', label: 'Twitter', color: '#1DA1F2' },
-    { icon: SiThreads, href: 'https://www.threads.net/', label: 'Threads', color: '#000000' },
+    { icon: FaFacebook, href: 'https://www.facebook.com/nanoflows', label: 'Facebook', color: '#1877F2' },
+    { icon: FaInstagram, href: 'https://www.instagram.com/nanoflows/', label: 'Instagram', color: '#E4405F' },
+    { icon: FaLinkedin, href: 'https://www.linkedin.com/in/nanoflows', label: 'LinkedIn', color: '#0077B5' },
+    { icon: FaTwitter, href: 'https://x.com/NanoFlows', label: 'Twitter', color: '#1DA1F2' },
+    { icon: SiThreads, href: 'https://www.threads.com/@nanoflows', label: 'Threads', color: '#000000' },
   ];
+
+
 
   return (
     <footer 
@@ -177,17 +188,19 @@ const Footer = () => {
         </div>
       </div>
       
-      <button
-        onClick={scrollToTop}
-        className={`fixed bottom-20 sm:bottom-24 right-6 sm:right-8 w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center z-40 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-          theme === 'dark'
-            ? 'bg-dark-card text-electric-blue border border-electric-blue/30 hover:bg-electric-blue hover:text-black hover:glow-blue focus:ring-electric-blue'
-            : 'bg-white text-accent-red border border-accent-red/30 hover:bg-accent-red hover:text-white hover:glow-red shadow-lg focus:ring-accent-red'
-        }`}
-        aria-label="Scroll to top of page"
-      >
-        <ArrowUp size={20} />
-      </button>
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className={`fixed bottom-20 sm:bottom-24 right-6 sm:right-8 w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center z-40 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+            theme === 'dark'
+              ? 'bg-dark-card text-electric-blue border border-electric-blue/30 hover:bg-electric-blue hover:text-black hover:glow-blue focus:ring-electric-blue'
+              : 'bg-white text-accent-red border border-accent-red/30 hover:bg-accent-red hover:text-white hover:glow-red shadow-lg focus:ring-accent-red'
+          }`}
+          aria-label="Scroll to top of page"
+        >
+          <ArrowUp size={20} />
+        </button>
+      )}
     </footer>
   );
 };

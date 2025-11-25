@@ -1,9 +1,97 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
+// @ts-expect-error - legacy JS module
+import { heroSlidesAPI } from '../utils/api.js';
 
 const slideOneImageUrl = '/nanoflows-image.png';
+
+type DefaultSlide = {
+  variant: 'default';
+  title: string;
+  highlight: string;
+  subtitle: string;
+  buttonText: string;
+};
+
+type ShowcaseSlide = {
+  variant: 'showcase';
+  preHeading: string;
+  heading: string;
+  highlight: string;
+  description: string;
+  categories: string[];
+  primaryCta: { label: string; route: string };
+  secondaryCta?: { label: string; route: string };
+  trustBadges: string[];
+};
+
+type HeroSlide = DefaultSlide | ShowcaseSlide;
+
+type HeroSlideApi = {
+  id: number;
+  variant: 'default' | 'showcase';
+  title?: string;
+  highlight?: string;
+  subtitle?: string;
+  buttonText?: string;
+  button_text?: string;
+  preHeading?: string;
+  pre_heading?: string;
+  heading?: string;
+  description?: string;
+  categories?: string[] | string;
+  primaryCtaLabel?: string;
+  primary_cta_label?: string;
+  primaryCtaRoute?: string;
+  primary_cta_route?: string;
+  secondaryCtaLabel?: string;
+  secondary_cta_label?: string;
+  secondaryCtaRoute?: string;
+  secondary_cta_route?: string;
+  trustBadges?: string[] | string;
+  trust_badges?: string[] | string;
+};
+
+const isDefaultSlide = (slide: HeroSlide): slide is DefaultSlide => slide.variant === 'default';
+
+const fallbackSlides: HeroSlide[] = [
+  {
+    variant: 'default',
+    title: 'Flowing Into',
+    highlight: 'The Future',
+    subtitle:
+      'Experience seamless innovation with Nano Flows. We deliver cutting-edge AI-powered solutions that transform your digital presence through dynamic personalization and continuous evolution.',
+    buttonText: 'Get Started',
+  },
+  {
+    variant: 'showcase',
+    preHeading: 'Welcome to NanoFlows',
+    heading: 'Innovating Smarter Solutions with',
+    highlight: 'Trusted Intelligence',
+    description:
+      'Engineering interactive and secure digital products across AI, automation, cloud, and data. Our pods blend strategy, design, and delivery to accelerate real business outcomes.',
+    categories: ['AI', 'IoT', 'Digital Engineering', 'Data Analytics', 'Travel Tech', 'Web & Cloud'],
+    primaryCta: { label: 'Consult our expert', route: '/contact' },
+    secondaryCta: { label: 'Explore services', route: '/services' },
+    trustBadges: [],
+  },
+  {
+    variant: 'showcase',
+    preHeading: 'Hire NanoFlows Squads',
+    heading: 'Build AI-Native Products with',
+    highlight: 'Dedicated Teams',
+    description:
+      'Spin up high-performance squads across product, engineering, and data science. From discovery to remote onboarding, we align every sprint with your KPIs.',
+    categories: ['Product Strategy', 'Platform Engineering', 'DevSecOps', 'Mobility', 'Analytics', 'Customer Success'],
+    primaryCta: { label: 'Book a strategy call', route: '/how-it-works' },
+    secondaryCta: { label: 'View success stories', route: '/industries/technology' },
+    trustBadges: [],
+  },
+];
+
+const fallbackDefaultSlide = fallbackSlides[0] as DefaultSlide;
 
 const Hero = () => {
   const { theme } = useTheme();
@@ -14,28 +102,91 @@ const Hero = () => {
   >('show');
   const navigate = useNavigate();
 
-  const slides = [
-    {
-      title: 'Flowing Into',
-      highlight: 'The Future',
-      subtitle:
-        'Experience seamless innovation with Nano Flows. We deliver cutting-edge AI-powered solutions that transform your digital presence through dynamic personalization and continuous evolution.',
-      buttonText: 'Get Started',
-    },
-    {
-      title: 'Empower Your',
-      highlight: 'Business',
-      subtitle: 'Gain the confidence to evolve intelligently.',
-      buttonText: 'Learn More',
-    },
-    {
-      title: 'Join Our',
-      highlight: 'Community',
-      subtitle:
-        'Collaborate and innovate with experts worldwide. Be part of the AI revolution and accelerate your projects with shared knowledge and resources.',
-      buttonText: 'Explore',
-    },
-  ];
+  const [slides, setSlides] = useState<HeroSlide[]>(fallbackSlides);
+  const defaultSlide = useMemo<DefaultSlide>(() => {
+    const firstDefault = slides.find(isDefaultSlide);
+    return firstDefault || fallbackDefaultSlide;
+  }, [slides]);
+  useEffect(() => {
+    let isMounted = true;
+    const fetchSlides = async () => {
+      try {
+        const response = await heroSlidesAPI.getAll();
+        const apiSlides: HeroSlideApi[] = response.data.slides || [];
+        if (!isMounted || !Array.isArray(apiSlides)) return;
+
+        const parseStringArray = (value?: string[] | string): string[] => {
+          if (!value) return [];
+          if (Array.isArray(value)) return value;
+          if (typeof value === 'string') {
+            return value
+              .split(',')
+              .map((item) => item.trim())
+              .filter(Boolean);
+          }
+          return [];
+        };
+
+        const mappedSlides: HeroSlide[] = apiSlides
+          .map((slide) => {
+            if (slide.variant === 'default') {
+              return {
+                variant: 'default',
+                title: slide.title || fallbackDefaultSlide.title,
+                highlight: slide.highlight || fallbackDefaultSlide.highlight,
+                subtitle: slide.subtitle || fallbackDefaultSlide.subtitle,
+                buttonText: slide.buttonText || slide.button_text || fallbackDefaultSlide.buttonText,
+              };
+            }
+
+            if (slide.variant === 'showcase') {
+              return {
+                variant: 'showcase',
+                preHeading: slide.preHeading || slide.pre_heading || 'NanoFlows Spotlight',
+                heading: slide.heading || 'Build Next-Gen Products with',
+                highlight: slide.highlight || 'NanoFlows',
+                description:
+                  slide.description ||
+                  'We architect secure, scalable digital platforms with AI-native thinking and measurable impact.',
+                categories: parseStringArray(slide.categories),
+                primaryCta: {
+                  label: slide.primaryCtaLabel || slide.primary_cta_label || 'Talk to us',
+                  route: slide.primaryCtaRoute || slide.primary_cta_route || '/contact',
+                },
+                secondaryCta:
+                  slide.secondaryCtaLabel || slide.secondary_cta_label
+                    ? {
+                        label: slide.secondaryCtaLabel || slide.secondary_cta_label,
+                        route: slide.secondaryCtaRoute || slide.secondary_cta_route || '/',
+                      }
+                    : undefined,
+                trustBadges: parseStringArray(slide.trustBadges || slide.trust_badges),
+              };
+            }
+            return null;
+          })
+          .filter(Boolean) as HeroSlide[];
+
+        const hasDefault = mappedSlides.some(isDefaultSlide);
+        if (!hasDefault) {
+          mappedSlides.unshift(fallbackDefaultSlide);
+        }
+
+        if (mappedSlides.length) {
+          setSlides(mappedSlides);
+          setCurrentSlide(0);
+        }
+      } catch (error) {
+        console.error('Failed to load hero slides, using fallback data.', error);
+        setSlides(fallbackSlides);
+      }
+    };
+
+    fetchSlides();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -151,6 +302,11 @@ const Hero = () => {
     navigate('/academy/login');
   };
 
+  const handleNavigate = (route: string) => {
+    navigate(route);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const textSlideLeftClass =
     slideAnimationStage === 'slideLeft' || slideAnimationStage === 'showImage'
       ? 'md:-translate-x-1/4 transition-transform duration-700 ease-in-out'
@@ -160,6 +316,110 @@ const Hero = () => {
     slideAnimationStage === 'slideLeft' || slideAnimationStage === 'showImage'
       ? 'translate-x-0 opacity-100 transition-all duration-700 ease-in-out'
       : 'translate-x-full opacity-0';
+
+  const activeSlide = slides[currentSlide];
+
+  const renderShowcaseSlide = (slide: ShowcaseSlide) => {
+    const secondaryCta = slide.secondaryCta;
+    return (
+    <div className="max-w-5xl mx-auto text-center md:text-left space-y-6">
+      <div
+        className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold tracking-[0.4em] uppercase ${
+          theme === 'dark'
+            ? 'text-electric-green bg-electric-green/10 border border-electric-green/30'
+            : 'text-accent-blue bg-accent-blue/10 border border-accent-blue/20'
+        }`}
+      >
+        {slide.preHeading}
+      </div>
+      <h1
+        className={`text-4xl md:text-6xl font-orbitron font-bold leading-tight ${
+          theme === 'dark' ? 'text-white text-glow-blue' : 'text-gray-900'
+        }`}
+      >
+        {slide.heading}{' '}
+        <span
+          className={
+            theme === 'dark' ? 'text-electric-green text-glow-green' : 'text-accent-red'
+          }
+        >
+          {slide.highlight}
+        </span>
+      </h1>
+      <p
+        className={`text-base md:text-xl font-exo ${
+          theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+        }`}
+      >
+        {slide.description}
+      </p>
+      <div
+        className={`flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm font-semibold uppercase tracking-widest ${
+          theme === 'dark' ? 'text-gray-100' : 'text-gray-800'
+        }`}
+      >
+        {slide.categories.map((item) => (
+          <span
+            key={item}
+            className={`px-4 py-2 rounded-full ${
+              theme === 'dark'
+                ? 'bg-dark-card border border-electric-blue/30'
+                : 'bg-white border border-gray-200 shadow-sm'
+            }`}
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+      <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
+        <button
+          onClick={() => handleNavigate(slide.primaryCta.route)}
+          className={`group px-8 py-4 rounded-full font-exo font-semibold text-lg transition-all duration-300 flex items-center space-x-2 ${
+            theme === 'dark'
+              ? 'bg-electric-green text-black hover:glow-green hover:scale-105'
+              : 'bg-accent-red text-white hover:glow-red hover:scale-105'
+          }`}
+        >
+          <span>{slide.primaryCta.label}</span>
+          <ArrowRight
+            size={20}
+            className="group-hover:translate-x-1 transition-transform duration-300"
+          />
+        </button>
+        {secondaryCta && (
+          <button
+            onClick={() => handleNavigate(secondaryCta.route)}
+            className={`px-8 py-4 rounded-full font-exo font-semibold text-lg border-2 transition-all duration-300 hover:scale-105 ${
+              theme === 'dark'
+                ? 'border-electric-blue text-electric-blue hover:bg-electric-blue hover:text-black'
+                : 'border-accent-blue text-accent-blue hover:bg-accent-blue hover:text-white'
+            }`}
+          >
+            {secondaryCta.label}
+          </button>
+        )}
+      </div>
+      <div
+        className={`flex flex-wrap items-center justify-center md:justify-start gap-4 pt-4 ${
+          theme === 'dark' ? 'text-gray-200' : 'text-gray-600'
+        }`}
+      >
+        {slide.trustBadges.map((badge) => (
+          <div
+            key={badge}
+            className={`px-5 py-2 rounded-xl text-sm font-semibold ${
+              theme === 'dark'
+                ? 'bg-dark-card border border-electric-blue/30'
+                : 'bg-white border border-gray-200 shadow-sm'
+            }`}
+          >
+            {badge}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+  };
 
   return (
     <section
@@ -176,22 +436,24 @@ const Hero = () => {
         }`}
       />
 
-      <div className="container mx-auto px-6 py-20 md:py-32 relative z-10 max-w-4xl text-center">
-        <div className="mb-6 inline-flex items-center space-x-2 px-4 py-2 rounded-full border animate-pulse-slow justify-center">
-          <Sparkles
-            size={20}
-            className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}
-          />
-          <span
-            className={`text-sm font-exo ${
-              theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'
-            }`}
-          >
-            AI-Powered Innovation Platform
-          </span>
-        </div>
+      <div className="container mx-auto px-6 py-20 md:py-1 relative z-10 max-w-4xl text-center">
+        {activeSlide.variant === 'default' && (
+          <div className="mb-6 inline-flex items-center space-x-2 px-4 py-2 rounded-full border animate-pulse-slow justify-center">
+            <Sparkles
+              size={20}
+              className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}
+            />
+            <span
+              className={`text-sm font-exo ${
+                theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'
+              }`}
+            >
+              AI-Powered Innovation Platform
+            </span>
+          </div>
+        )}
 
-        {currentSlide === 0 ? (
+        {activeSlide.variant === 'default' ? (
           slideAnimationStage === 'show' ? (
             <div className="flex flex-col items-center justify-center min-h-[300px]">
               <h1
@@ -199,7 +461,7 @@ const Hero = () => {
                   theme === 'dark' ? 'text-white text-glow-blue' : 'text-black'
                 }`}
               >
-                {slides[0].title}
+                {defaultSlide.title}
                 <br />
                 <span
                   className={
@@ -208,7 +470,7 @@ const Hero = () => {
                       : 'text-accent-red'
                   }
                 >
-                  {slides[0].highlight}
+                  {defaultSlide.highlight}
                 </span>
               </h1>
               <p
@@ -216,7 +478,7 @@ const Hero = () => {
                   theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
                 }`}
               >
-                {slides[0].subtitle}
+                {defaultSlide.subtitle}
               </p>
             </div>
           ) : (
@@ -230,7 +492,7 @@ const Hero = () => {
                     theme === 'dark' ? 'text-white text-glow-blue' : 'text-black'
                   }`}
                 >
-                  {slides[0].title}
+                {defaultSlide.title}
                   <br />
                   <span
                     className={
@@ -239,7 +501,7 @@ const Hero = () => {
                         : 'text-accent-red'
                     }
                   >
-                    {slides[0].highlight}
+                    {defaultSlide.highlight}
                   </span>
                 </h1>
                 <p
@@ -247,7 +509,7 @@ const Hero = () => {
                     theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
                   }`}
                 >
-                  {slides[0].subtitle}
+                  {defaultSlide.subtitle}
                 </p>
               </div>
              <img
@@ -264,67 +526,40 @@ const Hero = () => {
             </div>
           )
         ) : (
-          <>
-            <h1
-              className={`text-4xl md:text-7xl font-orbitron font-bold mb-6 animate-float ${
-                theme === 'dark' ? 'text-white text-glow-blue' : 'text-black'
-              }`}
-            >
-              {slides[currentSlide].title}
-              <br />
-              <span
-                className={
-                  theme === 'dark'
-                    ? 'text-electric-green text-glow-green'
-                    : 'text-accent-red'
-                }
-              >
-                {slides[currentSlide].highlight}
-              </span>
-            </h1>
-            <p
-              className={`text-base md:text-xl font-exo mb-12 max-w-full px-4 md:max-w-2xl mx-auto ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
-              }`}
-            >
-              {slides[currentSlide].subtitle}
-            </p>
-          </>
+          renderShowcaseSlide(activeSlide)
         )}
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          {/* Apply waves animation to the slide buttons only */}
-          <button
-            onClick={handleButtonClick}
-            className={`group px-8 py-4 rounded-full font-exo font-semibold text-lg transition-all duration-300 flex items-center space-x-2 ${
-              (currentSlide === 0 || currentSlide === 1 || currentSlide === 2)
-                ? theme === 'dark'
+        {activeSlide.variant === 'default' && (
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            {/* Apply waves animation to the slide buttons only */}
+            <button
+              onClick={handleButtonClick}
+              className={`group px-8 py-4 rounded-full font-exo font-semibold text-lg transition-all duration-300 flex items-center space-x-2 ${
+                theme === 'dark'
                   ? 'bg-electric-green text-black hover:glow-green hover:scale-105 waves-animation-dark'
                   : 'bg-accent-red text-white hover:glow-red hover:scale-105 waves-animation-light'
-                : theme === 'dark'
-                ? 'bg-electric-green text-black hover:glow-green hover:scale-105'
-                : 'bg-accent-red text-white hover:glow-red hover:scale-105'
-            }`}
-          >
-            <span>{slides[currentSlide].buttonText}</span>
-            <ArrowRight
-              size={20}
-              className="group-hover:translate-x-1 transition-transform duration-300"
-            />
-          </button>
+              }`}
+            >
+              <span>{activeSlide.buttonText}</span>
+              <ArrowRight
+                size={20}
+                className="group-hover:translate-x-1 transition-transform duration-300"
+              />
+            </button>
 
-          {/* Explore Solutions button without waves animation */}
-          <button
-            onClick={() => navigate('/academy/login')}
-            className={`px-8 py-4 rounded-full font-exo font-semibold text-lg border-2 transition-all duration-300 hover:scale-105 ${
-              theme === 'dark'
-                ? 'border-electric-blue text-electric-blue hover:bg-electric-blue hover:text-black'
-                : 'border-accent-blue text-accent-blue hover:bg-accent-blue hover:text-white'
-            }`}
-          >
-            Explore Solutions
-          </button>
-        </div>
+            {/* Explore Solutions button without waves animation */}
+            <button
+              onClick={() => navigate('/academy/login')}
+              className={`px-8 py-4 rounded-full font-exo font-semibold text-lg border-2 transition-all duration-300 hover:scale-105 ${
+                theme === 'dark'
+                  ? 'border-electric-blue text-electric-blue hover:bg-electric-blue hover:text-black'
+                  : 'border-accent-blue text-accent-blue hover:bg-accent-blue hover:text-white'
+              }`}
+            >
+              Explore Solutions
+            </button>
+          </div>
+        )}
 
         <div className="flex justify-center space-x-4 mt-6 px-4 sm:px-0">
           {slides.map((_, index) => (
@@ -343,20 +578,6 @@ const Hero = () => {
               }`}
             />
           ))}
-        </div>
-      </div>
-
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-        <div
-          className={`w-6 h-10 rounded-full border-2 flex items-start justify-center p-2 ${
-            theme === 'dark' ? 'border-electric-blue' : 'border-accent-blue'
-          }`}
-        >
-          <div
-            className={`w-1.5 h-1.5 rounded-full ${
-              theme === 'dark' ? 'bg-electric-green' : 'bg-accent-red'
-            }`}
-          />
         </div>
       </div>
 

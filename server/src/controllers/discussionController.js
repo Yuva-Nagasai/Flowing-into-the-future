@@ -12,12 +12,12 @@ const createDiscussion = async (req, res) => {
 
     const result = await pool.query(
       `INSERT INTO discussions (user_id, course_id, lesson_id, title, content)
-       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+       VALUES (?, ?, ?, ?, ?) RETURNING *`,
       [user_id, course_id, lesson_id || null, title, content]
     );
 
     // Get user details for response
-    const userResult = await pool.query('SELECT name, email FROM users WHERE id = $1', [user_id]);
+    const userResult = await pool.query('SELECT name, email FROM users WHERE id = ?', [user_id]);
     const discussion = {
       ...result.rows[0],
       user_name: userResult.rows[0]?.name,
@@ -85,7 +85,7 @@ const getDiscussionById = async (req, res) => {
         u.email as user_email
        FROM discussions d
        JOIN users u ON d.user_id = u.id
-       WHERE d.id = $1`,
+       WHERE d.id = ?`,
       [id]
     );
 
@@ -101,7 +101,7 @@ const getDiscussionById = async (req, res) => {
         u.email as user_email
        FROM discussion_replies dr
        JOIN users u ON dr.user_id = u.id
-       WHERE dr.discussion_id = $1
+       WHERE dr.discussion_id = ?
        ORDER BY dr.created_at ASC`,
       [id]
     );
@@ -128,12 +128,12 @@ const createReply = async (req, res) => {
 
     const result = await pool.query(
       `INSERT INTO discussion_replies (discussion_id, user_id, content)
-       VALUES ($1, $2, $3) RETURNING *`,
+       VALUES (?, ?, ?) RETURNING *`,
       [discussion_id, user_id, content]
     );
 
     // Get user details
-    const userResult = await pool.query('SELECT name, email FROM users WHERE id = $1', [user_id]);
+    const userResult = await pool.query('SELECT name, email FROM users WHERE id = ?', [user_id]);
     const reply = {
       ...result.rows[0],
       user_name: userResult.rows[0]?.name,
@@ -155,7 +155,7 @@ const deleteDiscussion = async (req, res) => {
 
     // Check if user owns the discussion
     const discussionResult = await pool.query(
-      'SELECT * FROM discussions WHERE id = $1 AND user_id = $2',
+      'SELECT * FROM discussions WHERE id = ? AND user_id = ?',
       [id, user_id]
     );
 
@@ -163,7 +163,7 @@ const deleteDiscussion = async (req, res) => {
       return res.status(404).json({ error: 'Discussion not found or unauthorized' });
     }
 
-    await pool.query('DELETE FROM discussions WHERE id = $1', [id]);
+    await pool.query('DELETE FROM discussions WHERE id = ?', [id]);
 
     res.json({ message: 'Discussion deleted successfully' });
   } catch (error) {

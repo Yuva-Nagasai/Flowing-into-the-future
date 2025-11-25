@@ -1,9 +1,11 @@
 import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowLeft, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import Header from '../Header';
+import Footer from '../Footer';
 
 export type ProductStatus = 'supported' | 'limited' | 'not-supported';
 
@@ -96,41 +98,16 @@ const ProductCategoryTemplate = ({
   const shouldReduceMotion = useReducedMotion();
 
   const mutedText = theme === 'dark' ? 'text-gray-300' : 'text-gray-700';
+  const eyebrowTextClass = `text-xs uppercase tracking-[0.2em] font-semibold ${
+    theme === 'dark' ? 'text-electric-green/80' : 'text-accent-red/80'
+  }`;
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
-      {/* Top Bar */}
-      <div
-        className={`sticky top-0 z-50 border-b backdrop-blur-xl ${
-          theme === 'dark' 
-            ? 'bg-dark-card/95 border-electric-blue/20 shadow-lg shadow-electric-blue/5' 
-            : 'bg-white/95 border-gray-200 shadow-lg shadow-gray-200/50'
-        }`}
-      >
-        <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <Link
-            to="/"
-            className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold ${
-              theme === 'dark'
-                ? `bg-electric-green text-black ${!shouldReduceMotion && 'transition-all duration-300 transform hover:scale-105 hover:bg-electric-blue hover:shadow-lg hover:shadow-electric-green/30'}`
-                : `bg-accent-red text-white ${!shouldReduceMotion && 'transition-all duration-300 transform hover:scale-105 hover:bg-accent-blue hover:shadow-lg hover:shadow-accent-red/30'}`
-            }`}
-          >
-            <ArrowLeft size={18} />
-            Back to Website
-          </Link>
-          <span
-            className={`text-xs font-exo uppercase tracking-[0.3em] font-semibold ${
-              theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
-            }`}
-          >
-            {badgeLabel}
-          </span>
-        </div>
-      </div>
-
-      {/* Hero */}
-      <section className={`relative overflow-hidden py-16 sm:py-20 md:py-24 ${
+      <Header />
+      <main className="pt-24 lg:pt-32">
+        {/* Hero */}
+        <section className={`relative overflow-hidden py-16 sm:py-20 md:py-24 ${
         theme === 'dark'
           ? 'bg-gradient-to-br from-dark-card via-dark-bg to-black'
           : 'bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30'
@@ -159,11 +136,7 @@ const ProductCategoryTemplate = ({
               {BadgeIcon && <BadgeIcon className="w-5 h-5" />}
               <span className="font-semibold tracking-wide text-sm">{badgeLabel}</span>
             </div>
-            <p
-              className={`text-xs font-exo uppercase tracking-[0.4em] mb-4 font-semibold ${
-                theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
-              }`}
-            >
+            <p className={`${eyebrowTextClass} mb-4`}>
               {heroEyebrow}
             </p>
             <h1
@@ -534,7 +507,9 @@ const ProductCategoryTemplate = ({
           </motion.div>
         </div>
       </section>
-    </div>
+    </main>
+    <Footer />
+  </div>
   );
 };
 

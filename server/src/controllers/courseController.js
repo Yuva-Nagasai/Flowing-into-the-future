@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const pool = require('../config/db');
 
 const getAllCourses = async (req, res) => {
@@ -6,18 +7,15 @@ const getAllCourses = async (req, res) => {
 
     let query = 'SELECT * FROM courses WHERE published = true';
     const params = [];
-    let paramCount = 1;
 
     if (search) {
-      query += ` AND title ILIKE $${paramCount}`;
+      query += ' AND title LIKE ?';
       params.push(`%${search}%`);
-      paramCount++;
     }
 
     if (category) {
-      query += ` AND category = $${paramCount}`;
+      query += ' AND category = ?';
       params.push(category);
-      paramCount++;
     }
 
     if (sortBy === 'price_low') {
@@ -42,7 +40,7 @@ const getCourseById = async (req, res) => {
     const { id } = req.params;
 
     const courseResult = await pool.query(
-      'SELECT * FROM courses WHERE id = $1',
+      'SELECT * FROM courses WHERE id = ?',
       [id]
     );
 
@@ -51,12 +49,12 @@ const getCourseById = async (req, res) => {
     }
 
     const videosResult = await pool.query(
-      'SELECT * FROM videos WHERE course_id = $1 ORDER BY order_index ASC',
+      'SELECT * FROM videos WHERE course_id = ? ORDER BY order_index ASC',
       [id]
     );
 
     const resourcesResult = await pool.query(
-      'SELECT * FROM resources WHERE course_id = $1',
+      'SELECT * FROM resources WHERE course_id = ?',
       [id]
     );
 
@@ -93,11 +91,15 @@ const createCourse = async (req, res) => {
     // Use instructor_name from request, fallback to user name or 'Admin'
     const instructorName = instructor_name || req.user.name || 'Admin';
 
-    const result = await pool.query(
-      `INSERT INTO courses (title, description, short_description, price, category, thumbnail, promotional_video, instructor_name, published, free)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
-      [title, description, short_description || null, coursePrice, category, thumbnail || null, promotional_video || null, instructorName, isPublished, isFree]
+    const courseId = uuidv4();
+
+    await pool.query(
+      `INSERT INTO courses (id, title, description, short_description, price, category, thumbnail, promotional_video, instructor_name, published, free)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [courseId, title, description, short_description || null, coursePrice, category, thumbnail || null, promotional_video || null, instructorName, isPublished, isFree]
     );
+
+    const courseResult = await pool.query('SELECT * FROM courses WHERE id = ?', [courseId]);
 
     const message = isFree 
       ? (isPublished ? 'Free course created and published successfully!' : 'Free course created successfully! (Currently unpublished)')
@@ -105,7 +107,7 @@ const createCourse = async (req, res) => {
 
     res.status(201).json({ 
       message: 'Course created successfully',
-      course: result.rows[0],
+      course: courseResult.rows[0],
       note: message
     });
   } catch (error) {
@@ -119,95 +121,58 @@ const updateCourse = async (req, res) => {
     const { id } = req.params;
     const { title, description, short_description, price, category, thumbnail, promotional_video, instructor_name, published, free } = req.body;
 
-    console.log('=== BACKEND UPDATE DEBUG ===');
-    console.log('Full request body:', JSON.stringify(req.body, null, 2));
-    console.log('Instructor name extracted:', instructor_name);
-    console.log('Instructor name type:', typeof instructor_name);
-    console.log('Instructor name value:', JSON.stringify(instructor_name));
+    const existingCourseResult = await pool.query('SELECT * FROM courses WHERE id = ?', [id]);
+    if (existingCourseResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Course not found' });
+    }
+    const currentCourse = existingCourseResult.rows[0];
 
     const updates = [];
     const params = [];
-    let paramCount = 1;
 
     if (title !== undefined) {
-      updates.push(`title = $${paramCount++}`);
+      updates.push('title = ?');
       params.push(title);
     }
     if (description !== undefined) {
-      updates.push(`description = $${paramCount++}`);
+      updates.push('description = ?');
       params.push(description);
     }
     if (short_description !== undefined) {
-      updates.push(`short_description = $${paramCount++}`);
+      updates.push('short_description = ?');
       params.push(short_description || null);
-      console.log('Adding short_description field to update:', short_description || null); // Debug log
     }
     if (free !== undefined) {
       const isFree = free === true || free === 'true';
-      updates.push(`free = $${paramCount++}`);
+      updates.push('free = ?');
       params.push(isFree);
-      console.log('Adding free field to update:', isFree); // Debug log
-      // If marking as free and price not explicitly set, also set price to 0
       if (isFree && price === undefined) {
-        updates.push(`price = $${paramCount++}`);
+          updates.push('price = ?');
         params.push(0);
       }
     }
     if (price !== undefined) {
-      // If course is being marked as free, force price to 0
-      const isFree = free !== undefined ? (free === true || free === 'true') : null;
-      if (isFree === true) {
-        // Force price to 0 for free courses
-        // Check if price update is already added above
-        const priceAlreadySet = updates.some(update => update.startsWith('price ='));
-        if (!priceAlreadySet) {
-          updates.push(`price = $${paramCount++}`);
-          params.push(0);
-        }
-      } else if (isFree === null) {
-        // Check current free status from database
-        const currentCourse = await pool.query('SELECT free FROM courses WHERE id = $1', [id]);
-        if (currentCourse.rows.length > 0 && currentCourse.rows[0].free) {
-          // Course is currently free, ensure price stays 0
-          const priceAlreadySet = updates.some(update => update.startsWith('price ='));
-          if (!priceAlreadySet) {
-            updates.push(`price = $${paramCount++}`);
-            params.push(0);
-          }
-        } else {
-          // Course is not free, update price normally
-          const priceAlreadySet = updates.some(update => update.startsWith('price ='));
-          if (!priceAlreadySet) {
-            updates.push(`price = $${paramCount++}`);
-            params.push(price);
-          }
-        }
-      } else {
-        // Course is being marked as paid (free = false), update price normally
-        const priceAlreadySet = updates.some(update => update.startsWith('price ='));
-        if (!priceAlreadySet) {
-          updates.push(`price = $${paramCount++}`);
-          params.push(price);
-        }
-      }
+      const freeOverride = free !== undefined ? (free === true || free === 'true') : currentCourse.free;
+      updates.push('price = ?');
+      params.push(freeOverride ? 0 : price);
+    } else if (free === undefined && currentCourse.free && updates.length > 0 && !updates.some(u => u.startsWith('price ='))) {
+      updates.push('price = ?');
+      params.push(0);
     }
     if (category !== undefined) {
-      updates.push(`category = $${paramCount++}`);
+      updates.push('category = ?');
       params.push(category);
     }
     if (thumbnail !== undefined) {
-      updates.push(`thumbnail = $${paramCount++}`);
+      updates.push('thumbnail = ?');
       params.push(thumbnail);
     }
     if (promotional_video !== undefined) {
-      updates.push(`promotional_video = $${paramCount++}`);
+      updates.push('promotional_video = ?');
       params.push(promotional_video);
     }
     if (instructor_name !== undefined) {
-      updates.push(`instructor_name = $${paramCount++}`);
-      // Preserve the value exactly as provided - trim whitespace
-      // If empty string or null, use 'Admin' as fallback (database requires NOT NULL)
-      // But if user provides a value (even if it's just whitespace that gets trimmed), use it
+      updates.push('instructor_name = ?');
       let trimmedName;
       if (instructor_name === null || instructor_name === undefined) {
         trimmedName = 'Admin';
@@ -220,13 +185,11 @@ const updateCourse = async (req, res) => {
       } else {
         trimmedName = instructor_name;
       }
-      console.log('Processing instructor_name:', { original: instructor_name, trimmed: trimmedName }); // Debug log
       params.push(trimmedName);
     }
     if (published !== undefined) {
-      // Convert to boolean if it's a string
       const isPublished = published === true || published === 'true';
-      updates.push(`published = $${paramCount++}`);
+      updates.push('published = ?');
       params.push(isPublished);
     }
 
@@ -235,19 +198,13 @@ const updateCourse = async (req, res) => {
     }
 
     params.push(id);
-    const query = `UPDATE courses SET ${updates.join(', ')} WHERE id = $${paramCount} RETURNING *`;
+    const query = `UPDATE courses SET ${updates.join(', ')} WHERE id = ?`;
 
-    console.log('Updates array:', updates); // Debug log
-    console.log('Update query:', query); // Debug log
-    console.log('Update params:', params); // Debug log
-    console.log('Free field in updates:', updates.find(u => u.startsWith('free'))); // Debug log
-    console.log('Short description in updates:', updates.find(u => u.startsWith('short_description'))); // Debug log
+    await pool.query(query, params);
 
-    const result = await pool.query(query, params);
+    const updatedResult = await pool.query('SELECT * FROM courses WHERE id = ?', [id]);
 
-    console.log('Updated course:', result.rows[0]); // Debug log
-
-    res.json({ message: 'Course updated successfully', course: result.rows[0] });
+    res.json({ message: 'Course updated successfully', course: updatedResult.rows[0] });
   } catch (error) {
     console.error('Update course error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -258,7 +215,7 @@ const deleteCourse = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await pool.query('DELETE FROM courses WHERE id = $1', [id]);
+    await pool.query('DELETE FROM courses WHERE id = ?', [id]);
 
     res.json({ message: 'Course deleted successfully' });
   } catch (error) {
@@ -283,7 +240,7 @@ const getCourseDetailsAdmin = async (req, res) => {
     const { id } = req.params;
 
     // Get course
-    const courseResult = await pool.query('SELECT * FROM courses WHERE id = $1', [id]);
+    const courseResult = await pool.query('SELECT * FROM courses WHERE id = ?', [id]);
     if (courseResult.rows.length === 0) {
       return res.status(404).json({ error: 'Course not found' });
     }
@@ -294,7 +251,7 @@ const getCourseDetailsAdmin = async (req, res) => {
         COUNT(l.id) as lesson_count
        FROM modules m
        LEFT JOIN lessons l ON m.id = l.module_id
-       WHERE m.course_id = $1
+       WHERE m.course_id = ?
        GROUP BY m.id
        ORDER BY m.order_index ASC`,
       [id]
@@ -309,7 +266,7 @@ const getCourseDetailsAdmin = async (req, res) => {
            FROM lessons l
            LEFT JOIN quizzes q ON l.id = q.lesson_id
            LEFT JOIN assignments a ON l.id = a.lesson_id
-           WHERE l.module_id = $1
+           WHERE l.module_id = ?
            GROUP BY l.id
            ORDER BY l.order_index ASC`,
           [module.id]
@@ -323,7 +280,7 @@ const getCourseDetailsAdmin = async (req, res) => {
 
     // Get enrollment count
     const enrollmentResult = await pool.query(
-      'SELECT COUNT(DISTINCT user_id) as enrollment_count FROM purchases WHERE course_id = $1',
+      'SELECT COUNT(DISTINCT user_id) as enrollment_count FROM purchases WHERE course_id = ?',
       [id]
     );
 

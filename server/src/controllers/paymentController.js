@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const pool = require('../config/db');
 const Razorpay = require('razorpay');
 
@@ -44,14 +45,14 @@ const createOrder = async (req, res) => {
     }
 
     // Get course details
-    const courseResult = await pool.query('SELECT * FROM courses WHERE id = $1', [course_id]);
+    const courseResult = await pool.query('SELECT * FROM courses WHERE id = ?', [course_id]);
     if (courseResult.rows.length === 0) {
       return res.status(404).json({ error: 'Course not found' });
     }
 
     // Check if already purchased
     const purchaseCheck = await pool.query(
-      'SELECT * FROM purchases WHERE user_id = $1 AND course_id = $2',
+      'SELECT * FROM purchases WHERE user_id = ? AND course_id = ?',
       [user_id, course_id]
     );
 
@@ -85,15 +86,17 @@ const createOrder = async (req, res) => {
     // Store order in database
     let orderResult;
     try {
-      orderResult = await pool.query(
-        `INSERT INTO payment_orders (user_id, course_id, razorpay_order_id, amount, currency, status)
-         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-        [user_id, course_id, razorpayOrder.id, numericAmount, 'INR', 'pending']
+      const paymentOrderId = uuidv4();
+      await pool.query(
+        `INSERT INTO payment_orders (id, user_id, course_id, razorpay_order_id, amount, currency, status)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [paymentOrderId, user_id, course_id, razorpayOrder.id, numericAmount, 'INR', 'pending']
       );
+      orderResult = await pool.query('SELECT * FROM payment_orders WHERE id = ?', [paymentOrderId]);
     } catch (dbError) {
       console.error('Database error storing order:', dbError);
       // If table doesn't exist, provide helpful error
-      if (dbError.code === '42P01') {
+      if (dbError.code === 'ER_NO_SUCH_TABLE') {
         return res.status(500).json({ 
           error: 'Database error',
           message: 'payment_orders table does not exist. Please run the database migrations.',
@@ -146,7 +149,7 @@ const verifyPayment = async (req, res) => {
 
     // Get order from database
     const orderResult = await pool.query(
-      'SELECT * FROM payment_orders WHERE razorpay_order_id = $1 AND user_id = $2',
+      'SELECT * FROM payment_orders WHERE razorpay_order_id = ? AND user_id = ?',
       [razorpay_order_id, user_id]
     );
 
@@ -159,30 +162,33 @@ const verifyPayment = async (req, res) => {
     // Update order status
     await pool.query(
       `UPDATE payment_orders 
-       SET status = 'paid', razorpay_payment_id = $1, updated_at = NOW() 
-       WHERE id = $2`,
+       SET status = 'paid', razorpay_payment_id = ?, updated_at = NOW() 
+       WHERE id = ?`,
       [razorpay_payment_id, order.id]
     );
 
     // Create purchase
-    const purchaseResult = await pool.query(
-      `INSERT INTO purchases (user_id, course_id, razorpay_payment_id, razorpay_order_id, amount, status)
-       VALUES ($1, $2, $3, $4, $5, $6) 
-       ON CONFLICT (user_id, course_id) DO NOTHING
-       RETURNING *`,
-      [user_id, course_id, razorpay_payment_id, razorpay_order_id, order.amount, 'completed']
-    );
-
-    if (purchaseResult.rows.length === 0) {
-      // Already purchased
-      return res.status(400).json({ error: 'Course already purchased' });
+    let purchaseRecord;
+    try {
+      const purchaseId = uuidv4();
+      await pool.query(
+        `INSERT INTO purchases (id, user_id, course_id, razorpay_payment_id, razorpay_order_id, amount, status)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [purchaseId, user_id, course_id, razorpay_payment_id, razorpay_order_id, order.amount, 'completed']
+      );
+      purchaseRecord = await pool.query('SELECT * FROM purchases WHERE id = ?', [purchaseId]);
+    } catch (insertError) {
+      if (insertError.code === 'ER_DUP_ENTRY') {
+        return res.status(400).json({ error: 'Course already purchased' });
+      }
+      throw insertError;
     }
 
     // Send email notification
     try {
       const { sendEmail, templates } = require('../services/emailService');
-      const userResult = await pool.query('SELECT name, email FROM users WHERE id = $1', [user_id]);
-      const courseResult = await pool.query('SELECT title FROM courses WHERE id = $1', [course_id]);
+      const userResult = await pool.query('SELECT name, email FROM users WHERE id = ?', [user_id]);
+      const courseResult = await pool.query('SELECT title FROM courses WHERE id = ?', [course_id]);
       
       if (userResult.rows.length > 0 && courseResult.rows.length > 0) {
         const user = userResult.rows[0];
@@ -203,7 +209,7 @@ const verifyPayment = async (req, res) => {
 
     res.json({
       message: 'Payment verified and course enrolled successfully',
-      purchase: purchaseResult.rows[0]
+      purchase: purchaseRecord.rows[0]
     });
   } catch (error) {
     console.error('Verify payment error:', error);
@@ -223,7 +229,7 @@ const getPaymentHistory = async (req, res) => {
         c.thumbnail
        FROM payment_orders po
        JOIN courses c ON po.course_id = c.id
-       WHERE po.user_id = $1
+       WHERE po.user_id = ?
        ORDER BY po.created_at DESC`,
       [user_id]
     );
@@ -246,7 +252,7 @@ const enrollFree = async (req, res) => {
     }
 
     // Get course details and check if it's free
-    const courseResult = await pool.query('SELECT * FROM courses WHERE id = $1', [course_id]);
+    const courseResult = await pool.query('SELECT * FROM courses WHERE id = ?', [course_id]);
     if (courseResult.rows.length === 0) {
       return res.status(404).json({ error: 'Course not found' });
     }
@@ -258,7 +264,7 @@ const enrollFree = async (req, res) => {
 
     // Check if already enrolled
     const purchaseCheck = await pool.query(
-      'SELECT * FROM purchases WHERE user_id = $1 AND course_id = $2',
+      'SELECT * FROM purchases WHERE user_id = ? AND course_id = ?',
       [user_id, course_id]
     );
 
@@ -267,11 +273,13 @@ const enrollFree = async (req, res) => {
     }
 
     // Create free purchase
-    const purchaseResult = await pool.query(
-      `INSERT INTO purchases (user_id, course_id, razorpay_payment_id, razorpay_order_id, amount, status)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [user_id, course_id, 'FREE', null, 0, 'completed']
+    const purchaseId = uuidv4();
+    await pool.query(
+      `INSERT INTO purchases (id, user_id, course_id, razorpay_payment_id, razorpay_order_id, amount, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [purchaseId, user_id, course_id, 'FREE', null, 0, 'completed']
     );
+    const purchaseResult = await pool.query('SELECT * FROM purchases WHERE id = ?', [purchaseId]);
 
     res.status(201).json({
       message: 'Successfully enrolled in free course',

@@ -18,11 +18,11 @@ const ICON_SIZE = 24;
 const TOUCH_RESET_MS = 350;
 
 const socialLinks = [
-  { icon: FaFacebook, href: 'https://www.facebook.com/', label: 'Facebook' },
-  { icon: FaInstagram, href: 'https://www.instagram.com/', label: 'Instagram' },
-  { icon: FaLinkedin, href: 'https://www.linkedin.com/', label: 'LinkedIn' },
-  { icon: FaTwitter, href: 'https://www.twitter.com/', label: 'Twitter' },
-  { icon: SiThreads, href: 'https://www.threads.net/', label: 'Threads' },
+  { icon: FaFacebook, href: 'https://www.facebook.com/nanoflows', label: 'Facebook' },
+  { icon: FaInstagram, href: 'https://www.instagram.com/nanoflows/', label: 'Instagram' },
+  { icon: FaLinkedin, href: 'https://www.linkedin.com/in/nanoflows', label: 'LinkedIn' },
+  { icon: FaTwitter, href: 'https://x.com/NanoFlows', label: 'Twitter' },
+  { icon: SiThreads, href: 'https://www.threads.com/@nanoflows', label: 'Threads' },
 ];
 
 const SocialMediaBar: React.FC = () => {

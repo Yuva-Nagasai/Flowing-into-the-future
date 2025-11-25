@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const { queryWithRetry } = require('../config/db');
 
 const getAllAITools = async (req, res) => {
@@ -6,24 +7,20 @@ const getAllAITools = async (req, res) => {
     
     let query = 'SELECT * FROM ai_tools WHERE 1=1';
     const params = [];
-    let paramCount = 1;
 
     if (active !== undefined) {
-      query += ` AND active = $${paramCount}`;
+      query += ' AND active = ?';
       params.push(active === 'true');
-      paramCount++;
     }
 
     if (category) {
-      query += ` AND category = $${paramCount}`;
+      query += ' AND category = ?';
       params.push(category);
-      paramCount++;
     }
 
     if (pricing_type) {
-      query += ` AND pricing_type = $${paramCount}`;
+      query += ' AND pricing_type = ?';
       params.push(pricing_type);
-      paramCount++;
     }
 
     query += ' ORDER BY created_at DESC';
@@ -40,7 +37,7 @@ const getAllAITools = async (req, res) => {
 const getAIToolById = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await queryWithRetry('SELECT * FROM ai_tools WHERE id = $1', [id]);
+    const result = await queryWithRetry('SELECT * FROM ai_tools WHERE id = ?', [id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'AI tool not found' });
@@ -69,12 +66,14 @@ const createAITool = async (req, res) => {
       return res.status(400).json({ error: 'Features must be a non-empty array' });
     }
 
-    const result = await queryWithRetry(
-      `INSERT INTO ai_tools (name, description, category, color, features, pricing_type, url)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING *`,
-      [name, description, category, color, features, pricing_type, url]
+    const toolId = uuidv4();
+    await queryWithRetry(
+      `INSERT INTO ai_tools (id, name, description, category, color, features, pricing_type, url)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [toolId, name, description, category, color, features, pricing_type, url]
     );
+
+    const result = await queryWithRetry('SELECT * FROM ai_tools WHERE id = ?', [toolId]);
 
     res.status(201).json({ tool: result.rows[0] });
   } catch (error) {
@@ -88,74 +87,68 @@ const updateAITool = async (req, res) => {
     const { id } = req.params;
     const { name, description, category, color, features, pricing_type, url, active } = req.body;
 
+    const existingTool = await queryWithRetry('SELECT * FROM ai_tools WHERE id = ?', [id]);
+    if (existingTool.rows.length === 0) {
+      return res.status(404).json({ error: 'AI tool not found' });
+    }
+
     const updateFields = [];
     const params = [];
-    let paramCount = 1;
 
     if (name !== undefined) {
-      updateFields.push(`name = $${paramCount}`);
+      updateFields.push('name = ?');
       params.push(name);
-      paramCount++;
     }
     if (description !== undefined) {
-      updateFields.push(`description = $${paramCount}`);
+      updateFields.push('description = ?');
       params.push(description);
-      paramCount++;
     }
     if (category !== undefined) {
-      updateFields.push(`category = $${paramCount}`);
+      updateFields.push('category = ?');
       params.push(category);
-      paramCount++;
     }
     if (color !== undefined) {
-      updateFields.push(`color = $${paramCount}`);
+      updateFields.push('color = ?');
       params.push(color);
-      paramCount++;
     }
     if (features !== undefined) {
       if (!Array.isArray(features) || features.length === 0) {
         return res.status(400).json({ error: 'Features must be a non-empty array' });
       }
-      updateFields.push(`features = $${paramCount}`);
+      updateFields.push('features = ?');
       params.push(features);
-      paramCount++;
     }
     if (pricing_type !== undefined) {
       if (!['free', 'paid'].includes(pricing_type)) {
         return res.status(400).json({ error: 'pricing_type must be either "free" or "paid"' });
       }
-      updateFields.push(`pricing_type = $${paramCount}`);
+      updateFields.push('pricing_type = ?');
       params.push(pricing_type);
-      paramCount++;
     }
     if (url !== undefined) {
-      updateFields.push(`url = $${paramCount}`);
+      updateFields.push('url = ?');
       params.push(url);
-      paramCount++;
     }
     if (active !== undefined) {
-      updateFields.push(`active = $${paramCount}`);
+      updateFields.push('active = ?');
       params.push(active);
-      paramCount++;
     }
 
     if (updateFields.length === 0) {
       return res.status(400).json({ error: 'No fields to update' });
     }
 
-    updateFields.push(`updated_at = NOW()`);
+    updateFields.push('updated_at = NOW()');
     params.push(id);
 
-    const result = await queryWithRetry(
-      `UPDATE ai_tools SET ${updateFields.join(', ')} WHERE id = $${paramCount} RETURNING *`,
+    await queryWithRetry(
+      `UPDATE ai_tools SET ${updateFields.join(', ')} WHERE id = ?`,
       params
     );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'AI tool not found' });
-    }
+    const updatedTool = await queryWithRetry('SELECT * FROM ai_tools WHERE id = ?', [id]);
 
-    res.json({ tool: result.rows[0] });
+    res.json({ tool: updatedTool.rows[0] });
   } catch (error) {
     console.error('Update AI tool error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -165,11 +158,12 @@ const updateAITool = async (req, res) => {
 const deleteAITool = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await queryWithRetry('DELETE FROM ai_tools WHERE id = $1 RETURNING *', [id]);
-
-    if (result.rows.length === 0) {
+    const existingTool = await queryWithRetry('SELECT * FROM ai_tools WHERE id = ?', [id]);
+    if (existingTool.rows.length === 0) {
       return res.status(404).json({ error: 'AI tool not found' });
     }
+
+    await queryWithRetry('DELETE FROM ai_tools WHERE id = ?', [id]);
 
     res.json({ message: 'AI tool deleted successfully' });
   } catch (error) {

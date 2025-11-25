@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
-import { jobsAPI } from '../utils/api';
+import { jobsAPI } from '../utils/api.js';
 import { Briefcase, MapPin, Clock, ArrowRight, X, Send } from 'lucide-react';
 
 interface Job {
@@ -13,6 +13,51 @@ interface Job {
   description: string;
   requirements: string[];
 }
+
+const fallbackJobs: Job[] = [
+  {
+    id: 'senior-ai-product-manager',
+    title: 'Senior AI Product Manager',
+    department: 'Product',
+    location: 'Remote, Global',
+    type: 'Full-time',
+    description:
+      'Own the roadmap for our adaptive learning copilot, partner with engineering and pedagogy teams, and ship features that serve 1M+ monthly learners.',
+    requirements: [
+      '7+ years in product or program management',
+      'Expertise launching AI/ML powered experiences',
+      'Comfort leading cross-functional discovery workshops'
+    ]
+  },
+  {
+    id: 'principal-frontend-engineer',
+    title: 'Principal Frontend Engineer',
+    department: 'Engineering',
+    location: 'Austin, TX or Remote (US)',
+    type: 'Hybrid',
+    description:
+      'Architect the design system, mentor React engineers, and optimize our Vite + Tailwind stack for sub-second learning experiences.',
+    requirements: [
+      'Deep React/TypeScript knowledge with performance tuning stories',
+      'Experience shipping design systems at scale',
+      'Passion for DX tooling and automated testing'
+    ]
+  },
+  {
+    id: 'learning-strategist-emea',
+    title: 'Learning Strategist, EMEA',
+    department: 'Learning Experience',
+    location: 'London, UK',
+    type: 'Full-time',
+    description:
+      'Translate enterprise upskilling goals into measurable learning journeys, and support customer pilots across Europe.',
+    requirements: [
+      'Background in instructional design or L&D consulting',
+      'Comfort facilitating executive workshops',
+      'Strong data storytelling and stakeholder alignment skills'
+    ]
+  }
+];
 
 const Careers = () => {
   const { theme } = useTheme();
@@ -36,11 +81,12 @@ const Careers = () => {
   const fetchJobs = async () => {
     try {
       const response = await jobsAPI.getAll({ active: 'true' });
-      setJobOpenings(response.data.jobs || []);
+      const jobs = response.data.jobs;
+      setJobOpenings(jobs && jobs.length > 0 ? jobs : fallbackJobs);
     } catch (error) {
       console.error('Error fetching jobs:', error);
-      // Fallback to empty array if API fails
-      setJobOpenings([]);
+      // Fallback to sample listings if API fails
+      setJobOpenings(fallbackJobs);
     } finally {
       setLoading(false);
     }
@@ -89,7 +135,7 @@ const Careers = () => {
   return (
     <section
       id="careers"
-      className={`relative pt-4 md:pt-6 pb-20 overflow-hidden ${
+      className={`relative pt-4 md:pt-6 pb-20 overflow-hidden scroll-mt-24 lg:scroll-mt-32 ${
         theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'
       }`}
     >

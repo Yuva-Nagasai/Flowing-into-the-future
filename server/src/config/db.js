@@ -1,88 +1,89 @@
-const { Pool } = require('pg');
+const mysql = require('mysql2/promise');
 
-if (!process.env.DATABASE_URL) {
-  console.error('FATAL: DATABASE_URL environment variable is required');
-  console.error('Please create a .env file in the server directory with DATABASE_URL');
-  process.exit(1);
-}
+const {
+  MYSQLHOST = 'localhost',
+  MYSQLPORT = '3306',
+  MYSQLUSER = 'root',
+  MYSQLPASSWORD = '',
+  MYSQLDATABASE = 'nanoflows',
+  DATABASE_URL
+} = process.env;
 
-// Check if it's a Neon database (requires SSL)
-const isNeon = process.env.DATABASE_URL.includes('neon.tech') || 
-               process.env.DATABASE_URL.includes('aws.neon.tech');
+const buildConfigFromUrl = () => {
+  if (!DATABASE_URL || !DATABASE_URL.startsWith('mysql://')) {
+    return null;
+  }
 
-// Configure SSL based on database type
-const sslConfig = isNeon 
-  ? { rejectUnauthorized: false } 
-  : (process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false);
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: sslConfig,
-  max: 10, // Reduced pool size for better stability
-  idleTimeoutMillis: 60000, // Close idle clients after 60 seconds
-  connectionTimeoutMillis: 30000, // Increased to 30 seconds for Neon
-  statement_timeout: 30000, // Query timeout
-  query_timeout: 30000, // Query timeout
-  keepAlive: true,
-  keepAliveInitialDelayMillis: 10000,
-});
-
-pool.on('error', (err) => {
-  console.error('Unexpected database pool error:', err.message);
-  // Don't exit on pool errors, let the app continue
-});
-
-pool.on('connect', () => {
-  console.log('📊 New database client connected to pool');
-});
-
-pool.on('remove', () => {
-  console.log('📊 Database client removed from pool');
-});
-
-// Test connection on startup with retry
-const testConnection = async (retries = 3) => {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const client = await pool.connect();
-      console.log('✅ Database connection successful');
-      client.release();
-      return;
-    } catch (err) {
-      console.error(`❌ Database connection attempt ${i + 1}/${retries} failed:`, err.message);
-      if (i < retries - 1) {
-        console.log(`⏳ Retrying in 2 seconds...`);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      } else {
-        console.error('❌ All database connection attempts failed');
-        console.error('Please check your DATABASE_URL in the .env file');
-      }
-    }
+  try {
+    const url = new URL(DATABASE_URL);
+    return {
+      host: url.hostname,
+      port: url.port ? parseInt(url.port, 10) : 3306,
+      user: decodeURIComponent(url.username),
+      password: decodeURIComponent(url.password),
+      database: url.pathname.replace('/', '') || MYSQLDATABASE
+    };
+  } catch (error) {
+    console.warn('⚠️  Could not parse DATABASE_URL, falling back to individual MySQL vars:', error.message);
+    return null;
   }
 };
 
-testConnection();
+const connectionConfig = buildConfigFromUrl() || {
+  host: MYSQLHOST,
+  port: parseInt(MYSQLPORT, 10),
+  user: MYSQLUSER,
+  password: MYSQLPASSWORD,
+  database: MYSQLDATABASE
+};
 
-// Helper function to execute queries with retry logic
-const queryWithRetry = async (queryText, params, retries = 2) => {
-  for (let i = 0; i < retries; i++) {
+const pool = mysql.createPool({
+  ...connectionConfig,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  multipleStatements: false // keep this false for security; run extra selects separately
+});
+
+const normalizeQuery = (queryText = '') => {
+  return queryText
+    .replace(/LIKE/gi, 'LIKE')
+    .replace(/\$(\d+)/g, '?');
+};
+
+const query = async (queryText, params = []) => {
+  const sql = normalizeQuery(queryText);
+  const [rows] = await pool.execute(sql, params);
+  return { rows };
+};
+
+const isTransientError = (error) => {
+  const transientCodes = ['ETIMEDOUT', 'ENOTFOUND', 'ECONNREFUSED', 'ER_LOCK_DEADLOCK', 'PROTOCOL_SEQUENCE_TIMEOUT'];
+  return transientCodes.includes(error?.code);
+};
+
+const queryWithRetry = async (queryText, params = [], retries = 2) => {
+  let attempt = 0;
+  while (attempt <= retries) {
     try {
-      return await pool.query(queryText, params);
+      return await query(queryText, params);
     } catch (error) {
-      const isConnectionError = error.code === 'ETIMEDOUT' || 
-                                error.code === 'ENOTFOUND' || 
-                                error.code === 'ENETUNREACH' ||
-                                error.code === 'ECONNREFUSED';
-      
-      if (isConnectionError && i < retries - 1) {
-        console.warn(`⚠️ Query failed (attempt ${i + 1}/${retries}), retrying...`, error.message);
-        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1))); // Exponential backoff
-        continue;
+      if (attempt === retries || !isTransientError(error)) {
+        throw error;
       }
-      throw error;
+      const waitMs = 1000 * (attempt + 1);
+      console.warn(`⚠️  Query failed (attempt ${attempt + 1}/${retries + 1}), retrying in ${waitMs}ms...`, error.message);
+      await new Promise((resolve) => setTimeout(resolve, waitMs));
+      attempt += 1;
     }
   }
 };
 
-module.exports = pool;
-module.exports.queryWithRetry = queryWithRetry;
+const getConnection = () => pool.getConnection();
+
+module.exports = {
+  query,
+  queryWithRetry,
+  getConnection,
+  pool
+};

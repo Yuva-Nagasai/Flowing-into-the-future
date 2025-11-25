@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const pool = require('../config/db');
 const { sendEmail, templates } = require('../services/emailService');
 
@@ -11,7 +12,7 @@ const getModulesByCourse = async (req, res) => {
         COUNT(l.id) as lesson_count
        FROM modules m
        LEFT JOIN lessons l ON m.id = l.module_id
-       WHERE m.course_id = $1
+       WHERE m.course_id = ?
        GROUP BY m.id
        ORDER BY m.order_index ASC`,
       [course_id]
@@ -27,7 +28,7 @@ const getModulesByCourse = async (req, res) => {
            FROM lessons l
            LEFT JOIN quizzes q ON l.id = q.lesson_id
            LEFT JOIN assignments a ON l.id = a.lesson_id
-           WHERE l.module_id = $1
+           WHERE l.module_id = ?
            GROUP BY l.id
            ORDER BY l.order_index ASC`,
           [module.id]
@@ -55,11 +56,14 @@ const createModule = async (req, res) => {
       return res.status(400).json({ error: 'Course ID and title are required' });
     }
 
-    const result = await pool.query(
-      `INSERT INTO modules (course_id, title, description, order_index)
-       VALUES ($1, $2, $3, $4) RETURNING *`,
-      [course_id, title, description || null, order_index || 0]
+    const moduleId = uuidv4();
+    await pool.query(
+      `INSERT INTO modules (id, course_id, title, description, order_index)
+       VALUES (?, ?, ?, ?, ?)`,
+      [moduleId, course_id, title, description || null, order_index || 0]
     );
+
+    const moduleResult = await pool.query('SELECT * FROM modules WHERE id = ?', [moduleId]);
 
     // Send course update notification to enrolled students
     try {
@@ -69,7 +73,7 @@ const createModule = async (req, res) => {
       // Don't fail the request if notification fails
     }
 
-    res.status(201).json({ message: 'Module created successfully', module: result.rows[0] });
+    res.status(201).json({ message: 'Module created successfully', module: moduleResult.rows[0] });
   } catch (error) {
     console.error('Create module error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -82,20 +86,24 @@ const updateModule = async (req, res) => {
     const { id } = req.params;
     const { title, description, order_index } = req.body;
 
+    const existingModule = await pool.query('SELECT * FROM modules WHERE id = ?', [id]);
+    if (existingModule.rows.length === 0) {
+      return res.status(404).json({ error: 'Module not found' });
+    }
+
     const updates = [];
     const params = [];
-    let paramCount = 1;
 
     if (title !== undefined) {
-      updates.push(`title = $${paramCount++}`);
+      updates.push('title = ?');
       params.push(title);
     }
     if (description !== undefined) {
-      updates.push(`description = $${paramCount++}`);
+      updates.push('description = ?');
       params.push(description);
     }
     if (order_index !== undefined) {
-      updates.push(`order_index = $${paramCount++}`);
+      updates.push('order_index = ?');
       params.push(order_index);
     }
 
@@ -104,11 +112,13 @@ const updateModule = async (req, res) => {
     }
 
     params.push(id);
-    const query = `UPDATE modules SET ${updates.join(', ')} WHERE id = $${paramCount} RETURNING *`;
+    const query = `UPDATE modules SET ${updates.join(', ')} WHERE id = ?`;
 
-    const result = await pool.query(query, params);
+    await pool.query(query, params);
 
-    res.json({ message: 'Module updated successfully', module: result.rows[0] });
+    const updatedModule = await pool.query('SELECT * FROM modules WHERE id = ?', [id]);
+
+    res.json({ message: 'Module updated successfully', module: updatedModule.rows[0] });
   } catch (error) {
     console.error('Update module error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -120,7 +130,7 @@ const deleteModule = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await pool.query('DELETE FROM modules WHERE id = $1', [id]);
+    await pool.query('DELETE FROM modules WHERE id = ?', [id]);
 
     res.json({ message: 'Module deleted successfully' });
   } catch (error) {
@@ -138,11 +148,14 @@ const createLesson = async (req, res) => {
       return res.status(400).json({ error: 'Module ID, Course ID, and title are required' });
     }
 
-    const result = await pool.query(
-      `INSERT INTO lessons (module_id, course_id, title, description, video_url, video_duration, content_type, order_index)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-      [module_id, course_id, title, description || null, video_url || null, video_duration || '0:00', content_type || 'video', order_index || 0]
+    const lessonId = uuidv4();
+    await pool.query(
+      `INSERT INTO lessons (id, module_id, course_id, title, description, video_url, video_duration, content_type, order_index)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [lessonId, module_id, course_id, title, description || null, video_url || null, video_duration || '0:00', content_type || 'video', order_index || 0]
     );
+
+    const lessonResult = await pool.query('SELECT * FROM lessons WHERE id = ?', [lessonId]);
 
     // Send course update notification to enrolled students
     try {
@@ -152,7 +165,7 @@ const createLesson = async (req, res) => {
       // Don't fail the request if notification fails
     }
 
-    res.status(201).json({ message: 'Lesson created successfully', lesson: result.rows[0] });
+    res.status(201).json({ message: 'Lesson created successfully', lesson: lessonResult.rows[0] });
   } catch (error) {
     console.error('Create lesson error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -165,32 +178,36 @@ const updateLesson = async (req, res) => {
     const { id } = req.params;
     const { title, description, video_url, video_duration, content_type, order_index } = req.body;
 
+    const existingLesson = await pool.query('SELECT * FROM lessons WHERE id = ?', [id]);
+    if (existingLesson.rows.length === 0) {
+      return res.status(404).json({ error: 'Lesson not found' });
+    }
+
     const updates = [];
     const params = [];
-    let paramCount = 1;
 
     if (title !== undefined) {
-      updates.push(`title = $${paramCount++}`);
+      updates.push('title = ?');
       params.push(title);
     }
     if (description !== undefined) {
-      updates.push(`description = $${paramCount++}`);
+      updates.push('description = ?');
       params.push(description);
     }
     if (video_url !== undefined) {
-      updates.push(`video_url = $${paramCount++}`);
+      updates.push('video_url = ?');
       params.push(video_url);
     }
     if (video_duration !== undefined) {
-      updates.push(`video_duration = $${paramCount++}`);
+      updates.push('video_duration = ?');
       params.push(video_duration);
     }
     if (content_type !== undefined) {
-      updates.push(`content_type = $${paramCount++}`);
+      updates.push('content_type = ?');
       params.push(content_type);
     }
     if (order_index !== undefined) {
-      updates.push(`order_index = $${paramCount++}`);
+      updates.push('order_index = ?');
       params.push(order_index);
     }
 
@@ -199,11 +216,13 @@ const updateLesson = async (req, res) => {
     }
 
     params.push(id);
-    const query = `UPDATE lessons SET ${updates.join(', ')} WHERE id = $${paramCount} RETURNING *`;
+    const query = `UPDATE lessons SET ${updates.join(', ')} WHERE id = ?`;
 
-    const result = await pool.query(query, params);
+    await pool.query(query, params);
 
-    res.json({ message: 'Lesson updated successfully', lesson: result.rows[0] });
+    const updatedLesson = await pool.query('SELECT * FROM lessons WHERE id = ?', [id]);
+
+    res.json({ message: 'Lesson updated successfully', lesson: updatedLesson.rows[0] });
   } catch (error) {
     console.error('Update lesson error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -215,7 +234,7 @@ const deleteLesson = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await pool.query('DELETE FROM lessons WHERE id = $1', [id]);
+    await pool.query('DELETE FROM lessons WHERE id = ?', [id]);
 
     res.json({ message: 'Lesson deleted successfully' });
   } catch (error) {
@@ -228,7 +247,7 @@ const deleteLesson = async (req, res) => {
 const sendCourseUpdateNotification = async (course_id) => {
   try {
     // Get course details
-    const courseResult = await pool.query('SELECT title FROM courses WHERE id = $1', [course_id]);
+    const courseResult = await pool.query('SELECT title FROM courses WHERE id = ?', [course_id]);
     if (courseResult.rows.length === 0) return;
 
     const course = courseResult.rows[0];
@@ -238,7 +257,7 @@ const sendCourseUpdateNotification = async (course_id) => {
       `SELECT DISTINCT u.id, u.name, u.email
        FROM purchases p
        JOIN users u ON p.user_id = u.id
-       WHERE p.course_id = $1 AND p.status = 'completed'`,
+       WHERE p.course_id = ? AND p.status = 'completed'`,
       [course_id]
     );
 

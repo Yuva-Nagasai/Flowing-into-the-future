@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Target, Users, Rocket, TrendingUp, ExternalLink, Handshake, Building2, Briefcase, Globe, Cloud, Database, Zap, Cpu, Code, Brain, Shield, LucideIcon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-import { aboutAPI } from '../utils/api';
+import { aboutAPI } from '../utils/api.js';
 
 type CompanyLogoType = {
   name: string;
@@ -90,6 +90,125 @@ const About = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [sections, setSections] = useState<TransformedSection[]>([]);
   const [loading, setLoading] = useState(true);
+  const fallbackSections: TransformedSection[] = [
+    {
+      icon: Target,
+      title: 'Our Mission',
+      content:
+        'We design AI-native experiences that help universities, enterprises, and fast-growing teams reimagine how they learn, operate, and collaborate. Every engagement blends rigorous research, ethical AI practices, and measurable business outcomes.',
+      images: [
+        {
+          url: '/image1.png',
+          title: 'Responsible AI Labs',
+          description: 'Building explainable, bias-tested learning copilots.'
+        },
+        {
+          url: '/image4.png',
+          title: 'Immersive Onboarding',
+          description: 'Adaptive journeys that personalize every learner touchpoint.'
+        }
+      ],
+      type: 'mission'
+    },
+    {
+      icon: Users,
+      title: 'Our Team',
+      content:
+        'A 200+ person collective of learning scientists, cloud architects, storytellers, and data engineers distributed across four continents and united by an obsession with elegant problem solving.',
+      images: [
+        {
+          url: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39',
+          name: 'Maya Patel',
+          role: 'Chief AI Scientist',
+          portfolio: 'https://www.linkedin.com'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1',
+          name: 'Lucas Wright',
+          role: 'VP, Learning Experience',
+          portfolio: 'https://www.behance.net'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2',
+          name: 'Jiwoo Han',
+          role: 'Head of Platform Engineering',
+          portfolio: 'https://github.com'
+        }
+      ],
+      type: 'team'
+    },
+    {
+      icon: Rocket,
+      title: 'Our Vision',
+      content:
+        'To become the most trusted partner for lifelong learning, where every learner has a personalized mentor and every organization can prove the ROI of its knowledge investments.',
+      images: [
+        {
+          url: '/image7.png',
+          title: 'NanoFlows Campus',
+          description: 'Always-on simulations that mirror the real workplace.'
+        },
+        {
+          url: '/image6.png',
+          title: 'Autonomous Delivery',
+          description: 'Pipelines that turn research into shipped features weekly.'
+        }
+      ],
+      type: 'vision'
+    },
+    {
+      icon: TrendingUp,
+      title: 'Our Growth',
+      content:
+        'What started as a 5-person studio in 2018 now powers 60+ enterprise academies, 1.4M monthly learners, and a partner network across EdTech, finance, manufacturing, and healthcare.',
+      images: [
+        {
+          url: '/image3.png',
+          title: 'Global Delivery Pods',
+          description: 'Follow-the-sun execution with pods in Austin, London, and Bengaluru.'
+        },
+        {
+          url: '/image5.png',
+          title: 'Impact Dashboards',
+          description: 'Live ROI reporting that correlates talent, revenue, and retention.'
+        }
+      ],
+      type: 'growth'
+    },
+    {
+      icon: Handshake,
+      title: 'Our Clients',
+      content:
+        'We co-create with future-facing universities, unicorns, and Fortune 500 teams that treat learning as a competitive advantage.',
+      images: [
+        {
+          name: 'Apex Motors',
+          logo: '/case1.jpg',
+          industry: 'Autonomous Mobility',
+          icon: Building2
+        },
+        {
+          name: 'Helix Bank',
+          logo: '/case4.jpg',
+          industry: 'FinTech Infrastructure',
+          icon: Briefcase
+        },
+        {
+          name: 'Northstar Health',
+          logo: '/case6.jpg',
+          industry: 'Healthcare AI',
+          icon: Shield
+        },
+        {
+          name: 'Orbital University',
+          logo: '/case3.jpg',
+          industry: 'Higher Education',
+          icon: Globe
+        }
+      ],
+      type: 'clients'
+    }
+  ];
 
   // Icon mapping
   const iconMap: { [key: string]: LucideIcon } = {
@@ -171,30 +290,16 @@ const About = () => {
       
       // Ensure we have all 5 sections, use defaults if missing
       const sectionTypes = ['mission', 'team', 'vision', 'growth', 'clients'];
-      const defaultSections = [
-        { icon: Target, title: 'Our Mission', content: 'To empower businesses with cutting-edge AI technology.', images: [], type: 'mission' },
-        { icon: Users, title: 'Our Team', content: 'A diverse collective of AI specialists and innovators.', images: [], type: 'team' },
-        { icon: Rocket, title: 'Our Vision', content: 'To lead the future of digital transformation.', images: [], type: 'vision' },
-        { icon: TrendingUp, title: 'Our Growth', content: 'From startup to industry leader.', images: [], type: 'growth' },
-        { icon: Handshake, title: 'Our Clients', content: 'Partnering with organizations worldwide.', images: [], type: 'clients' }
-      ];
-      
       const finalSections = sectionTypes.map(type => {
         const found = transformedSections.find((s) => s.type === type);
-        return found || defaultSections.find(s => s.type === type) || defaultSections[0];
+        return found || fallbackSections.find(s => s.type === type)!;
       });
       
       setSections(finalSections);
     } catch (error) {
       console.error('Error fetching about sections:', error);
       // Use fallback sections on error
-      setSections([
-        { icon: Target, title: 'Our Mission', content: 'To empower businesses with cutting-edge AI technology.', images: [], type: 'mission' },
-        { icon: Users, title: 'Our Team', content: 'A diverse collective of AI specialists and innovators.', images: [], type: 'team' },
-        { icon: Rocket, title: 'Our Vision', content: 'To lead the future of digital transformation.', images: [], type: 'vision' },
-        { icon: TrendingUp, title: 'Our Growth', content: 'From startup to industry leader.', images: [], type: 'growth' },
-        { icon: Handshake, title: 'Our Clients', content: 'Partnering with organizations worldwide.', images: [], type: 'clients' }
-      ]);
+      setSections(fallbackSections);
     } finally {
       setLoading(false);
     }

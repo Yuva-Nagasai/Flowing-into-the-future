@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { getTheme } from '../../themes/theme';
@@ -10,46 +10,116 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [isRobotVerified, setIsRobotVerified] = useState(false);
   const { login } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
-  
+  const location = useLocation();
+
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+
   const currentTheme = getTheme(theme);
+
+  useEffect(() => {
+    // Show message when redirected from Signup with { state: { signupSuccess: true } }
+    if (location?.state?.signupSuccess) {
+      setSuccess('Account created successfully! Please sign in.');
+      setError('');
+      // optionally clear state so it won't show again on refresh/navigation
+      // Note: you can omit this if you prefer
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
+    // Clear previous messages
+    setError('');
+    setSuccess('');
+
+    // Validation order: robot -> email -> password
     if (!isRobotVerified) {
-      setError('Please verify that you are not a robot');
+      setError("Please verify you're not a robot.");
+      emailRef.current?.focus();
       return;
     }
-    
-    setError('');
-    setLoading(true);
 
-    const result = await login(email, password);
-
-    if (result.success) {
-      // Redirect admins to admin dashboard, others to platform selection
-      if (result.user?.role === 'admin') {
-        navigate('/academy/admin');
-      } else {
-        navigate('/academy/platform-selection');
-      }
-    } else {
-      setError(result.error);
+    if (!email.trim()) {
+      setError('Please enter your email address.');
+      emailRef.current?.focus();
+      return;
     }
 
-    setLoading(false);
+    if (!password.trim()) {
+      setError('Please enter your password.');
+      passwordRef.current?.focus();
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const result = await login(email, password);
+
+      if (result && result.success) {
+        // Show success message then redirect
+        setSuccess('Login successful! Redirecting...');
+        setError('');
+
+        setTimeout(() => {
+          if (result.user?.role === 'admin') {
+            navigate('/academy/admin');
+          } else {
+            navigate('/academy/platform-selection');
+          }
+        }, 1200);
+
+        return;
+      }
+
+      // --- Better error messages for common auth failures ---
+      const serverErr = (result && (result.error || '')).toString();
+
+      let friendlyMsg = '';
+      if (result && result.code) {
+        const code = String(result.code).toUpperCase();
+        if (code === 'USER_NOT_FOUND' || code === 'NO_USER' || code === 'ACCOUNT_NOT_FOUND') {
+          friendlyMsg = 'No account found for this email. Please sign up first.';
+        } else if (code === 'INVALID_PASSWORD' || code === 'WRONG_PASSWORD' || code === 'INVALID_CREDENTIALS') {
+          friendlyMsg = "Incorrect password. If you don't have an account, please sign up.";
+        } else {
+          friendlyMsg = serverErr || 'Sign in failed. Please check your credentials and try again.';
+        }
+      } else {
+        if (/not found|no user|user does not exist|account not found/i.test(serverErr)) {
+          friendlyMsg = 'No account found for this email. Please sign up first.';
+        } else if (/invalid credentials|incorrect password|wrong password|invalid password/i.test(serverErr)) {
+          friendlyMsg = "Invalid email or password. If you don't have an account, please sign up.";
+        } else if (serverErr) {
+          friendlyMsg = serverErr;
+        } else {
+          friendlyMsg = 'Sign in failed. Please check your credentials and try again.';
+        }
+      }
+
+      setError(friendlyMsg);
+    } catch (e) {
+      setError('An unexpected error occurred while signing in. Please try again.');
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className={`relative flex h-screen items-center justify-center overflow-hidden ${currentTheme.classes.containerBg}`}>
       {/* Background Gradient Mesh */}
       <div className={`absolute inset-0 ${currentTheme.classes.mesh}`} />
-      
+
       {/* Gradient Blurs */}
       <div className={`absolute right-0 top-0 h-[600px] w-[600px] rounded-full blur-3xl ${currentTheme.classes.blurPrimary}`} />
       <div className={`absolute bottom-0 left-0 h-[500px] w-[500px] rounded-full blur-3xl ${currentTheme.classes.blurSecondary}`} />
@@ -84,8 +154,8 @@ const Login = () => {
               <motion.div
                 className="w-full h-full"
                 initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ 
-                  opacity: 1, 
+                animate={{
+                  opacity: 1,
                   scale: 1
                 }}
                 transition={{
@@ -93,9 +163,9 @@ const Login = () => {
                   scale: { duration: 0.5 }
                 }}
               >
-                <img 
-                  src="/NanoFlows-LOGO-removebg-preview.png" 
-                  alt="Nano Flows Icon" 
+                <img
+                  src="/NanoFlows-LOGO-removebg-preview.png"
+                  alt="Nano Flows Icon"
                   className="w-full h-auto"
                   style={{ objectPosition: 'center top', transform: 'translateY(0px)' }}
                 />
@@ -112,6 +182,23 @@ const Login = () => {
               Sign in to access your personalized learning dashboard
             </p>
           </div>
+
+          {/* Success Message */}
+          {success && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 rounded-xl px-4 py-3 text-sm bg-green-100 border border-green-300 text-green-900"
+              role="status"
+            >
+              <div className="flex items-center gap-2 font-semibold">
+                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586 6.707 9.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l7-7a1 1 0 000-1.414z" />
+                </svg>
+                {success}
+              </div>
+            </motion.div>
+          )}
 
           {/* Error Message */}
           {error && (
@@ -131,13 +218,14 @@ const Login = () => {
           )}
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <div>
               <label htmlFor="email" className={`mb-2 block text-sm font-semibold ${currentTheme.classes.label}`}>
                 Email Address
               </label>
               <input
                 id="email"
+                ref={emailRef}
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -161,6 +249,7 @@ const Login = () => {
               </div>
               <input
                 id="password"
+                ref={passwordRef}
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -210,8 +299,8 @@ const Login = () => {
                   </motion.svg>
                 )}
               </div>
-              <label 
-                htmlFor="robotCheck" 
+              <label
+                htmlFor="robotCheck"
                 className={`text-sm font-semibold cursor-pointer flex items-center gap-2 flex-1 ${
                   theme === 'dark' ? 'text-white' : 'text-gray-900'
                 }`}
@@ -235,9 +324,11 @@ const Login = () => {
 
             <button
               type="submit"
-              disabled={loading || !isRobotVerified}
+              disabled={loading}
+              aria-disabled={loading}
+              title={loading ? 'Signing in...' : 'Sign in'}
               className={`group relative w-full overflow-hidden rounded-xl px-5 py-2.5 text-sm font-bold shadow-2xl transition-all focus:outline-none ${currentTheme.classes.primaryButton} ${currentTheme.classes.primaryButtonHover} ${currentTheme.classes.primaryButtonDisabled} ${currentTheme.classes.focusRing} ${
-                !isRobotVerified ? 'opacity-50 cursor-not-allowed' : ''
+                loading ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
               <span className="relative z-10 flex items-center justify-center gap-2 text-white">

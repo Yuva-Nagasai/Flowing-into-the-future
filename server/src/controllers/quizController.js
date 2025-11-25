@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const pool = require('../config/db');
 
 // Get quizzes by course (admin)
@@ -10,7 +11,7 @@ const getQuizzesByCourse = async (req, res) => {
        FROM quizzes q
        JOIN lessons l ON q.lesson_id = l.id
        JOIN modules m ON l.module_id = m.id
-       WHERE q.course_id = $1
+       WHERE q.course_id = ?
        ORDER BY m.order_index, l.order_index, q.order_index`,
       [course_id]
     );
@@ -28,7 +29,7 @@ const getQuizzesByLesson = async (req, res) => {
     const { lesson_id } = req.params;
 
     const result = await pool.query(
-      'SELECT * FROM quizzes WHERE lesson_id = $1 ORDER BY order_index ASC',
+      'SELECT * FROM quizzes WHERE lesson_id = ? ORDER BY order_index ASC',
       [lesson_id]
     );
 
@@ -45,7 +46,7 @@ const getQuizzesByModule = async (req, res) => {
     const { module_id } = req.params;
 
     const result = await pool.query(
-      'SELECT * FROM quizzes WHERE module_id = $1 ORDER BY order_index ASC',
+      'SELECT * FROM quizzes WHERE module_id = ? ORDER BY order_index ASC',
       [module_id]
     );
 
@@ -74,13 +75,17 @@ const createQuiz = async (req, res) => {
       return res.status(400).json({ error: 'Invalid correct_answer index' });
     }
 
-    const result = await pool.query(
-      `INSERT INTO quizzes (lesson_id, module_id, course_id, question, options, correct_answer, points, order_index)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-      [lesson_id || null, module_id || null, course_id, question, options, correct_answer, points || 1, order_index || 0]
+    const quizId = uuidv4();
+
+    await pool.query(
+      `INSERT INTO quizzes (id, lesson_id, module_id, course_id, question, options, correct_answer, points, order_index)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [quizId, lesson_id || null, module_id || null, course_id, question, options, correct_answer, points || 1, order_index || 0]
     );
 
-    res.status(201).json({ message: 'Quiz created successfully', quiz: result.rows[0] });
+    const createdQuiz = await pool.query('SELECT * FROM quizzes WHERE id = ?', [quizId]);
+
+    res.status(201).json({ message: 'Quiz created successfully', quiz: createdQuiz.rows[0] });
   } catch (error) {
     console.error('Create quiz error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -93,34 +98,38 @@ const updateQuiz = async (req, res) => {
     const { id } = req.params;
     const { question, options, correct_answer, points, order_index } = req.body;
 
+    const existingQuiz = await pool.query('SELECT * FROM quizzes WHERE id = ?', [id]);
+    if (existingQuiz.rows.length === 0) {
+      return res.status(404).json({ error: 'Quiz not found' });
+    }
+
     const updates = [];
     const params = [];
-    let paramCount = 1;
 
     if (question !== undefined) {
-      updates.push(`question = $${paramCount++}`);
+      updates.push('question = ?');
       params.push(question);
     }
     if (options !== undefined) {
       if (!Array.isArray(options) || options.length < 2) {
         return res.status(400).json({ error: 'Options must be an array with at least 2 items' });
       }
-      updates.push(`options = $${paramCount++}`);
+      updates.push('options = ?');
       params.push(options);
     }
     if (correct_answer !== undefined) {
       if (options && (correct_answer < 0 || correct_answer >= options.length)) {
         return res.status(400).json({ error: 'Invalid correct_answer index' });
       }
-      updates.push(`correct_answer = $${paramCount++}`);
+      updates.push('correct_answer = ?');
       params.push(correct_answer);
     }
     if (points !== undefined) {
-      updates.push(`points = $${paramCount++}`);
+      updates.push('points = ?');
       params.push(points);
     }
     if (order_index !== undefined) {
-      updates.push(`order_index = $${paramCount++}`);
+      updates.push('order_index = ?');
       params.push(order_index);
     }
 
@@ -129,11 +138,13 @@ const updateQuiz = async (req, res) => {
     }
 
     params.push(id);
-    const query = `UPDATE quizzes SET ${updates.join(', ')} WHERE id = $${paramCount} RETURNING *`;
+    const query = `UPDATE quizzes SET ${updates.join(', ')} WHERE id = ?`;
 
-    const result = await pool.query(query, params);
+    await pool.query(query, params);
 
-    res.json({ message: 'Quiz updated successfully', quiz: result.rows[0] });
+    const updatedQuiz = await pool.query('SELECT * FROM quizzes WHERE id = ?', [id]);
+
+    res.json({ message: 'Quiz updated successfully', quiz: updatedQuiz.rows[0] });
   } catch (error) {
     console.error('Update quiz error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -145,7 +156,7 @@ const deleteQuiz = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await pool.query('DELETE FROM quizzes WHERE id = $1', [id]);
+    await pool.query('DELETE FROM quizzes WHERE id = ?', [id]);
 
     res.json({ message: 'Quiz deleted successfully' });
   } catch (error) {
@@ -165,7 +176,7 @@ const submitQuizAttempt = async (req, res) => {
     }
 
     // Get quiz details
-    const quizResult = await pool.query('SELECT * FROM quizzes WHERE id = $1', [quiz_id]);
+    const quizResult = await pool.query('SELECT * FROM quizzes WHERE id = ?', [quiz_id]);
     if (quizResult.rows.length === 0) {
       return res.status(404).json({ error: 'Quiz not found' });
     }
@@ -175,11 +186,15 @@ const submitQuizAttempt = async (req, res) => {
     const score = is_correct ? quiz.points : 0;
 
     // Store quiz attempt
-    const attemptResult = await pool.query(
-      `INSERT INTO quiz_attempts (user_id, quiz_id, lesson_id, course_id, selected_answer, is_correct, score)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [user_id, quiz_id, lesson_id, course_id, selected_answer, is_correct, score]
+    const attemptId = uuidv4();
+
+    await pool.query(
+      `INSERT INTO quiz_attempts (id, user_id, quiz_id, lesson_id, course_id, selected_answer, is_correct, score)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [attemptId, user_id, quiz_id, lesson_id, course_id, selected_answer, is_correct, score]
     );
+
+    const attemptResult = await pool.query('SELECT * FROM quiz_attempts WHERE id = ?', [attemptId]);
 
     res.status(201).json({
       message: 'Quiz attempt submitted',
@@ -209,7 +224,7 @@ const getQuizScoresByCourse = async (req, res) => {
        JOIN quizzes q ON qa.quiz_id = q.id
        JOIN users u ON qa.user_id = u.id
        JOIN lessons l ON qa.lesson_id = l.id
-       WHERE qa.course_id = $1
+       WHERE qa.course_id = ?
        ORDER BY qa.attempted_at DESC`,
       [course_id]
     );
@@ -237,12 +252,12 @@ const getUserQuizScores = async (req, res) => {
        JOIN quizzes q ON qa.quiz_id = q.id
        JOIN lessons l ON qa.lesson_id = l.id
        JOIN courses c ON qa.course_id = c.id
-       WHERE qa.user_id = $1
+       WHERE qa.user_id = ?
     `;
     const params = [user_id];
 
     if (course_id) {
-      query += ' AND qa.course_id = $2';
+      query += ' AND qa.course_id = ?';
       params.push(course_id);
     }
 
