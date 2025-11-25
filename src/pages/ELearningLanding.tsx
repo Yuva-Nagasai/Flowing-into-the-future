@@ -27,6 +27,7 @@ interface Course {
 const ELearningLanding = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
@@ -52,19 +53,25 @@ const ELearningLanding = () => {
   }, []);
 
   const fetchCourses = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await axios.get(`${API_URL}/courses`);
       setCourses(response.data.courses.filter((course: Course) => course.is_published));
     } catch (error) {
       console.error('Error fetching courses:', error);
+      setError('Unable to load courses. Please check your connection and try again later.');
+      setCourses([]);
     } finally {
       setLoading(false);
     }
   };
 
   const filteredCourses = courses.filter((course) => {
-    const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         course.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const courseTitle = (course.title ?? '').toLowerCase();
+    const courseDescription = (course.description ?? '').toLowerCase();
+    const searchLower = searchTerm.toLowerCase();
+    const matchesSearch = courseTitle.includes(searchLower) || courseDescription.includes(searchLower);
     const matchesCategory = !selectedCategory || selectedCategory === 'All' || course.category === selectedCategory;
     const matchesLevel = !selectedLevel || selectedLevel === 'All' || course.level === selectedLevel;
     return matchesSearch && matchesCategory && matchesLevel;
@@ -338,6 +345,31 @@ const ELearningLanding = () => {
                       }`}></div>
                     </div>
                   ))}
+                </div>
+              ) : error ? (
+                <div className="text-center py-20">
+                  <div className={`mb-6 p-6 rounded-2xl inline-block ${
+                    theme === 'dark' ? 'bg-red-900/20 border border-red-800' : 'bg-red-50 border border-red-200'
+                  }`}>
+                    <BookOpen className={`w-20 h-20 mx-auto mb-4 ${
+                      theme === 'dark' ? 'text-red-400' : 'text-red-500'
+                    }`} />
+                    <p className={`text-xl font-semibold mb-2 ${
+                      theme === 'dark' ? 'text-red-300' : 'text-red-600'
+                    }`}>
+                      {error}
+                    </p>
+                    <button
+                      onClick={fetchCourses}
+                      className={`mt-4 px-6 py-2 rounded-lg font-medium transition-all ${
+                        theme === 'dark'
+                          ? 'bg-electric-blue text-white hover:bg-electric-blue/80'
+                          : 'bg-accent-blue text-white hover:bg-accent-blue/80'
+                      }`}
+                    >
+                      Try Again
+                    </button>
+                  </div>
                 </div>
               ) : filteredCourses.length === 0 ? (
                 <div className="text-center py-20">
