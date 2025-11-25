@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 
 const items = [
   { label: '1 Website', to: '/', icon: Globe, featured: true },
-  { label: '2 E-Learning', to: '/products', icon: GraduationCap },
+  { label: '2 E-Learning', to: '/elearning', icon: GraduationCap },
   { label: '3 AI Tools', to: '/ai-tools', icon: Cpu },
   { label: '4 Digital Hub', to: '/contact', icon: LayoutGrid },
 ];

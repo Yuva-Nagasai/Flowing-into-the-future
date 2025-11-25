@@ -63,6 +63,7 @@ import Compliance from './pages/legal/Compliance';
 import ServicesPage from './pages/ServicesPage';
 import HowItWorks from './pages/HowItWorks';
 import IndustryDetail from './pages/industries/IndustryDetail';
+import ELearningLanding from './pages/ELearningLanding';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -162,6 +163,16 @@ function AnimatedRoutes() {
                 <div className="relative min-h-screen flex flex-col bg-white dark:bg-dark-bg transition-colors duration-300 w-full max-w-full overflow-x-hidden">
                   <EducationDashboard />
                 </div>
+              </PageTransition>
+            }
+          />
+
+          {/* ✅ E-Learning Landing Route */}
+          <Route
+            path="/elearning"
+            element={
+              <PageTransition>
+                <ELearningLanding />
               </PageTransition>
             }
           />
