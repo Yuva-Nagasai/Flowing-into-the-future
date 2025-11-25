@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { GraduationCap, BookOpen, Users, Award, Search, Filter, Star, Clock, BarChart, PlayCircle } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import ELearningNav from '../components/elearning/ELearningNav';
+import ELearningFeatures from '../components/elearning/ELearningFeatures';
+import InstructorsSection from '../components/elearning/InstructorsSection';
+import ContactSection from '../components/elearning/ContactSection';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
@@ -83,7 +85,7 @@ const ELearningLanding = () => {
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
-      <Header />
+      <ELearningNav />
       
       {/* Hero Section */}
       <section className={`relative overflow-hidden pt-32 pb-20 ${
@@ -481,7 +483,41 @@ const ELearningLanding = () => {
         </div>
       </section>
 
-      <Footer />
+      {/* Features Section */}
+      <ELearningFeatures />
+
+      {/* Instructors Section */}
+      <InstructorsSection />
+
+      {/* Contact Section */}
+      <ContactSection />
+
+      {/* Footer */}
+      <footer className={`py-8 border-t ${
+        theme === 'dark' ? 'bg-dark-card border-gray-800' : 'bg-white border-gray-200'
+      }`}>
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className={`text-sm ${
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+            }`}>
+              © 2025 NanoFlows Academy. All rights reserved.
+            </p>
+            <div className="flex items-center gap-6">
+              <a href="/legal/privacy-policy" className={`text-sm transition-colors ${
+                theme === 'dark' ? 'text-gray-400 hover:text-electric-green' : 'text-gray-600 hover:text-accent-red'
+              }`}>
+                Privacy Policy
+              </a>
+              <a href="/legal/terms-of-service" className={`text-sm transition-colors ${
+                theme === 'dark' ? 'text-gray-400 hover:text-electric-green' : 'text-gray-600 hover:text-accent-red'
+              }`}>
+                Terms of Service
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
