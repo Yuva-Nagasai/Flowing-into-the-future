@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
-import { useAuth } from '../../contexts/AuthContext';
 import {
   Brain,
   Home,
@@ -12,14 +11,12 @@ import {
   X,
   Sun,
   Moon,
-  LogOut,
-  ArrowLeft,
   Globe,
   GraduationCap,
   Cpu,
-  LayoutGrid
+  LayoutGrid,
+  ArrowLeft
 } from 'lucide-react';
-import RoleBadge from '../academy/RoleBadge';
 
 const topNavItems = [
   { label: '1 Website', to: '/', icon: Globe },
@@ -30,15 +27,9 @@ const topNavItems = [
 
 const AIToolsNav = () => {
   const { theme, toggleTheme } = useTheme();
-  const { user, logout, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/academy/platform-selection');
-  };
 
   const navItems = [
     { path: '/ai-tools', label: 'Home', icon: Home },
@@ -170,51 +161,43 @@ const AIToolsNav = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <div className={`hidden xl:flex items-center gap-2 px-2 py-1 rounded-lg ${
-                theme === 'dark' 
-                  ? 'bg-dark-lighter/70 border border-electric-blue/20' 
-                  : 'bg-gray-100/70 border border-gray-200'
-              }`}>
-                <div className="text-right">
-                  <p className={`text-[9px] font-semibold ${
-                    theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'
-                  }`}>
-                    Welcome
-                  </p>
-                  <p className={`text-xs font-bold ${
-                    theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`}>
-                    {authLoading ? '...' : (user?.name?.split(' ')[0] || 'User')}
-                  </p>
-                </div>
-                {user?.role && <RoleBadge role={user.role} size="sm" />}
-              </div>
-
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={toggleTheme}
-                className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all ${
+                className={`p-2 rounded-lg transition-all ${
                   theme === 'dark'
-                    ? 'bg-dark-lighter hover:bg-gray-700 text-electric-blue'
-                    : 'bg-gray-100 hover:bg-gray-200 text-accent-blue'
+                    ? 'bg-dark-lighter text-yellow-400 hover:bg-gray-700'
+                    : 'bg-gray-100 text-blue-600 hover:bg-gray-200'
                 }`}
               >
-                {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </motion.button>
 
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handleLogout}
-                className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                onClick={() => navigate('/academy/login')}
+                className={`hidden lg:block px-4 py-1.5 text-sm rounded-lg font-semibold transition-all border ${
                   theme === 'dark'
-                    ? 'bg-red-600/20 text-red-400 border border-red-500/30 hover:bg-red-600/30'
-                    : 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100'
+                    ? 'border-electric-blue text-electric-blue hover:bg-electric-blue/10'
+                    : 'border-accent-blue text-accent-blue hover:bg-accent-blue/10'
                 }`}
               >
-                <LogOut size={14} />
-                <span className="hidden md:inline">Logout</span>
+                Login
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/academy/signup')}
+                className={`hidden lg:block px-4 py-1.5 text-sm rounded-lg font-semibold transition-all ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg hover:shadow-lg hover:shadow-electric-green/30'
+                    : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/30'
+                }`}
+              >
+                Sign Up
               </motion.button>
 
               <button
@@ -270,19 +253,34 @@ const AIToolsNav = () => {
                   );
                 })}
 
-                <div className={`pt-2 mt-2 border-t ${
+                <div className={`pt-2 mt-2 border-t space-y-2 ${
                   theme === 'dark' ? 'border-gray-800' : 'border-gray-200'
                 }`}>
                   <button
-                    onClick={handleLogout}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      navigate('/academy/login');
+                    }}
+                    className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold transition-all border ${
                       theme === 'dark'
-                        ? 'text-red-400 hover:bg-red-600/10'
-                        : 'text-red-600 hover:bg-red-50'
+                        ? 'border-electric-blue text-electric-blue hover:bg-electric-blue/10'
+                        : 'border-accent-blue text-accent-blue hover:bg-accent-blue/10'
                     }`}
                   >
-                    <LogOut className="w-5 h-5" />
-                    Logout
+                    Login
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      navigate('/academy/signup');
+                    }}
+                    className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold transition-all ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
+                        : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
+                    }`}
+                  >
+                    Sign Up
                   </button>
                 </div>
               </div>

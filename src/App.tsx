@@ -237,41 +237,33 @@ function AnimatedRoutes() {
           <Route
             path="/ai-tools"
             element={
-              <ProtectedRoute>
-                <PageTransition>
-                  <AIToolsHome />
-                </PageTransition>
-              </ProtectedRoute>
+              <PageTransition>
+                <AIToolsHome />
+              </PageTransition>
             }
           />
           <Route
             path="/ai-tools/explore"
             element={
-              <ProtectedRoute>
-                <PageTransition>
-                  <AIToolsExplore />
-                </PageTransition>
-              </ProtectedRoute>
+              <PageTransition>
+                <AIToolsExplore />
+              </PageTransition>
             }
           />
           <Route
             path="/ai-tools/tool/:id"
             element={
-              <ProtectedRoute>
-                <PageTransition>
-                  <AIToolDetail />
-                </PageTransition>
-              </ProtectedRoute>
+              <PageTransition>
+                <AIToolDetail />
+              </PageTransition>
             }
           />
           <Route
             path="/ai-tools/about"
             element={
-              <ProtectedRoute>
-                <PageTransition>
-                  <AIToolsAbout />
-                </PageTransition>
-              </ProtectedRoute>
+              <PageTransition>
+                <AIToolsAbout />
+              </PageTransition>
             }
           />
 
