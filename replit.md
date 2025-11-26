@@ -39,8 +39,9 @@ Preferred communication style: Simple, everyday language.
 5.  **Component Isolation**: Major sections are self-contained components for improved maintainability.
 
 ### System Design Choices
-- **E-Learning Platform**: A distinct, standalone experience with its own navigation, features, and layout, while maintaining visual brand consistency. Includes an advanced filtering system for courses, unique feature showcases, and instructor profiles.
+- **E-Learning Platform (NanoFlows Academy)**: A distinct, standalone experience with its own navigation (Home, Courses, About, Contact), features, and layout, while maintaining visual brand consistency. Includes an advanced filtering system for courses (by category, level, and price), unique feature showcases, and instructor profiles. The Courses page (`/elearning/courses`) displays available courses with search and filtering capabilities.
 - **Login & Platform Selection**: After login, users are presented with a platform chooser to access either NanoFlows Academy or NanoFlows AI Tools.
+- **AI Tools Separation**: AI Tools are exclusively available in the NanoFlows AI Tools platform (`/ai-tools`), separate from NanoFlows Academy to maintain clear separation between learning content and tool discovery.
 - **n8n Workflow Automation Integration**: Dedicated service offering and industry page positioning Nano Flows as an n8n expert.
 - **Service Categories**: Expanded navigation to include SaaS Development and Internet of Things (IoT) as distinct service offerings.
 - **Contact Section**: Integrated Google Maps for location display and navigation.
