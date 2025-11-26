@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { ThemeProvider } from './context/ThemeContext';
@@ -75,6 +75,10 @@ function AnimatedRoutes() {
       window.scrollTo({ top: 0, behavior: 'auto' });
     }
   }, [location.pathname, location.hash]);
+
+  const showFloatingContact = useMemo(() => {
+    return location.pathname !== '/';
+  }, [location.pathname]);
 
   return (
     <>
@@ -523,7 +527,7 @@ function AnimatedRoutes() {
         </Routes>
       </AnimatePresence>
       <AIChat />
-      <FloatingContactWidget />
+      {showFloatingContact && <FloatingContactWidget />}
     </>
   );
 }
