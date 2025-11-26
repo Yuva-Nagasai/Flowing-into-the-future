@@ -32,6 +32,9 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
   const navLinks = [
     { name: 'Home', path: '/elearning' },
     { name: 'Courses', path: '/elearning/courses' },
+    { name: 'Masterclass', path: '/elearning/masterclass' },
+    { name: 'Mahakumbh', path: '/elearning/mahakumbh' },
+    { name: 'Freebies', path: '/elearning/freebies' },
     { name: 'About', path: '/elearning/about' },
     { name: 'Contact', path: '/elearning/contact' },
   ];
