@@ -78,9 +78,9 @@ function AnimatedRoutes() {
 
   const path = location.pathname.toLowerCase();
   const shouldShowFloatingContact = useMemo(() => {
-    if (path === '/') return false;
-    const allowedPrefixes = ['/services', '/how-it-works', '/products', '/careers', '/industries'];
-    return allowedPrefixes.some((prefix) => path.startsWith(prefix));
+    const excludedPrefixes = ['/academy', '/elearning', '/courses', '/educationdashboard', '/ai-tools'];
+    if (excludedPrefixes.some((prefix) => path.startsWith(prefix))) return false;
+    return true;
   }, [path]);
 
   return (
