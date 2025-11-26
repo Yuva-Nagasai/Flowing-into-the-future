@@ -5,10 +5,10 @@ import { GraduationCap, Menu, X, Sun, Moon, Home, BookOpen, Award, Mail, Search,
 import { useTheme } from '../../context/ThemeContext';
 
 const topNavItems = [
-  { label: 'Website', to: '/', icon: Globe },
-  { label: 'E-Learning', to: '/elearning', icon: GraduationCap, active: true },
-  { label: 'AI Tools', to: '/ai-tools', icon: Cpu },
-  { label: 'Digital Hub', to: '/contact', icon: LayoutGrid },
+  { label: '1 Website', to: '/', icon: Globe },
+  { label: '2 E-Learning', to: '/elearning', icon: GraduationCap, featured: true },
+  { label: '3 AI Tools', to: '/ai-tools', icon: Cpu },
+  { label: '4 Digital Hub', to: '/contact', icon: LayoutGrid },
 ];
 
 interface ELearningNavProps {
@@ -55,38 +55,44 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
     setIsMenuOpen(false);
   };
 
+  const baseStyles =
+    'flex items-center justify-center rounded-2xl px-1.5 py-2.5 md:px-1 md:py-1.5 flex-1 md:flex-none md:w-[70px] lg:w-[78px] min-w-0 transition-all duration-200 border h-12 md:h-11 shadow-sm';
+
+  const wrapperClasses =
+    theme === 'dark'
+      ? 'bg-[#030b1f] border-b border-electric-blue/20 shadow-[0_2px_12px_rgba(0,0,0,0.45)]'
+      : 'bg-white border-b border-gray-200/80 shadow-[0_2px_12px_rgba(46,55,77,0.08)]';
+
   return (
     <>
-      <div className={`fixed top-0 left-0 right-0 z-50 ${
-        theme === 'dark'
-          ? 'bg-[#030b1f] border-b border-electric-blue/20 shadow-[0_2px_12px_rgba(0,0,0,0.45)]'
-          : 'bg-white border-b border-gray-200/80 shadow-[0_2px_12px_rgba(46,55,77,0.08)]'
-      } backdrop-blur-[2px]`}>
+      <div className={`fixed top-0 left-0 right-0 z-50 ${wrapperClasses} backdrop-blur-[2px]`}>
         <div className="container mx-auto px-4 lg:px-6">
-          <div className="grid grid-cols-4 gap-2 py-2 sm:gap-3 md:flex md:flex-nowrap md:justify-center md:gap-4">
-            {topNavItems.map(({ label, to, icon: Icon, active }) => (
+          <div
+            className="grid grid-cols-4 gap-2 py-3 sm:gap-3 md:flex md:flex-nowrap md:justify-between md:gap-3 lg:gap-4 md:overflow-x-auto no-scrollbar"
+            style={{ scrollbarWidth: 'none' as const, msOverflowStyle: 'none' as const }}
+          >
+            {topNavItems.map(({ label, to, icon: Icon, featured }) => (
               <Link
                 key={label}
                 to={to}
-                className={`flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium transition-all duration-200 border ${
-                  active
+                className={`${baseStyles} ${
+                  featured
                     ? theme === 'dark'
-                      ? 'bg-gradient-to-r from-electric-green to-electric-blue text-[#041226] border-transparent shadow-[0_4px_12px_rgba(0,240,255,0.25)]'
-                      : 'bg-gradient-to-r from-accent-red to-accent-blue text-white border-transparent shadow-[0_4px_12px_rgba(244,63,94,0.25)]'
+                      ? 'bg-gradient-to-r from-electric-green to-electric-blue text-[#041226] border-transparent shadow-[0_8px_18px_rgba(0,240,255,0.25)]'
+                      : 'bg-gradient-to-r from-accent-red to-accent-blue text-white border-transparent shadow-[0_8px_18px_rgba(244,63,94,0.25)]'
                     : theme === 'dark'
                     ? 'bg-[#09142b] text-slate-100 border-electric-blue/30 hover:border-electric-green/60 hover:bg-[#0f1f3f]'
                     : 'bg-gray-50 text-slate-800 border-gray-200 hover:border-accent-blue/60 hover:bg-white hover:text-accent-blue'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">{label}</span>
+                <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
               </Link>
             ))}
           </div>
         </div>
       </div>
       
-      <nav className={`fixed top-[52px] left-0 right-0 z-40 transition-all duration-300 ${
+      <nav className={`fixed top-[60px] left-0 right-0 z-40 transition-all duration-300 ${
         theme === 'dark'
           ? 'bg-dark-card/95 border-b border-gray-800/50'
           : 'bg-white/95 border-b border-gray-200/50'
@@ -307,7 +313,7 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
       </AnimatePresence>
       </nav>
       
-      <div className="h-[132px]" />
+      <div className="h-[140px]" />
     </>
   );
 };
