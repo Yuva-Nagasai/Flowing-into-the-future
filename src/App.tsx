@@ -13,6 +13,7 @@ import Careers from './components/Careers';
 import Footer from './components/Footer';
 import AIChat from './components/AIChat';
 import SocialMediaBar from './components/SocialMediaBar';
+import FloatingContactWidget from './components/FloatingContactWidget';
 import EducationDashboard from './components/EducationDashboard';
 import AIToolsShowcase from './components/AIToolsShowcase';
 import { PageTransition } from './components/animations';
@@ -522,6 +523,7 @@ function AnimatedRoutes() {
         </Routes>
       </AnimatePresence>
       <AIChat />
+      <FloatingContactWidget />
     </>
   );
 }
