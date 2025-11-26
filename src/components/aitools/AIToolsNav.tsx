@@ -1,12 +1,9 @@
 import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
 import {
   Brain,
-  Home,
-  Compass,
-  Info,
   Menu,
   X,
   Sun,
@@ -14,8 +11,7 @@ import {
   Globe,
   GraduationCap,
   Cpu,
-  LayoutGrid,
-  ArrowLeft
+  LayoutGrid
 } from 'lucide-react';
 
 const topNavItems = [
@@ -28,21 +24,13 @@ const topNavItems = [
 const AIToolsNav = () => {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
-  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { path: '/ai-tools', label: 'Home', icon: Home },
-    { path: '/ai-tools/explore', label: 'Explore Tools', icon: Compass },
-    { path: '/ai-tools/about', label: 'About', icon: Info }
+    { path: '/ai-tools', label: 'Home' },
+    { path: '/ai-tools/explore', label: 'Explore Tools' },
+    { path: '/ai-tools/about', label: 'About' }
   ];
-
-  const isActive = (path: string) => {
-    if (path === '/ai-tools') {
-      return location.pathname === '/ai-tools';
-    }
-    return location.pathname.startsWith(path);
-  };
 
   const topBarHeight = 60;
 
@@ -81,83 +69,55 @@ const AIToolsNav = () => {
 
       <nav className={`fixed left-0 right-0 z-40 transition-all duration-300 ${
         theme === 'dark'
-          ? 'bg-dark-card/95 backdrop-blur-xl border-b border-gray-800/50'
-          : 'bg-white/95 backdrop-blur-xl border-b border-gray-200/50'
-      }`} style={{ top: `${topBarHeight}px` }}>
+          ? 'bg-dark-card/95 border-b border-gray-800/50'
+          : 'bg-white/95 border-b border-gray-200/50'
+      } backdrop-blur-lg shadow-lg`} style={{ top: `${topBarHeight}px` }}>
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between h-20">
-            <div className="flex items-center gap-2">
-              <motion.button
-                onClick={() => navigate('/academy/platform-selection')}
-                whileHover={{ scale: 1.05, x: -3 }}
+            {/* Logo */}
+            <Link to="/ai-tools" className="flex items-center gap-3 group">
+              <motion.div
+                whileHover={{ scale: 1.05, rotate: 5 }}
                 whileTap={{ scale: 0.95 }}
-                className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all ${
+                className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg transition-all duration-300 ${
                   theme === 'dark'
-                    ? 'bg-dark-lighter hover:bg-gray-700 text-gray-400 hover:text-electric-green'
-                    : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-accent-red'
+                    ? 'from-electric-blue to-electric-green shadow-electric-blue/30 group-hover:shadow-electric-blue/50'
+                    : 'from-accent-red to-accent-blue shadow-accent-red/30 group-hover:shadow-accent-red/50'
                 }`}
-                title="Back to Platform Selection"
               >
-                <ArrowLeft className="h-4 w-4" />
-              </motion.button>
+                <Brain className="h-5 w-5 text-white" />
+              </motion.div>
+              <div>
+                <p className={`text-[10px] font-bold uppercase tracking-wider ${
+                  theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+                }`}>
+                  NanoFlows
+                </p>
+                <h1 className={`text-base font-bold leading-tight ${
+                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                }`}>
+                  AI Tools
+                </h1>
+              </div>
+            </Link>
 
-              <Link to="/ai-tools" className="flex items-center gap-2 group">
-                <motion.div
-                  whileHover={{ scale: 1.05, rotate: 5 }}
-                  className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg ${
-                    theme === 'dark'
-                      ? 'from-electric-blue to-electric-green shadow-electric-blue/30'
-                      : 'from-accent-red to-accent-blue shadow-accent-red/30'
-                  }`}
-                >
-                  <Brain className="h-5 w-5 text-white" />
-                </motion.div>
-                <div className="hidden sm:block">
-                  <p className={`text-[10px] font-bold uppercase tracking-wider ${
-                    theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
-                  }`}>
-                    NanoFlows
-                  </p>
-                  <h1 className={`text-base font-bold ${
-                    theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                    AI Tools
-                  </h1>
-                </div>
-              </Link>
-            </div>
-
-            <div className="hidden lg:flex items-center gap-6 lg:gap-8">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(item.path);
-                return (
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
+              <div className="flex items-center gap-8 lg:gap-10">
+                {navItems.map((item) => (
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg font-exo font-medium transition-all duration-300 ${
-                      active
-                        ? theme === 'dark'
-                          ? 'text-electric-green bg-electric-green/10'
-                          : 'text-accent-red bg-accent-red/10'
-                        : theme === 'dark'
-                          ? 'text-white hover:text-electric-green hover:bg-white/5'
-                          : 'text-black hover:text-accent-red hover:bg-gray-100'
+                    className={`font-exo font-medium transition-all duration-300 ${
+                      theme === 'dark'
+                        ? 'text-white hover:text-electric-green'
+                        : 'text-black hover:text-accent-red'
                     }`}
                   >
-                    <Icon className="w-4 h-4" />
                     {item.label}
-                    {active && (
-                      <motion.div
-                        layoutId="navIndicator"
-                        className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${
-                          theme === 'dark' ? 'bg-electric-green' : 'bg-accent-red'
-                        }`}
-                      />
-                    )}
                   </Link>
-                );
-              })}
+                ))}
+              </div>
             </div>
 
             <div className="flex items-center gap-2">
@@ -229,29 +189,20 @@ const AIToolsNav = () => {
           >
             <div className="container mx-auto px-4 py-4">
               <div className="space-y-2">
-                {navItems.map((item) => {
-                  const Icon = item.icon;
-                  const active = isActive(item.path);
-                  return (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
-                        active
-                          ? theme === 'dark'
-                            ? 'text-electric-green bg-electric-green/10'
-                            : 'text-accent-red bg-accent-red/10'
-                          : theme === 'dark'
-                            ? 'text-white hover:text-electric-green hover:bg-white/5'
-                            : 'text-black hover:text-accent-red hover:bg-gray-100'
-                      }`}
-                    >
-                      <Icon className="w-5 h-5" />
-                      {item.label}
-                    </Link>
-                  );
-                })}
+                {navItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`block px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
+                      theme === 'dark'
+                        ? 'text-white hover:bg-dark-lighter hover:text-electric-green'
+                        : 'text-black hover:bg-gray-100 hover:text-accent-red'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
 
                 <div className={`pt-2 mt-2 border-t space-y-2 ${
                   theme === 'dark' ? 'border-gray-800' : 'border-gray-200'

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GraduationCap, Menu, X, Sun, Moon, Home, BookOpen, Award, Mail, Search, Globe, Cpu, LayoutGrid } from 'lucide-react';
+import { GraduationCap, Menu, X, Sun, Moon, Search, Globe, Cpu, LayoutGrid } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
 const topNavItems = [
@@ -30,10 +30,10 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
   };
 
   const navLinks = [
-    { name: 'Home', path: '/elearning', icon: Home },
-    { name: 'Courses', path: '/elearning/courses', icon: BookOpen },
-    { name: 'About', path: '/elearning/about', icon: Award },
-    { name: 'Contact', path: '/elearning/contact', icon: Mail },
+    { name: 'Home', path: '/elearning' },
+    { name: 'Courses', path: '/elearning/courses' },
+    { name: 'About', path: '/elearning/about' },
+    { name: 'Contact', path: '/elearning/contact' },
   ];
 
   const handleNavClick = (path: string) => {
@@ -124,18 +124,17 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
-              <div className="flex items-center gap-6 lg:gap-8">
+              <div className="flex items-center gap-8 lg:gap-10">
                 {navLinks.map((link) => (
                   <button
                     key={link.name}
                     onClick={() => handleNavClick(link.path)}
-                    className={`flex items-center gap-2 font-exo font-medium transition-all duration-300 ${
+                    className={`font-exo font-medium transition-all duration-300 ${
                       theme === 'dark'
                         ? 'text-white hover:text-electric-green'
                         : 'text-black hover:text-accent-red'
                     }`}
                   >
-                    <link.icon className="w-4 h-4" />
                     {link.name}
                   </button>
                 ))}
@@ -259,13 +258,12 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
                 <button
                   key={link.name}
                   onClick={() => handleNavClick(link.path)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
+                  className={`w-full text-left px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
                     theme === 'dark'
                       ? 'text-white hover:bg-dark-lighter hover:text-electric-green'
                       : 'text-black hover:bg-gray-100 hover:text-accent-red'
                   }`}
                 >
-                  <link.icon className="w-5 h-5" />
                   {link.name}
                 </button>
               ))}
