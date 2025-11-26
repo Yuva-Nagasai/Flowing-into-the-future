@@ -23,7 +23,7 @@ import { useTheme } from '../../context/ThemeContext';
 import ELearningNav from '../../components/elearning/ELearningNav';
 import CourseCard from '../../components/elearning/CourseCard';
 import TestimonialsSlider from '../../components/elearning/TestimonialsSlider';
-import axios from 'axios';
+import { coursesAPI, heroSlidesAPI } from '../../utils/api';
 
 import heroImage1 from '@assets/stock_images/professional_e-learn_9e7fdc74.jpg';
 import heroImage2 from '@assets/stock_images/professional_e-learn_64dcaf64.jpg';
@@ -33,8 +33,6 @@ import instructorImage2 from '@assets/stock_images/professional_instruc_7274a63f
 import instructorImage3 from '@assets/stock_images/professional_instruc_823125aa.jpg';
 import codingImage1 from '@assets/stock_images/technology_coding_pr_24d87b89.jpg';
 import codingImage2 from '@assets/stock_images/technology_coding_pr_d5622045.jpg';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 interface Course {
   id: number;
@@ -145,8 +143,8 @@ const ELearningHome = () => {
     setLoading(true);
     try {
       const [coursesRes, slidesRes] = await Promise.all([
-        axios.get(`${API_URL}/courses`),
-        axios.get(`${API_URL}/hero-slides`).catch(() => ({ data: { slides: [] } }))
+        coursesAPI.getAll({}),
+        heroSlidesAPI.getAll().catch(() => ({ data: { slides: [] } }))
       ]);
       
       setCourses(coursesRes.data.courses?.filter((c: Course) => c.is_published) || []);

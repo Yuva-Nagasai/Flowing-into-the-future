@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GraduationCap, Menu, X, Sun, Moon, Home, BookOpen, Award, Users, Mail, Search } from 'lucide-react';
+import { GraduationCap, Menu, X, Sun, Moon, Home, BookOpen, Award, Users, Mail, Search, Briefcase, Brain } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
 interface ELearningNavProps {
@@ -23,17 +23,25 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
   };
 
   const navLinks = [
-    { name: 'Home', path: '/', icon: Home },
-    { name: 'Courses', path: '#courses', icon: BookOpen },
-    { name: 'About', path: '#about', icon: Award },
-    { name: 'Instructors', path: '#instructors', icon: Users },
-    { name: 'Contact', path: '#contact', icon: Mail },
+    { name: 'Home', path: '/elearning', icon: Home },
+    { name: 'Courses', path: '/elearning#courses', icon: BookOpen },
+    { name: 'About', path: '/elearning/about', icon: Award },
+    { name: 'Jobs', path: '/elearning/jobs', icon: Briefcase },
+    { name: 'AI Tools', path: '/elearning/ai-tools', icon: Brain },
+    { name: 'Contact', path: '/elearning/contact', icon: Mail },
   ];
 
   const handleNavClick = (path: string) => {
     if (path.startsWith('#')) {
       const element = document.getElementById(path.substring(1));
       element?.scrollIntoView({ behavior: 'smooth' });
+    } else if (path.includes('#')) {
+      const [route, hash] = path.split('#');
+      navigate(route);
+      setTimeout(() => {
+        const element = document.getElementById(hash);
+        element?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     } else {
       navigate(path);
     }

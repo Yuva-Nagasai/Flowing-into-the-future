@@ -45,10 +45,74 @@ const categoryIcons: { [key: string]: React.ElementType } = {
   'default': Brain
 };
 
+const sampleTools: AITool[] = [
+  {
+    id: 1,
+    name: 'ChatGPT',
+    description: 'Advanced AI chatbot by OpenAI for conversations, coding help, and content creation.',
+    category: 'Chatbots',
+    url: 'https://chat.openai.com',
+    image_url: '',
+    is_featured: true,
+    is_active: true
+  },
+  {
+    id: 2,
+    name: 'GitHub Copilot',
+    description: 'AI-powered code completion tool that helps developers write code faster.',
+    category: 'Code Generation',
+    url: 'https://github.com/features/copilot',
+    image_url: '',
+    is_featured: true,
+    is_active: true
+  },
+  {
+    id: 3,
+    name: 'Midjourney',
+    description: 'AI image generation tool that creates stunning artwork from text prompts.',
+    category: 'Image Generation',
+    url: 'https://midjourney.com',
+    image_url: '',
+    is_featured: true,
+    is_active: true
+  },
+  {
+    id: 4,
+    name: 'Notion AI',
+    description: 'AI writing assistant integrated into Notion for enhanced productivity.',
+    category: 'Writing',
+    url: 'https://notion.so',
+    image_url: '',
+    is_featured: false,
+    is_active: true
+  },
+  {
+    id: 5,
+    name: 'Figma AI',
+    description: 'AI-powered design features in Figma for faster prototyping and design.',
+    category: 'Design',
+    url: 'https://figma.com',
+    image_url: '',
+    is_featured: false,
+    is_active: true
+  },
+  {
+    id: 6,
+    name: 'Runway ML',
+    description: 'AI video generation and editing tool for creative professionals.',
+    category: 'Video Generation',
+    url: 'https://runwayml.com',
+    image_url: '',
+    is_featured: false,
+    is_active: true
+  }
+];
+
 const AIToolsPage = () => {
   const { theme } = useTheme();
   const [tools, setTools] = useState<AITool[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -70,12 +134,15 @@ const AIToolsPage = () => {
 
   const fetchTools = async () => {
     setLoading(true);
+    setError(null);
     try {
       const response = await aiToolsAPI.getAll({});
-      setTools(response.data.tools || []);
-    } catch (error) {
-      console.error('Error fetching AI tools:', error);
-      setTools([]);
+      const fetchedTools = response.data.tools || [];
+      setTools(fetchedTools.length > 0 ? fetchedTools : sampleTools);
+    } catch (err) {
+      console.error('Error fetching AI tools:', err);
+      setTools(sampleTools);
+      setError('Unable to load AI tools from server. Showing popular tools.');
     } finally {
       setLoading(false);
     }

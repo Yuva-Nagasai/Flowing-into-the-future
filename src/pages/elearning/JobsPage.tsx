@@ -33,10 +33,56 @@ interface Job {
   created_at: string;
 }
 
+const sampleJobs: Job[] = [
+  {
+    id: 1,
+    title: 'Senior Full Stack Developer',
+    company: 'TechCorp Inc.',
+    location: 'Remote',
+    type: 'Full-time',
+    salary_range: '$120,000 - $180,000',
+    description: 'Join our team to build cutting-edge web applications using React, Node.js, and cloud technologies.',
+    requirements: 'Bachelor degree, 5+ years experience, React, Node.js, AWS',
+    benefits: 'Health insurance, 401k, flexible hours, remote work',
+    apply_link: '#',
+    is_active: true,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 2,
+    title: 'Data Scientist',
+    company: 'AI Labs',
+    location: 'San Francisco',
+    type: 'Full-time',
+    salary_range: '$150,000 - $200,000',
+    description: 'Work on machine learning models and data analytics for Fortune 500 clients.',
+    requirements: 'MS/PhD in CS or related field, Python, TensorFlow, statistics',
+    benefits: 'Stock options, unlimited PTO, learning budget',
+    apply_link: '#',
+    is_active: true,
+    created_at: new Date(Date.now() - 86400000).toISOString()
+  },
+  {
+    id: 3,
+    title: 'Frontend Developer Intern',
+    company: 'StartupXYZ',
+    location: 'New York',
+    type: 'Internship',
+    salary_range: '$25/hour',
+    description: 'Learn and grow with our team building modern React applications.',
+    requirements: 'Currently enrolled in CS program, React basics, eager to learn',
+    benefits: 'Mentorship, career growth, possible full-time offer',
+    apply_link: '#',
+    is_active: true,
+    created_at: new Date(Date.now() - 172800000).toISOString()
+  }
+];
+
 const JobsPage = () => {
   const { theme } = useTheme();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
@@ -50,12 +96,15 @@ const JobsPage = () => {
 
   const fetchJobs = async () => {
     setLoading(true);
+    setError(null);
     try {
       const response = await jobsAPI.getAll({});
-      setJobs(response.data.jobs || []);
-    } catch (error) {
-      console.error('Error fetching jobs:', error);
-      setJobs([]);
+      const fetchedJobs = response.data.jobs || [];
+      setJobs(fetchedJobs.length > 0 ? fetchedJobs : sampleJobs);
+    } catch (err) {
+      console.error('Error fetching jobs:', err);
+      setJobs(sampleJobs);
+      setError('Unable to load job listings from server. Showing sample opportunities.');
     } finally {
       setLoading(false);
     }

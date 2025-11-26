@@ -65,6 +65,11 @@ import HowItWorks from './pages/HowItWorks';
 import IndustryDetail from './pages/industries/IndustryDetail';
 import ELearningLanding from './pages/ELearningLanding';
 import CourseListing from './pages/CourseListing';
+import ELearningHome from './pages/elearning/ELearningHome';
+import ELearningAboutPage from './pages/elearning/AboutPage';
+import JobsPage from './pages/elearning/JobsPage';
+import AIToolsPage from './pages/elearning/AIToolsPage';
+import ELearningContactPage from './pages/elearning/ContactPage';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -170,7 +175,47 @@ function AnimatedRoutes() {
             path="/elearning"
             element={
               <PageTransition>
-                <ELearningLanding />
+                <ELearningHome />
+              </PageTransition>
+            }
+          />
+
+          {/* E-Learning About Page */}
+          <Route
+            path="/elearning/about"
+            element={
+              <PageTransition>
+                <ELearningAboutPage />
+              </PageTransition>
+            }
+          />
+
+          {/* E-Learning Jobs Page */}
+          <Route
+            path="/elearning/jobs"
+            element={
+              <PageTransition>
+                <JobsPage />
+              </PageTransition>
+            }
+          />
+
+          {/* E-Learning AI Tools Page */}
+          <Route
+            path="/elearning/ai-tools"
+            element={
+              <PageTransition>
+                <AIToolsPage />
+              </PageTransition>
+            }
+          />
+
+          {/* E-Learning Contact Page */}
+          <Route
+            path="/elearning/contact"
+            element={
+              <PageTransition>
+                <ELearningContactPage />
               </PageTransition>
             }
           />
