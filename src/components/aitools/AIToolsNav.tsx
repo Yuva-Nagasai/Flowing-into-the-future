@@ -11,7 +11,8 @@ import {
   Globe,
   GraduationCap,
   Cpu,
-  LayoutGrid
+  LayoutGrid,
+  Search
 } from 'lucide-react';
 
 const topNavItems = [
@@ -21,15 +22,29 @@ const topNavItems = [
   { label: '4 Digital Hub', to: '/contact', icon: LayoutGrid },
 ];
 
-const AIToolsNav = () => {
+interface AIToolsNavProps {
+  onSearch?: (term: string) => void;
+  searchTerm?: string;
+}
+
+const AIToolsNav = ({ onSearch, searchTerm = '' }: AIToolsNavProps) => {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
+
+  const handleSearchChange = (value: string) => {
+    setLocalSearchTerm(value);
+    if (onSearch) {
+      onSearch(value);
+    }
+  };
 
   const navItems = [
     { path: '/ai-tools', label: 'Home' },
     { path: '/ai-tools/explore', label: 'Explore Tools' },
-    { path: '/ai-tools/about', label: 'About' }
+    { path: '/ai-tools/about', label: 'About' },
+    { path: '/ai-tools/contact', label: 'Contact' }
   ];
 
   const topBarHeight = 60;
@@ -118,6 +133,26 @@ const AIToolsNav = () => {
                   </Link>
                 ))}
               </div>
+              
+              {/* Search Bar */}
+              <div className="relative">
+                <div className={`flex items-center px-3 py-1.5 rounded-lg border ${
+                  theme === 'dark'
+                    ? 'bg-dark-lighter border-gray-700'
+                    : 'bg-gray-100 border-gray-200'
+                }`}>
+                  <Search className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    value={localSearchTerm}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    className={`ml-2 bg-transparent border-none outline-none text-sm w-32 ${
+                      theme === 'dark' ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'
+                    }`}
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center gap-2">
@@ -188,6 +223,24 @@ const AIToolsNav = () => {
             }`}
           >
             <div className="container mx-auto px-4 py-4">
+              {/* Mobile Search Bar */}
+              <div className={`flex items-center px-3 py-2 rounded-lg border mb-4 ${
+                theme === 'dark'
+                  ? 'bg-dark-lighter border-gray-700'
+                  : 'bg-gray-100 border-gray-200'
+              }`}>
+                <Search className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={localSearchTerm}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className={`ml-2 bg-transparent border-none outline-none text-sm flex-1 ${
+                    theme === 'dark' ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'
+                  }`}
+                />
+              </div>
+
               <div className="space-y-2">
                 {navItems.map((item) => (
                   <Link
