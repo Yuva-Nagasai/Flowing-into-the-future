@@ -127,7 +127,7 @@ const AIToolsNav = () => {
               </Link>
             </div>
 
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="hidden lg:flex items-center gap-6 lg:gap-8">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.path);
@@ -135,14 +135,14 @@ const AIToolsNav = () => {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                    className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg font-exo font-medium transition-all duration-300 ${
                       active
                         ? theme === 'dark'
                           ? 'text-electric-green bg-electric-green/10'
                           : 'text-accent-red bg-accent-red/10'
                         : theme === 'dark'
-                          ? 'text-gray-400 hover:text-white hover:bg-white/5'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                          ? 'text-white hover:text-electric-green hover:bg-white/5'
+                          : 'text-black hover:text-accent-red hover:bg-gray-100'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -178,7 +178,7 @@ const AIToolsNav = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/academy/login')}
-                className={`hidden lg:block px-4 py-1.5 text-sm rounded-lg font-semibold transition-all border ${
+                className={`hidden lg:block px-4 py-2 rounded-md font-exo font-medium transition-all duration-300 border ${
                   theme === 'dark'
                     ? 'border-electric-blue text-electric-blue hover:bg-electric-blue/10'
                     : 'border-accent-blue text-accent-blue hover:bg-accent-blue/10'
@@ -191,7 +191,7 @@ const AIToolsNav = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/academy/signup')}
-                className={`hidden lg:block px-4 py-1.5 text-sm rounded-lg font-semibold transition-all ${
+                className={`hidden lg:block px-4 py-2 rounded-md font-exo font-medium transition-all duration-300 ${
                   theme === 'dark'
                     ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg hover:shadow-lg hover:shadow-electric-green/30'
                     : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/30'
@@ -237,14 +237,14 @@ const AIToolsNav = () => {
                       key={item.path}
                       to={item.path}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
                         active
                           ? theme === 'dark'
                             ? 'text-electric-green bg-electric-green/10'
                             : 'text-accent-red bg-accent-red/10'
                           : theme === 'dark'
-                            ? 'text-gray-400 hover:text-white hover:bg-white/5'
-                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                            ? 'text-white hover:text-electric-green hover:bg-white/5'
+                            : 'text-black hover:text-accent-red hover:bg-gray-100'
                       }`}
                     >
                       <Icon className="w-5 h-5" />
@@ -261,7 +261,7 @@ const AIToolsNav = () => {
                       setMobileMenuOpen(false);
                       navigate('/academy/login');
                     }}
-                    className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold transition-all border ${
+                    className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-exo font-medium transition-all duration-300 border ${
                       theme === 'dark'
                         ? 'border-electric-blue text-electric-blue hover:bg-electric-blue/10'
                         : 'border-accent-blue text-accent-blue hover:bg-accent-blue/10'
@@ -274,7 +274,7 @@ const AIToolsNav = () => {
                       setMobileMenuOpen(false);
                       navigate('/academy/signup');
                     }}
-                    className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold transition-all ${
+                    className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-exo font-medium transition-all duration-300 ${
                       theme === 'dark'
                         ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                         : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'

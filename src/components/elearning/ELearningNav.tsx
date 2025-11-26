@@ -123,16 +123,16 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-4 flex-1 justify-center">
-              <div className="flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
+              <div className="flex items-center gap-6 lg:gap-8">
                 {navLinks.map((link) => (
                   <button
                     key={link.name}
                     onClick={() => handleNavClick(link.path)}
-                    className={`flex items-center gap-1.5 text-sm font-medium transition-all duration-200 ${
+                    className={`flex items-center gap-2 font-exo font-medium transition-all duration-300 ${
                       theme === 'dark'
-                        ? 'text-gray-300 hover:text-electric-green'
-                        : 'text-gray-700 hover:text-accent-red'
+                        ? 'text-white hover:text-electric-green'
+                        : 'text-black hover:text-accent-red'
                     }`}
                   >
                     <link.icon className="w-4 h-4" />
@@ -183,7 +183,7 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/academy/login')}
-                className={`hidden lg:block px-4 py-1.5 text-sm rounded-lg font-semibold transition-all border ${
+                className={`hidden lg:block px-4 py-2 rounded-md font-exo font-medium transition-all duration-300 border ${
                   theme === 'dark'
                     ? 'border-electric-blue text-electric-blue hover:bg-electric-blue/10'
                     : 'border-accent-blue text-accent-blue hover:bg-accent-blue/10'
@@ -197,7 +197,7 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/academy/signup')}
-                className={`hidden lg:block px-4 py-1.5 text-sm rounded-lg font-semibold transition-all ${
+                className={`hidden lg:block px-4 py-2 rounded-md font-exo font-medium transition-all duration-300 ${
                   theme === 'dark'
                     ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg hover:shadow-lg hover:shadow-electric-green/30'
                     : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/30'
@@ -259,10 +259,10 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
                 <button
                   key={link.name}
                   onClick={() => handleNavClick(link.path)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
                     theme === 'dark'
-                      ? 'text-gray-300 hover:bg-dark-lighter hover:text-electric-green'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-accent-red'
+                      ? 'text-white hover:bg-dark-lighter hover:text-electric-green'
+                      : 'text-black hover:bg-gray-100 hover:text-accent-red'
                   }`}
                 >
                   <link.icon className="w-5 h-5" />
@@ -278,7 +278,7 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
                   navigate('/academy/login');
                   setIsMenuOpen(false);
                 }}
-                className={`w-full px-4 py-3 rounded-xl font-semibold transition-all border-2 ${
+                className={`w-full px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 border-2 ${
                   theme === 'dark'
                     ? 'border-electric-blue text-electric-blue hover:bg-electric-blue/10'
                     : 'border-accent-blue text-accent-blue hover:bg-accent-blue/10'
@@ -295,7 +295,7 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
                   navigate('/academy/signup');
                   setIsMenuOpen(false);
                 }}
-                className={`w-full px-4 py-3 rounded-xl font-semibold transition-all ${
+                className={`w-full px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
                   theme === 'dark'
                     ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                     : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
