@@ -24,7 +24,10 @@ import {
   BarChart3,
   Languages
 } from 'lucide-react';
-import heroImage from '@assets/stock_images/artificial_intellige_f33bc633.jpg';
+import heroImage1 from '@assets/stock_images/artificial_intellige_f33bc633.jpg';
+import heroImage2 from '@assets/stock_images/artificial_intellige_cc95d560.jpg';
+import heroImage3 from '@assets/stock_images/technology_coding_pr_24d87b89.jpg';
+import heroImage4 from '@assets/stock_images/technology_coding_pr_95ff9d5f.jpg';
 import featureImage from '@assets/stock_images/artificial_intellige_f7aceee1.jpg';
 
 interface AITool {
@@ -52,16 +55,58 @@ const getCategoryIcon = (category: string) => {
   return iconMap[category] || iconMap.default;
 };
 
+interface HeroSlide {
+  image: string;
+  title: string;
+  highlight: string;
+  description: string;
+}
+
 const AIToolsHome = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [featuredTools, setFeaturedTools] = useState<AITool[]>([]);
   const [loading, setLoading] = useState(true);
   const [toolCount, setToolCount] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const heroSlides: HeroSlide[] = [
+    {
+      image: heroImage1,
+      title: 'Supercharge Your',
+      highlight: 'Productivity',
+      description: 'Discover a curated collection of the most powerful AI tools. From content creation to data analysis, find the perfect tool for every task.'
+    },
+    {
+      image: heroImage2,
+      title: 'Transform Ideas Into',
+      highlight: 'Reality',
+      description: 'Leverage cutting-edge AI technology to bring your creative visions to life. Generate images, write content, and automate workflows effortlessly.'
+    },
+    {
+      image: heroImage3,
+      title: 'Code Smarter With',
+      highlight: 'AI Assistance',
+      description: 'Boost your development workflow with AI-powered coding tools. Get intelligent suggestions, debug faster, and ship quality code.'
+    },
+    {
+      image: heroImage4,
+      title: 'Unlock The Power Of',
+      highlight: 'Automation',
+      description: 'Streamline your workflow with intelligent automation. Let AI handle repetitive tasks while you focus on what matters most.'
+    }
+  ];
 
   useEffect(() => {
     fetchTools();
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [heroSlides.length]);
 
   const sampleTools: AITool[] = [
     { id: '1', name: 'ChatGPT', description: 'Advanced AI chatbot for conversations, coding help, and content creation', category: 'text', color: 'from-green-500 to-emerald-600', features: ['Natural Language Processing', 'Code Generation', 'Content Writing'], pricing_type: 'free', url: 'https://chat.openai.com' },
@@ -153,8 +198,10 @@ const AIToolsHome = () => {
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div
+              key={currentSlide}
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 30 }}
               transition={{ duration: 0.6 }}
             >
               <motion.div
@@ -179,13 +226,13 @@ const AIToolsHome = () => {
               <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight ${
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                Supercharge Your{' '}
+                {heroSlides[currentSlide].title}{' '}
                 <span className={`${
                   theme === 'dark' 
                     ? 'text-electric-green' 
                     : 'bg-gradient-to-r from-accent-red to-accent-blue bg-clip-text text-transparent'
                 }`}>
-                  Productivity
+                  {heroSlides[currentSlide].highlight}
                 </span>{' '}
                 with AI
               </h1>
@@ -193,9 +240,7 @@ const AIToolsHome = () => {
               <p className={`text-lg md:text-xl mb-8 ${
                 theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
               }`}>
-                Discover a curated collection of the most powerful AI tools. 
-                From content creation to data analysis, find the perfect tool 
-                for every task and transform the way you work.
+                {heroSlides[currentSlide].description}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -227,12 +272,33 @@ const AIToolsHome = () => {
                   Learn More
                 </motion.button>
               </div>
+
+              <div className="flex justify-start space-x-3 mt-8">
+                {heroSlides.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentSlide(index)}
+                    aria-label={`Go to slide ${index + 1}`}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      currentSlide === index
+                        ? theme === 'dark'
+                          ? 'bg-electric-green w-8'
+                          : 'bg-accent-red w-8'
+                        : theme === 'dark'
+                        ? 'bg-gray-600 hover:bg-gray-500'
+                        : 'bg-gray-300 hover:bg-gray-400'
+                    }`}
+                  />
+                ))}
+              </div>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              key={`image-${currentSlide}`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              transition={{ duration: 0.6 }}
               className="relative"
             >
               <div className={`absolute inset-0 rounded-3xl ${
@@ -241,7 +307,7 @@ const AIToolsHome = () => {
                   : 'bg-gradient-to-br from-accent-red/20 to-accent-blue/20'
               } blur-2xl`} />
               <img
-                src={heroImage}
+                src={heroSlides[currentSlide].image}
                 alt="AI Tools Platform"
                 className="relative rounded-3xl shadow-2xl w-full object-cover aspect-[4/3]"
               />
