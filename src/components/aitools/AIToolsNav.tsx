@@ -14,10 +14,19 @@ import {
   Moon,
   LogOut,
   ArrowLeft,
-  Sparkles,
-  ChevronDown
+  Globe,
+  GraduationCap,
+  Cpu,
+  LayoutGrid
 } from 'lucide-react';
 import RoleBadge from '../academy/RoleBadge';
+
+const topNavItems = [
+  { label: 'Website', to: '/', icon: Globe },
+  { label: 'E-Learning', to: '/elearning', icon: GraduationCap },
+  { label: 'AI Tools', to: '/ai-tools', icon: Cpu, active: true },
+  { label: 'Digital Hub', to: '/contact', icon: LayoutGrid },
+];
 
 const AIToolsNav = () => {
   const { theme, toggleTheme } = useTheme();
@@ -46,7 +55,36 @@ const AIToolsNav = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      <div className={`fixed top-0 left-0 right-0 z-50 ${
+        theme === 'dark'
+          ? 'bg-[#030b1f] border-b border-electric-blue/20 shadow-[0_2px_12px_rgba(0,0,0,0.45)]'
+          : 'bg-white border-b border-gray-200/80 shadow-[0_2px_12px_rgba(46,55,77,0.08)]'
+      } backdrop-blur-[2px]`}>
+        <div className="container mx-auto px-4 lg:px-6">
+          <div className="grid grid-cols-4 gap-2 py-2 sm:gap-3 md:flex md:flex-nowrap md:justify-center md:gap-4">
+            {topNavItems.map(({ label, to, icon: Icon, active }) => (
+              <Link
+                key={label}
+                to={to}
+                className={`flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium transition-all duration-200 border ${
+                  active
+                    ? theme === 'dark'
+                      ? 'bg-gradient-to-r from-electric-green to-electric-blue text-[#041226] border-transparent shadow-[0_4px_12px_rgba(0,240,255,0.25)]'
+                      : 'bg-gradient-to-r from-accent-red to-accent-blue text-white border-transparent shadow-[0_4px_12px_rgba(244,63,94,0.25)]'
+                    : theme === 'dark'
+                    ? 'bg-[#09142b] text-slate-100 border-electric-blue/30 hover:border-electric-green/60 hover:bg-[#0f1f3f]'
+                    : 'bg-gray-50 text-slate-800 border-gray-200 hover:border-accent-blue/60 hover:bg-white hover:text-accent-blue'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{label}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <nav className={`fixed top-[52px] left-0 right-0 z-40 transition-all duration-300 ${
         theme === 'dark'
           ? 'bg-dark-card/95 backdrop-blur-xl border-b border-gray-800/50'
           : 'bg-white/95 backdrop-blur-xl border-b border-gray-200/50'
@@ -196,7 +234,7 @@ const AIToolsNav = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className={`fixed top-16 left-0 right-0 z-40 lg:hidden ${
+            className={`fixed top-[120px] left-0 right-0 z-30 lg:hidden ${
               theme === 'dark'
                 ? 'bg-dark-card/98 backdrop-blur-xl border-b border-gray-800'
                 : 'bg-white/98 backdrop-blur-xl border-b border-gray-200'
@@ -249,7 +287,7 @@ const AIToolsNav = () => {
         )}
       </AnimatePresence>
 
-      <div className="h-16 lg:h-20" />
+      <div className="h-[132px]" />
     </>
   );
 };
