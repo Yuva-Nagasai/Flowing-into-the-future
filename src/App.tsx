@@ -15,7 +15,6 @@ import AIChat from './components/AIChat';
 import SocialMediaBar from './components/SocialMediaBar';
 import FloatingContactWidget from './components/FloatingContactWidget';
 import EducationDashboard from './components/EducationDashboard';
-import AIToolsShowcase from './components/AIToolsShowcase';
 import { PageTransition } from './components/animations';
 import CareersPage from './pages/CareersPage';
 import ContactPage from './pages/ContactPage';
@@ -70,6 +69,10 @@ import ELearningAboutPage from './pages/elearning/AboutPage';
 import JobsPage from './pages/elearning/JobsPage';
 import AIToolsPage from './pages/elearning/AIToolsPage';
 import ELearningContactPage from './pages/elearning/ContactPage';
+import AIToolsHome from './pages/aitools/AIToolsHome';
+import AIToolsExplore from './pages/aitools/AIToolsExplore';
+import AIToolDetail from './pages/aitools/AIToolDetail';
+import AIToolsAbout from './pages/aitools/AIToolsAbout';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -230,15 +233,45 @@ function AnimatedRoutes() {
             }
           />
 
-          {/* ✅ AI Tools Showcase Route */}
+          {/* ✅ AI Tools Platform Routes */}
           <Route
             path="/ai-tools"
             element={
-              <PageTransition>
-                <div className="relative min-h-screen flex flex-col bg-white dark:bg-dark-bg transition-colors duration-300 w-full max-w-full overflow-x-hidden">
-                  <AIToolsShowcase />
-                </div>
-              </PageTransition>
+              <ProtectedRoute>
+                <PageTransition>
+                  <AIToolsHome />
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ai-tools/explore"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <AIToolsExplore />
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ai-tools/tool/:id"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <AIToolDetail />
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ai-tools/about"
+            element={
+              <ProtectedRoute>
+                <PageTransition>
+                  <AIToolsAbout />
+                </PageTransition>
+              </ProtectedRoute>
             }
           />
 
