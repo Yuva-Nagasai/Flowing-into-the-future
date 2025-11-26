@@ -183,7 +183,7 @@ const AIToolsHome = () => {
     }`}>
       <AIToolsNav />
 
-      <section className="relative overflow-hidden py-20 lg:py-32">
+      <section className="relative overflow-hidden py-12 lg:py-20">
         <div className={`absolute inset-0 ${
           theme === 'dark'
             ? 'bg-gradient-to-br from-dark-bg via-dark-card to-dark-bg'

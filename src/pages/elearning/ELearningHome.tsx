@@ -175,7 +175,7 @@ const ELearningHome = () => {
       <ELearningNav onSearch={setSearchTerm} searchTerm={searchTerm} />
       
       {/* Hero Section with Slider */}
-      <section className="relative h-[90vh] min-h-[600px] overflow-hidden pt-20">
+      <section className="relative h-[85vh] min-h-[550px] overflow-hidden pt-8">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
