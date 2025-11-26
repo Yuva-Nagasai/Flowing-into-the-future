@@ -1,135 +1,172 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
-  Briefcase, 
-  MapPin, 
+  BookOpen, 
   Clock, 
-  DollarSign,
-  Building2,
+  Star,
   Users,
-  ArrowRight,
+  Play,
   Search,
   Filter,
-  ExternalLink,
-  Bookmark,
-  GraduationCap
+  GraduationCap,
+  Award,
+  TrendingUp
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import ELearningNav from '../../components/elearning/ELearningNav';
-import { jobsAPI } from '../../utils/api';
+import { coursesAPI } from '../../utils/api';
 
-interface Job {
-  id: number;
+interface Course {
+  id: string;
   title: string;
-  company: string;
-  location: string;
-  type: string;
-  salary_range: string;
   description: string;
-  requirements: string;
-  benefits: string;
-  apply_link: string;
-  is_active: boolean;
-  created_at: string;
+  short_description?: string;
+  instructor_name: string;
+  category: string;
+  price: number;
+  thumbnail?: string;
+  duration?: number;
+  rating?: number;
+  students_enrolled?: number;
+  free?: boolean;
+  level?: string;
 }
 
-const sampleJobs: Job[] = [
+const sampleCourses: Course[] = [
   {
-    id: 1,
-    title: 'Senior Full Stack Developer',
-    company: 'TechCorp Inc.',
-    location: 'Remote',
-    type: 'Full-time',
-    salary_range: '$120,000 - $180,000',
-    description: 'Join our team to build cutting-edge web applications using React, Node.js, and cloud technologies.',
-    requirements: 'Bachelor degree, 5+ years experience, React, Node.js, AWS',
-    benefits: 'Health insurance, 401k, flexible hours, remote work',
-    apply_link: '#',
-    is_active: true,
-    created_at: new Date().toISOString()
+    id: '1',
+    title: 'Complete Web Development Bootcamp',
+    description: 'Learn HTML, CSS, JavaScript, React, Node.js, and more in this comprehensive course.',
+    short_description: 'Master full-stack development from scratch',
+    instructor_name: 'John Smith',
+    category: 'Web Development',
+    price: 49.99,
+    duration: 40,
+    rating: 4.8,
+    students_enrolled: 12500,
+    free: false,
+    level: 'Beginner'
   },
   {
-    id: 2,
-    title: 'Data Scientist',
-    company: 'AI Labs',
-    location: 'San Francisco',
-    type: 'Full-time',
-    salary_range: '$150,000 - $200,000',
-    description: 'Work on machine learning models and data analytics for Fortune 500 clients.',
-    requirements: 'MS/PhD in CS or related field, Python, TensorFlow, statistics',
-    benefits: 'Stock options, unlimited PTO, learning budget',
-    apply_link: '#',
-    is_active: true,
-    created_at: new Date(Date.now() - 86400000).toISOString()
+    id: '2',
+    title: 'Python for Data Science',
+    description: 'Master Python programming for data analysis, visualization, and machine learning.',
+    short_description: 'Become a data science expert with Python',
+    instructor_name: 'Sarah Johnson',
+    category: 'Data Science',
+    price: 39.99,
+    duration: 35,
+    rating: 4.9,
+    students_enrolled: 8700,
+    free: false,
+    level: 'Intermediate'
   },
   {
-    id: 3,
-    title: 'Frontend Developer Intern',
-    company: 'StartupXYZ',
-    location: 'New York',
-    type: 'Internship',
-    salary_range: '$25/hour',
-    description: 'Learn and grow with our team building modern React applications.',
-    requirements: 'Currently enrolled in CS program, React basics, eager to learn',
-    benefits: 'Mentorship, career growth, possible full-time offer',
-    apply_link: '#',
-    is_active: true,
-    created_at: new Date(Date.now() - 172800000).toISOString()
+    id: '3',
+    title: 'Introduction to AI & Machine Learning',
+    description: 'Get started with artificial intelligence and machine learning fundamentals.',
+    short_description: 'Start your AI journey here',
+    instructor_name: 'Michael Chen',
+    category: 'AI & ML',
+    price: 0,
+    duration: 20,
+    rating: 4.7,
+    students_enrolled: 15000,
+    free: true,
+    level: 'Beginner'
+  },
+  {
+    id: '4',
+    title: 'UI/UX Design Masterclass',
+    description: 'Learn user interface and user experience design principles and tools.',
+    short_description: 'Design beautiful and functional interfaces',
+    instructor_name: 'Emily Davis',
+    category: 'Design',
+    price: 44.99,
+    duration: 28,
+    rating: 4.6,
+    students_enrolled: 6300,
+    free: false,
+    level: 'Beginner'
+  },
+  {
+    id: '5',
+    title: 'Advanced React & Next.js',
+    description: 'Take your React skills to the next level with advanced patterns and Next.js.',
+    short_description: 'Build production-ready React applications',
+    instructor_name: 'David Wilson',
+    category: 'Web Development',
+    price: 54.99,
+    duration: 32,
+    rating: 4.8,
+    students_enrolled: 4200,
+    free: false,
+    level: 'Advanced'
+  },
+  {
+    id: '6',
+    title: 'Digital Marketing Fundamentals',
+    description: 'Learn SEO, social media marketing, and content strategy.',
+    short_description: 'Master modern marketing techniques',
+    instructor_name: 'Lisa Anderson',
+    category: 'Marketing',
+    price: 0,
+    duration: 15,
+    rating: 4.5,
+    students_enrolled: 9800,
+    free: true,
+    level: 'Beginner'
   }
 ];
 
-const JobsPage = () => {
+const CoursesPage = () => {
   const { theme } = useTheme();
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const navigate = useNavigate();
+  const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedType, setSelectedType] = useState('all');
-  const [selectedLocation, setSelectedLocation] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedLevel, setSelectedLevel] = useState('all');
+  const [priceFilter, setPriceFilter] = useState('all');
 
-  const jobTypes = ['all', 'Full-time', 'Part-time', 'Contract', 'Remote', 'Internship'];
-  const locations = ['all', 'Remote', 'New York', 'San Francisco', 'London', 'Berlin', 'Singapore'];
+  const categories = ['all', 'Web Development', 'Data Science', 'AI & ML', 'Design', 'Marketing', 'Mobile Development'];
+  const levels = ['all', 'Beginner', 'Intermediate', 'Advanced'];
+  const priceOptions = ['all', 'free', 'paid'];
 
   useEffect(() => {
-    fetchJobs();
+    fetchCourses();
   }, []);
 
-  const fetchJobs = async () => {
+  const fetchCourses = async () => {
     setLoading(true);
-    setError(null);
     try {
-      const response = await jobsAPI.getAll({});
-      const fetchedJobs = response.data.jobs || [];
-      setJobs(fetchedJobs.length > 0 ? fetchedJobs : sampleJobs);
+      const response = await coursesAPI.getAll({});
+      const fetchedCourses = response.data.courses || [];
+      setCourses(fetchedCourses.length > 0 ? fetchedCourses : sampleCourses);
     } catch (err) {
-      console.error('Error fetching jobs:', err);
-      setJobs(sampleJobs);
-      setError('Unable to load job listings from server. Showing sample opportunities.');
+      console.error('Error fetching courses:', err);
+      setCourses(sampleCourses);
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredJobs = jobs.filter((job) => {
+  const filteredCourses = courses.filter((course) => {
     const matchesSearch = 
-      job.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = selectedType === 'all' || job.type === selectedType;
-    const matchesLocation = selectedLocation === 'all' || job.location?.includes(selectedLocation);
-    return matchesSearch && matchesType && matchesLocation;
+      course.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.instructor_name?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || course.category === selectedCategory;
+    const matchesLevel = selectedLevel === 'all' || course.level === selectedLevel;
+    const matchesPrice = priceFilter === 'all' || 
+      (priceFilter === 'free' && course.free) || 
+      (priceFilter === 'paid' && !course.free);
+    return matchesSearch && matchesCategory && matchesLevel && matchesPrice;
   });
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const now = new Date();
-    const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return 'Yesterday';
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    return `${Math.floor(diffDays / 30)} months ago`;
+  const handleCourseClick = (courseId: string) => {
+    navigate(`/academy/login?redirect=/academy/course/${courseId}`);
   };
 
   return (
@@ -159,24 +196,24 @@ const JobsPage = () => {
                 ? 'bg-electric-green/20 text-electric-green'
                 : 'bg-accent-red/10 text-accent-red'
             }`}>
-              <Briefcase className="w-4 h-4" />
-              Career Opportunities
+              <BookOpen className="w-4 h-4" />
+              Learning Paths
             </span>
 
             <h1 className={`text-5xl md:text-6xl font-bold mb-6 ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
-              Find Your Dream{' '}
+              Explore Our{' '}
               <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>
-                Tech Job
+                Courses
               </span>
             </h1>
 
             <p className={`text-xl mb-10 ${
               theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
             }`}>
-              Discover exciting career opportunities from top tech companies. 
-              Apply your newly learned skills and take your career to the next level.
+              Discover a wide range of courses designed to help you learn new skills, 
+              advance your career, and achieve your goals.
             </p>
 
             {/* Search Bar */}
@@ -192,7 +229,7 @@ const JobsPage = () => {
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search jobs, companies, or keywords..."
+                    placeholder="Search courses, topics, or instructors..."
                     className={`w-full pl-12 pr-4 py-4 rounded-xl border-0 focus:outline-none focus:ring-2 ${
                       theme === 'dark'
                         ? 'bg-dark-lighter text-white placeholder-gray-500 focus:ring-electric-blue/30'
@@ -223,10 +260,10 @@ const JobsPage = () => {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { value: jobs.length || '50+', label: 'Open Positions', icon: Briefcase },
-              { value: '100+', label: 'Partner Companies', icon: Building2 },
-              { value: '5,000+', label: 'Placed Students', icon: Users },
-              { value: '95%', label: 'Placement Rate', icon: GraduationCap }
+              { value: courses.length || '100+', label: 'Available Courses', icon: BookOpen },
+              { value: '50+', label: 'Expert Instructors', icon: Users },
+              { value: '10,000+', label: 'Active Students', icon: GraduationCap },
+              { value: '95%', label: 'Completion Rate', icon: Award }
             ].map((stat, idx) => (
               <motion.div
                 key={idx}
@@ -255,7 +292,7 @@ const JobsPage = () => {
         </div>
       </section>
 
-      {/* Jobs Listing */}
+      {/* Courses Listing */}
       <section className={`py-16 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-8">
@@ -275,20 +312,20 @@ const JobsPage = () => {
                   </h3>
                 </div>
 
-                {/* Job Type Filter */}
+                {/* Category Filter */}
                 <div className="mb-6">
                   <label className={`block text-sm font-medium mb-3 ${
                     theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                   }`}>
-                    Job Type
+                    Category
                   </label>
                   <div className="space-y-2">
-                    {jobTypes.map((type) => (
+                    {categories.map((category) => (
                       <button
-                        key={type}
-                        onClick={() => setSelectedType(type)}
+                        key={category}
+                        onClick={() => setSelectedCategory(category)}
                         className={`w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all ${
-                          selectedType === type
+                          selectedCategory === category
                             ? theme === 'dark'
                               ? 'bg-electric-blue/20 text-electric-blue border border-electric-blue/30'
                               : 'bg-accent-blue/10 text-accent-blue border border-accent-blue/30'
@@ -297,26 +334,26 @@ const JobsPage = () => {
                               : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                         }`}
                       >
-                        {type === 'all' ? 'All Types' : type}
+                        {category === 'all' ? 'All Categories' : category}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Location Filter */}
-                <div>
+                {/* Level Filter */}
+                <div className="mb-6">
                   <label className={`block text-sm font-medium mb-3 ${
                     theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                   }`}>
-                    Location
+                    Level
                   </label>
                   <div className="space-y-2">
-                    {locations.map((location) => (
+                    {levels.map((level) => (
                       <button
-                        key={location}
-                        onClick={() => setSelectedLocation(location)}
+                        key={level}
+                        onClick={() => setSelectedLevel(level)}
                         className={`w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all ${
-                          selectedLocation === location
+                          selectedLevel === level
                             ? theme === 'dark'
                               ? 'bg-electric-green/20 text-electric-green border border-electric-green/30'
                               : 'bg-accent-red/10 text-accent-red border border-accent-red/30'
@@ -325,7 +362,35 @@ const JobsPage = () => {
                               : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                         }`}
                       >
-                        {location === 'all' ? 'All Locations' : location}
+                        {level === 'all' ? 'All Levels' : level}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Price Filter */}
+                <div>
+                  <label className={`block text-sm font-medium mb-3 ${
+                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
+                    Price
+                  </label>
+                  <div className="space-y-2">
+                    {priceOptions.map((option) => (
+                      <button
+                        key={option}
+                        onClick={() => setPriceFilter(option)}
+                        className={`w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all ${
+                          priceFilter === option
+                            ? theme === 'dark'
+                              ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                              : 'bg-purple-100 text-purple-600 border border-purple-300'
+                            : theme === 'dark'
+                              ? 'text-gray-400 hover:bg-dark-lighter hover:text-white'
+                              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                        }`}
+                      >
+                        {option === 'all' ? 'All Prices' : option === 'free' ? 'Free Courses' : 'Paid Courses'}
                       </button>
                     ))}
                   </div>
@@ -333,13 +398,13 @@ const JobsPage = () => {
               </div>
             </div>
 
-            {/* Jobs List */}
+            {/* Courses List */}
             <div className="lg:w-3/4">
               <div className="flex items-center justify-between mb-6">
                 <h2 className={`text-2xl font-bold ${
                   theme === 'dark' ? 'text-white' : 'text-gray-900'
                 }`}>
-                  Available Positions
+                  Available Courses
                 </h2>
                 <span className={`px-4 py-2 rounded-lg text-sm ${
                   theme === 'dark' ? 'bg-dark-card text-gray-400' : 'bg-white text-gray-600'
@@ -347,147 +412,164 @@ const JobsPage = () => {
                   <span className={`font-semibold ${
                     theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
                   }`}>
-                    {filteredJobs.length}
+                    {filteredCourses.length}
                   </span>
-                  {' '}jobs found
+                  {' '}courses found
                 </span>
               </div>
 
               {loading ? (
-                <div className="space-y-4">
-                  {[...Array(5)].map((_, i) => (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {[...Array(6)].map((_, i) => (
                     <div
                       key={i}
-                      className={`p-6 rounded-2xl animate-pulse ${
+                      className={`rounded-2xl overflow-hidden animate-pulse ${
                         theme === 'dark' ? 'bg-dark-card' : 'bg-white'
                       }`}
                     >
-                      <div className={`h-6 rounded w-1/3 mb-4 ${
+                      <div className={`h-48 ${
                         theme === 'dark' ? 'bg-dark-lighter' : 'bg-gray-200'
                       }`} />
-                      <div className={`h-4 rounded w-1/4 mb-2 ${
-                        theme === 'dark' ? 'bg-dark-lighter' : 'bg-gray-200'
-                      }`} />
-                      <div className={`h-4 rounded w-full ${
-                        theme === 'dark' ? 'bg-dark-lighter' : 'bg-gray-200'
-                      }`} />
+                      <div className="p-6">
+                        <div className={`h-6 rounded w-3/4 mb-4 ${
+                          theme === 'dark' ? 'bg-dark-lighter' : 'bg-gray-200'
+                        }`} />
+                        <div className={`h-4 rounded w-1/2 ${
+                          theme === 'dark' ? 'bg-dark-lighter' : 'bg-gray-200'
+                        }`} />
+                      </div>
                     </div>
                   ))}
                 </div>
-              ) : filteredJobs.length > 0 ? (
-                <div className="space-y-4">
-                  {filteredJobs.map((job, idx) => (
+              ) : filteredCourses.length > 0 ? (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {filteredCourses.map((course, idx) => (
                     <motion.div
-                      key={job.id}
+                      key={course.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.05 }}
                       whileHover={{ y: -5 }}
-                      className={`p-6 rounded-2xl border-2 transition-all ${
+                      onClick={() => handleCourseClick(course.id)}
+                      className={`rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${
                         theme === 'dark'
                           ? 'bg-dark-card border-gray-800 hover:border-electric-blue'
                           : 'bg-white border-gray-200 hover:border-accent-blue'
                       } shadow-lg hover:shadow-xl`}
                     >
-                      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-start gap-4">
-                            <div className={`flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center ${
-                              theme === 'dark'
-                                ? 'bg-electric-blue/20 text-electric-blue'
-                                : 'bg-accent-blue/10 text-accent-blue'
-                            }`}>
-                              <Building2 className="w-7 h-7" />
-                            </div>
-                            <div>
-                              <h3 className={`text-xl font-bold mb-1 ${
-                                theme === 'dark' ? 'text-white' : 'text-gray-900'
-                              }`}>
-                                {job.title}
-                              </h3>
-                              <p className={`text-sm font-medium ${
-                                theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
-                              }`}>
-                                {job.company}
-                              </p>
-                            </div>
+                      {/* Course Thumbnail */}
+                      <div className={`relative h-48 ${
+                        theme === 'dark'
+                          ? 'bg-gradient-to-br from-electric-blue/30 to-electric-green/30'
+                          : 'bg-gradient-to-br from-accent-red/20 to-accent-blue/20'
+                      }`}>
+                        {course.thumbnail ? (
+                          <img 
+                            src={course.thumbnail} 
+                            alt={course.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <BookOpen className={`w-16 h-16 ${
+                              theme === 'dark' ? 'text-electric-blue/50' : 'text-accent-blue/50'
+                            }`} />
                           </div>
-
-                          <div className="flex flex-wrap gap-3 mt-4">
-                            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${
-                              theme === 'dark'
-                                ? 'bg-dark-lighter text-gray-300'
-                                : 'bg-gray-100 text-gray-700'
-                            }`}>
-                              <MapPin className="w-3.5 h-3.5" />
-                              {job.location}
-                            </span>
-                            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${
-                              theme === 'dark'
-                                ? 'bg-dark-lighter text-gray-300'
-                                : 'bg-gray-100 text-gray-700'
-                            }`}>
-                              <Clock className="w-3.5 h-3.5" />
-                              {job.type}
-                            </span>
-                            {job.salary_range && (
-                              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${
-                                theme === 'dark'
-                                  ? 'bg-electric-green/20 text-electric-green'
-                                  : 'bg-accent-red/10 text-accent-red'
-                              }`}>
-                                <DollarSign className="w-3.5 h-3.5" />
-                                {job.salary_range}
-                              </span>
-                            )}
-                          </div>
-
-                          <p className={`mt-4 text-sm line-clamp-2 ${
-                            theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                        )}
+                        
+                        {course.free && (
+                          <span className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold ${
+                            theme === 'dark'
+                              ? 'bg-electric-green text-dark-bg'
+                              : 'bg-green-500 text-white'
                           }`}>
-                            {job.description}
-                          </p>
-                        </div>
-
-                        <div className="flex md:flex-col gap-2">
-                          <motion.a
-                            href={job.apply_link || '#'}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className={`flex-1 md:flex-none px-6 py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 ${
-                              theme === 'dark'
-                                ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
-                                : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
-                            }`}
-                          >
-                            Apply Now
-                            <ExternalLink className="w-4 h-4" />
-                          </motion.a>
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className={`flex-1 md:flex-none px-6 py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 border-2 ${
-                              theme === 'dark'
-                                ? 'border-gray-700 text-gray-300 hover:border-electric-blue hover:text-electric-blue'
-                                : 'border-gray-300 text-gray-700 hover:border-accent-blue hover:text-accent-blue'
-                            }`}
-                          >
-                            <Bookmark className="w-4 h-4" />
-                            Save
-                          </motion.button>
+                            FREE
+                          </span>
+                        )}
+                        
+                        <div className={`absolute bottom-4 right-4 px-3 py-1 rounded-full text-xs font-medium ${
+                          theme === 'dark'
+                            ? 'bg-dark-bg/80 text-white'
+                            : 'bg-white/90 text-gray-900'
+                        }`}>
+                          {course.level || 'All Levels'}
                         </div>
                       </div>
 
-                      <div className={`mt-4 pt-4 border-t flex items-center justify-between ${
-                        theme === 'dark' ? 'border-gray-800' : 'border-gray-200'
-                      }`}>
-                        <span className={`text-xs ${
-                          theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
+                      {/* Course Content */}
+                      <div className="p-6">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            theme === 'dark'
+                              ? 'bg-dark-lighter text-gray-400'
+                              : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            {course.category}
+                          </span>
+                        </div>
+                        
+                        <h3 className={`text-xl font-bold mb-2 line-clamp-2 ${
+                          theme === 'dark' ? 'text-white' : 'text-gray-900'
                         }`}>
-                          Posted {formatDate(job.created_at)}
-                        </span>
+                          {course.title}
+                        </h3>
+                        
+                        <p className={`text-sm mb-4 line-clamp-2 ${
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                        }`}>
+                          {course.short_description || course.description}
+                        </p>
+
+                        <div className={`flex items-center gap-4 mb-4 text-sm ${
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                        }`}>
+                          <span className="flex items-center gap-1">
+                            <Users className="w-4 h-4" />
+                            {course.students_enrolled?.toLocaleString() || '0'}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            {course.duration || '10'}h
+                          </span>
+                          {course.rating && (
+                            <span className="flex items-center gap-1">
+                              <Star className={`w-4 h-4 ${
+                                theme === 'dark' ? 'text-yellow-400' : 'text-yellow-500'
+                              }`} />
+                              {course.rating}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                          <div>
+                            <p className={`text-xs ${
+                              theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
+                            }`}>
+                              Instructor
+                            </p>
+                            <p className={`font-medium ${
+                              theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+                            }`}>
+                              {course.instructor_name}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            {course.free ? (
+                              <span className={`text-xl font-bold ${
+                                theme === 'dark' ? 'text-electric-green' : 'text-green-600'
+                              }`}>
+                                Free
+                              </span>
+                            ) : (
+                              <span className={`text-xl font-bold ${
+                                theme === 'dark' ? 'text-white' : 'text-gray-900'
+                              }`}>
+                                ${course.price}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </motion.div>
                   ))}
@@ -496,13 +578,13 @@ const JobsPage = () => {
                 <div className={`text-center py-16 rounded-2xl ${
                   theme === 'dark' ? 'bg-dark-card' : 'bg-white'
                 }`}>
-                  <Briefcase className={`w-16 h-16 mx-auto mb-4 ${
+                  <BookOpen className={`w-16 h-16 mx-auto mb-4 ${
                     theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
                   }`} />
                   <h3 className={`text-xl font-bold mb-2 ${
                     theme === 'dark' ? 'text-white' : 'text-gray-900'
                   }`}>
-                    No jobs found
+                    No courses found
                   </h3>
                   <p className={`text-sm ${
                     theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
@@ -529,29 +611,32 @@ const JobsPage = () => {
                 : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10'
             }`}
           >
+            <TrendingUp className={`w-12 h-12 mx-auto mb-4 ${
+              theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+            }`} />
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
-              Not Ready to Apply Yet?
+              Ready to Start Learning?
             </h2>
             <p className={`text-lg mb-8 max-w-2xl mx-auto ${
               theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
             }`}>
-              Upskill with our industry-relevant courses and become job-ready. 
-              Learn from experts and build a portfolio that stands out.
+              Join thousands of students who are already learning with us. 
+              Get access to all courses and start your journey today.
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => window.location.href = '/elearning'}
+              onClick={() => navigate('/academy/signup')}
               className={`px-8 py-4 rounded-xl font-bold flex items-center gap-2 mx-auto ${
                 theme === 'dark'
                   ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                   : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
               }`}
             >
-              Explore Courses
-              <ArrowRight className="w-5 h-5" />
+              <Play className="w-5 h-5" />
+              Start Learning Now
             </motion.button>
           </motion.div>
         </div>
@@ -573,4 +658,4 @@ const JobsPage = () => {
   );
 };
 
-export default JobsPage;
+export default CoursesPage;

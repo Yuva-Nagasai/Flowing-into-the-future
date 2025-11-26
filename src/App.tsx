@@ -67,7 +67,6 @@ import CourseListing from './pages/CourseListing';
 import ELearningHome from './pages/elearning/ELearningHome';
 import ELearningAboutPage from './pages/elearning/AboutPage';
 import JobsPage from './pages/elearning/JobsPage';
-import AIToolsPage from './pages/elearning/AIToolsPage';
 import ELearningContactPage from './pages/elearning/ContactPage';
 import AIToolsHome from './pages/aitools/AIToolsHome';
 import AIToolsExplore from './pages/aitools/AIToolsExplore';
@@ -193,22 +192,12 @@ function AnimatedRoutes() {
             }
           />
 
-          {/* E-Learning Jobs Page */}
+          {/* E-Learning Courses Page */}
           <Route
-            path="/elearning/jobs"
+            path="/elearning/courses"
             element={
               <PageTransition>
                 <JobsPage />
-              </PageTransition>
-            }
-          />
-
-          {/* E-Learning AI Tools Page */}
-          <Route
-            path="/elearning/ai-tools"
-            element={
-              <PageTransition>
-                <AIToolsPage />
               </PageTransition>
             }
           />

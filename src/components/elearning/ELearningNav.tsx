@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GraduationCap, Menu, X, Sun, Moon, Home, BookOpen, Award, Mail, Search, Briefcase, Brain, Globe, Cpu, LayoutGrid } from 'lucide-react';
+import { GraduationCap, Menu, X, Sun, Moon, Home, BookOpen, Award, Mail, Search, Globe, Cpu, LayoutGrid } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
 const topNavItems = [
@@ -31,10 +31,8 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
 
   const navLinks = [
     { name: 'Home', path: '/elearning', icon: Home },
-    { name: 'Courses', path: '/elearning#courses', icon: BookOpen },
+    { name: 'Courses', path: '/elearning/courses', icon: BookOpen },
     { name: 'About', path: '/elearning/about', icon: Award },
-    { name: 'Jobs', path: '/elearning/jobs', icon: Briefcase },
-    { name: 'AI Tools', path: '/elearning/ai-tools', icon: Brain },
     { name: 'Contact', path: '/elearning/contact', icon: Mail },
   ];
 
