@@ -94,7 +94,7 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
           : 'bg-white/95 border-b border-gray-200/50'
       } backdrop-blur-lg shadow-lg`} style={{ top: `${topBarHeight}px` }}>
         <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/elearning" className="flex items-center gap-3 group">
               <motion.div
@@ -309,7 +309,7 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
       </AnimatePresence>
       </nav>
       
-      <div className="h-[124px]" />
+      <div className="h-[140px]" />
     </>
   );
 };

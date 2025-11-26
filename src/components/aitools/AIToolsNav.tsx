@@ -85,7 +85,7 @@ const AIToolsNav = () => {
           : 'bg-white/95 backdrop-blur-xl border-b border-gray-200/50'
       }`} style={{ top: `${topBarHeight}px` }}>
         <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-20">
             <div className="flex items-center gap-2">
               <motion.button
                 onClick={() => navigate('/academy/platform-selection')}
@@ -289,7 +289,7 @@ const AIToolsNav = () => {
         )}
       </AnimatePresence>
 
-      <div className="h-[124px]" />
+      <div className="h-[140px]" />
     </>
   );
 };
