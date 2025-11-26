@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { ThemeProvider } from './context/ThemeContext';
@@ -13,7 +13,6 @@ import Careers from './components/Careers';
 import Footer from './components/Footer';
 import AIChat from './components/AIChat';
 import SocialMediaBar from './components/SocialMediaBar';
-import FloatingContactWidget from './components/FloatingContactWidget';
 import EducationDashboard from './components/EducationDashboard';
 import AIToolsShowcase from './components/AIToolsShowcase';
 import { PageTransition } from './components/animations';
@@ -75,13 +74,6 @@ function AnimatedRoutes() {
       window.scrollTo({ top: 0, behavior: 'auto' });
     }
   }, [location.pathname, location.hash]);
-
-  const path = location.pathname.toLowerCase();
-  const shouldShowFloatingContact = useMemo(() => {
-    const excludedPrefixes = ['/academy', '/elearning', '/courses', '/educationdashboard', '/ai-tools'];
-    if (excludedPrefixes.some((prefix) => path.startsWith(prefix))) return false;
-    return true;
-  }, [path]);
 
   return (
     <>
@@ -530,7 +522,6 @@ function AnimatedRoutes() {
         </Routes>
       </AnimatePresence>
       <AIChat />
-      {shouldShowFloatingContact && <FloatingContactWidget />}
     </>
   );
 }
