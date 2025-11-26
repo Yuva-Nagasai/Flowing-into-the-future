@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GraduationCap, Menu, X, Sun, Moon, Search, Globe, Cpu, LayoutGrid } from 'lucide-react';
+import { GraduationCap, Menu, X, Sun, Moon, Globe, Cpu, LayoutGrid, ChevronDown, BookOpen, Briefcase, Award, Calendar } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
 const topNavItems = [
@@ -11,23 +11,31 @@ const topNavItems = [
   { label: '4 Digital Hub', to: '/contact', icon: LayoutGrid },
 ];
 
-interface ELearningNavProps {
-  onSearch?: (term: string) => void;
-  searchTerm?: string;
-}
+const othersDropdownItems = [
+  { name: 'Blog', path: '/elearning/blog', icon: BookOpen, description: 'Expert articles on n8n automation' },
+  { name: 'Internship', path: '/elearning/internship', icon: Briefcase, description: 'Hands-on automation experience' },
+  { name: 'Certificate', path: '/elearning/certificate', icon: Award, description: 'Industry-standard credentials' },
+  { name: 'Events', path: '/elearning/events', icon: Calendar, description: 'Live workshops & bootcamps' },
+];
 
-const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
+const ELearningNav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
+  const [isOthersOpen, setIsOthersOpen] = useState(false);
+  const [isMobileOthersOpen, setIsMobileOthersOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const othersRef = useRef<HTMLDivElement>(null);
 
-  const handleSearchChange = (value: string) => {
-    setLocalSearchTerm(value);
-    if (onSearch) {
-      onSearch(value);
-    }
-  };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (othersRef.current && !othersRef.current.contains(event.target as Node)) {
+        setIsOthersOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const navLinks = [
     { name: 'Home', path: '/elearning' },
@@ -54,6 +62,8 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
       navigate(path);
     }
     setIsMenuOpen(false);
+    setIsOthersOpen(false);
+    setIsMobileOthersOpen(false);
   };
 
   const topBarHeight = 60;
@@ -127,7 +137,7 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
-              <div className="flex items-center gap-8 lg:gap-10">
+              <div className="flex items-center gap-6 lg:gap-8">
                 {navLinks.map((link) => (
                   <button
                     key={link.name}
@@ -141,26 +151,65 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
                     {link.name}
                   </button>
                 ))}
-              </div>
-              
-              {/* Search Box */}
-              <div className="relative w-48">
-                <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${
-                  theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                }`} />
-                <input
-                  type="text"
-                  value={localSearchTerm}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  placeholder="Search..."
-                  className={`w-full pl-9 pr-3 py-1.5 text-sm rounded-lg border transition-all ${
-                    theme === 'dark'
-                      ? 'bg-dark-lighter border-gray-700 text-white placeholder-gray-500 focus:border-electric-blue'
-                      : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400 focus:border-accent-blue'
-                  } focus:outline-none focus:ring-1 ${
-                    theme === 'dark' ? 'focus:ring-electric-blue/30' : 'focus:ring-accent-blue/30'
-                  }`}
-                />
+                
+                {/* Others Dropdown */}
+                <div className="relative" ref={othersRef}>
+                  <button
+                    onClick={() => setIsOthersOpen(!isOthersOpen)}
+                    className={`flex items-center gap-1 font-exo font-medium transition-all duration-300 ${
+                      theme === 'dark'
+                        ? 'text-white hover:text-electric-green'
+                        : 'text-black hover:text-accent-red'
+                    }`}
+                  >
+                    Others
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOthersOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  <AnimatePresence>
+                    {isOthersOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                        className={`absolute top-full right-0 mt-2 w-64 rounded-xl border shadow-xl overflow-hidden ${
+                          theme === 'dark'
+                            ? 'bg-dark-card border-gray-800'
+                            : 'bg-white border-gray-200'
+                        }`}
+                      >
+                        {othersDropdownItems.map((item) => (
+                          <button
+                            key={item.name}
+                            onClick={() => handleNavClick(item.path)}
+                            className={`w-full flex items-start gap-3 p-4 transition-all duration-200 ${
+                              theme === 'dark'
+                                ? 'hover:bg-dark-lighter'
+                                : 'hover:bg-gray-50'
+                            }`}
+                          >
+                            <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
+                              theme === 'dark'
+                                ? 'bg-electric-blue/20 text-electric-blue'
+                                : 'bg-accent-blue/10 text-accent-blue'
+                            }`}>
+                              <item.icon className="w-5 h-5" />
+                            </div>
+                            <div className="text-left">
+                              <p className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                                {item.name}
+                              </p>
+                              <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                                {item.description}
+                              </p>
+                            </div>
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
             </div>
 
@@ -237,26 +286,6 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
             }`}
           >
             <div className="container mx-auto px-4 py-4 space-y-3">
-              {/* Mobile Search */}
-              <div className="relative">
-                <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${
-                  theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                }`} />
-                <input
-                  type="text"
-                  value={localSearchTerm}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  placeholder="Search courses..."
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl border transition-all ${
-                    theme === 'dark'
-                      ? 'bg-dark-lighter border-gray-700 text-white placeholder-gray-500'
-                      : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400'
-                  } focus:outline-none focus:ring-2 ${
-                    theme === 'dark' ? 'focus:ring-electric-blue/30' : 'focus:ring-accent-blue/30'
-                  }`}
-                />
-              </div>
-
               {navLinks.map((link) => (
                 <button
                   key={link.name}
@@ -270,6 +299,47 @@ const ELearningNav = ({ onSearch, searchTerm = '' }: ELearningNavProps) => {
                   {link.name}
                 </button>
               ))}
+
+              {/* Mobile Others Dropdown */}
+              <div className="border-t border-b py-3 my-3 ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'}">
+                <button
+                  onClick={() => setIsMobileOthersOpen(!isMobileOthersOpen)}
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
+                    theme === 'dark'
+                      ? 'text-white hover:bg-dark-lighter'
+                      : 'text-black hover:bg-gray-100'
+                  }`}
+                >
+                  Others
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMobileOthersOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                <AnimatePresence>
+                  {isMobileOthersOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="pl-4 space-y-1 mt-2"
+                    >
+                      {othersDropdownItems.map((item) => (
+                        <button
+                          key={item.name}
+                          onClick={() => handleNavClick(item.path)}
+                          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                            theme === 'dark'
+                              ? 'text-gray-300 hover:bg-dark-lighter hover:text-electric-green'
+                              : 'text-gray-700 hover:bg-gray-100 hover:text-accent-red'
+                          }`}
+                        >
+                          <item.icon className="w-5 h-5" />
+                          <span className="font-exo font-medium">{item.name}</span>
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
               {/* Mobile Login Button */}
               <motion.button

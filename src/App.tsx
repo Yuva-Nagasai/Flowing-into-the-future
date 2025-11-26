@@ -71,6 +71,10 @@ import ELearningContactPage from './pages/elearning/ContactPage';
 import MasterclassPage from './pages/elearning/MasterclassPage';
 import MahakumbhPage from './pages/elearning/MahakumbhPage';
 import FreebiesPage from './pages/elearning/FreebiesPage';
+import BlogPage from './pages/elearning/BlogPage';
+import InternshipPage from './pages/elearning/InternshipPage';
+import CertificatePage from './pages/elearning/CertificatePage';
+import EventsPage from './pages/elearning/EventsPage';
 import AIToolsHome from './pages/aitools/AIToolsHome';
 import AIToolsExplore from './pages/aitools/AIToolsExplore';
 import AIToolDetail from './pages/aitools/AIToolDetail';
@@ -241,6 +245,46 @@ function AnimatedRoutes() {
             element={
               <PageTransition>
                 <FreebiesPage />
+              </PageTransition>
+            }
+          />
+
+          {/* E-Learning Blog Page */}
+          <Route
+            path="/elearning/blog"
+            element={
+              <PageTransition>
+                <BlogPage />
+              </PageTransition>
+            }
+          />
+
+          {/* E-Learning Internship Page */}
+          <Route
+            path="/elearning/internship"
+            element={
+              <PageTransition>
+                <InternshipPage />
+              </PageTransition>
+            }
+          />
+
+          {/* E-Learning Certificate Page */}
+          <Route
+            path="/elearning/certificate"
+            element={
+              <PageTransition>
+                <CertificatePage />
+              </PageTransition>
+            }
+          />
+
+          {/* E-Learning Events Page */}
+          <Route
+            path="/elearning/events"
+            element={
+              <PageTransition>
+                <EventsPage />
               </PageTransition>
             }
           />

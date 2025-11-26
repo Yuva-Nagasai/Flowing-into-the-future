@@ -1,0 +1,180 @@
+4️⃣ INTERNSHIP
+
+Description:
+Hands-on internships designed to build real n8n workflows and automation systems.
+
+Items (10):
+
+n8n Workflow Builder Intern
+Duration: 1 Month
+Skills Required: Basic logic
+Learns: Workflow building
+Tags: n8n, workflow
+
+API Automation Intern
+Duration: 6 Weeks
+Skills Required: API basics
+Learns: API nodes & tokens
+Tags: API, automation
+
+AI Automation Intern
+Duration: 1 Month
+Skills Required: AI basics
+Learns: GPT workflows
+Tags: AI, GPT
+
+No-Code Automation Intern
+Duration: 2 Months
+Skills Required: No-code mindset
+Learns: Business automations
+Tags: no-code, automation
+
+Social Media Automation Intern
+Duration: 1 Month
+Skills Required: Social media basics
+Learns: Auto-posting tools
+Tags: social media, automation
+
+CRM Automation Intern
+Duration: 6 Weeks
+Skills Required: CRM basics
+Learns: Lead tracking workflows
+Tags: CRM, automation
+
+Webhook Automation Intern
+Duration: 1 Month
+Skills Required: HTTP basics
+Learns: Event triggers
+Tags: webhooks, triggers
+
+Email Automation Intern
+Duration: 1 Month
+Skills Required: Email basics
+Learns: SMTP & newsletters
+Tags: email, automation
+
+Ecommerce Automation Intern
+Duration: 6 Weeks
+Skills Required: Ecommerce basics
+Learns: Order → message flows
+Tags: ecommerce, workflow
+
+Data Automation Intern
+Duration: 1 Month
+Skills Required: Excel/Sheets
+Learns: Data sync & pipelines
+Tags: data, automation
+
+5️⃣ CERTIFICATE
+
+Description:
+Industry-standard certificates proving your n8n automation and AI workflow skills.
+
+Items (10):
+
+n8n Automation Beginner Certificate
+Validates: Basic workflows
+Job use: Junior automation roles
+Tags: n8n, certificate
+
+Advanced API Integration Certificate
+Validates: API handling
+Job use: API developer
+Tags: API, advanced
+
+AI Automation Specialist Certificate
+Validates: GPT automation
+Job use: AI automation engineer
+Tags: AI, automation
+
+No-Code Automation Expert Certificate
+Validates: Multi-tool automation
+Job use: Automation consultant
+Tags: no-code, expert
+
+Data Automation & Pipelines Certificate
+Validates: ETL flows
+Job use: Data engineer roles
+Tags: data, pipelines
+
+Social Media Automation Certificate
+Validates: Auto-posting workflows
+Job use: Social automation specialist
+Tags: social media
+
+Business Workflow Automation Certificate
+Validates: CRM & sales flows
+Job use: Workflow architect
+Tags: business, CRM
+
+Webhook Automation Certificate
+Validates: Trigger-based systems
+Job use: Integration engineer
+Tags: webhooks, triggers
+
+Productivity Automation Certificate
+Validates: Workflow optimization
+Job use: Productivity specialist
+Tags: productivity, automation
+
+E-commerce Automation Certificate
+Validates: Store automation workflows
+Job use: Ecommerce automation engineer
+Tags: ecommerce, workflows
+
+6️⃣ EVENTS
+
+Description:
+Live workshops and bootcamps focused on n8n automation and AI workflows.
+
+Items (10):
+
+n8n Automation Bootcamp
+Type: Bootcamp
+Takeaway: Build 10 workflows
+Tags: n8n, bootcamp
+
+API Integrations 101
+Type: Webinar
+Takeaway: Learn API basics
+Tags: API, integrations
+
+AI Workflows With n8n
+Type: Workshop
+Takeaway: Create GPT automations
+Tags: AI, GPT
+
+Webhook Mastery Workshop
+Type: Workshop
+Takeaway: Trigger workflows
+Tags: webhooks
+
+Social Media Automation Day
+Type: Webinar
+Takeaway: Automate posting
+Tags: social media
+
+Ecommerce Automation Workshop
+Type: Workshop
+Takeaway: Order → message flows
+Tags: ecommerce
+
+Daily Routine Automation Bootcamp
+Type: Bootcamp
+Takeaway: Automate 25 tasks
+Tags: productivity
+
+n8n Cloud vs Self-Hosted Webinar
+Type: Webinar
+Takeaway: Setup & hosting
+Tags: hosting, n8n
+
+CRM Automation Workshop
+Type: Workshop
+Takeaway: Lead → follow-up flows
+Tags: CRM
+
+Automation Career Roadmap 2026
+Type: Webinar
+Takeaway: Jobs, salaries, roadmap
+Tags: career, automation
