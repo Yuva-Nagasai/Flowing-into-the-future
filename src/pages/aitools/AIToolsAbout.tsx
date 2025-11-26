@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import AIToolsNav from '../../components/aitools/AIToolsNav';
+import AIToolsFooter from '../../components/aitools/AIToolsFooter';
 import {
   Brain,
   Sparkles,
@@ -436,31 +437,7 @@ const AIToolsAbout = () => {
         </div>
       </section>
 
-      <footer className={`py-8 border-t ${
-        theme === 'dark' ? 'bg-dark-bg border-gray-800' : 'bg-gray-50 border-gray-200'
-      }`}>
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className={`flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br ${
-                theme === 'dark'
-                  ? 'from-electric-blue to-electric-green'
-                  : 'from-accent-red to-accent-blue'
-              }`}>
-                <Brain className="h-4 w-4 text-white" />
-              </div>
-              <span className={`font-bold ${
-                theme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}>NanoFlows AI Tools</span>
-            </div>
-            <p className={`text-sm ${
-              theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-            }`}>
-              © 2024 NanoFlows. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <AIToolsFooter />
     </div>
   );
 };
