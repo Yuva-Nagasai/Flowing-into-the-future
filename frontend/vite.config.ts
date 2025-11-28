@@ -34,6 +34,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/ecommerce': {
+        target: 'http://localhost:5173',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
   preview: {

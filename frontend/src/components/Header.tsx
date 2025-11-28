@@ -119,6 +119,7 @@ const Header = () => {
     { name: 'Home', href: '#home', type: 'anchor' },
     { name: 'Services', href: '/services', type: 'route' },
     { name: 'How it Works', href: '/how-it-works', type: 'route' },
+    { name: 'Shop', href: '/ecommerce', type: 'external' },
     { name: 'Careers', href: '/careers', type: 'route' },
     { name: 'Contact', href: '/contact', type: 'route' }
   ];
@@ -257,6 +258,17 @@ const Header = () => {
                     className={`font-exo font-medium transition-all duration-300 cursor-pointer ${getLinkClasses(
                       activeAnchor === link.href.replace('#', '')
                     )}`}
+                  >
+                    {link.name}
+                  </a>
+                ) : link.type === 'external' ? (
+                  <a
+                    href={link.href}
+                    className={`font-exo font-medium transition-all duration-300 ${
+                      theme === 'dark'
+                        ? 'text-white hover:text-electric-green'
+                        : 'text-black hover:text-accent-red'
+                    }`}
                   >
                     {link.name}
                   </a>
@@ -524,6 +536,18 @@ const Header = () => {
                           ? 'text-electric-green bg-dark-lighter/40'
                           : 'text-accent-red bg-gray-50'
                         : theme === 'dark'
+                        ? 'text-white hover:text-electric-green hover:bg-dark-lighter'
+                        : 'text-black hover:text-accent-red hover:bg-gray-50'
+                    }`}
+                  >
+                    {link.name}
+                  </a>
+                ) : link.type === 'external' ? (
+                  <a
+                    href={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`block px-4 py-3 font-exo transition-all duration-300 ${
+                      theme === 'dark'
                         ? 'text-white hover:text-electric-green hover:bg-dark-lighter'
                         : 'text-black hover:text-accent-red hover:bg-gray-50'
                     }`}

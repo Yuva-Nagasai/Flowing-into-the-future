@@ -12,7 +12,7 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    port: 5001,
+    port: 5173,
     allowedHosts: true,
     proxy: {
       '/api/ecommerce': {
@@ -24,6 +24,6 @@ export default defineConfig({
   },
   preview: {
     host: '0.0.0.0',
-    port: 5001
+    port: 5173
   }
 });
