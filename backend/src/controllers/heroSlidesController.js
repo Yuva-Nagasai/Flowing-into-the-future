@@ -1,6 +1,30 @@
-const pool = require('../config/db');
+const db = require('../config/db');
 
 const jsonFields = ['categories', 'trust_badges', 'services'];
+
+const fallbackSlides = [
+  {
+    id: '1',
+    variant: 'default',
+    title: 'Flowing Into',
+    highlight: 'The Future',
+    subtitle: 'Experience seamless innovation with Nano Flows. We deliver cutting-edge AI-powered solutions that transform your digital presence through dynamic personalization and continuous evolution.',
+    buttonText: 'Get Started',
+    preHeading: 'AI-Powered Innovation Platform',
+    heading: null,
+    description: null,
+    categories: [],
+    primaryCtaLabel: 'Get Started',
+    primaryCtaRoute: '/services',
+    secondaryCtaLabel: 'Explore Solutions',
+    secondaryCtaRoute: '/products',
+    trustBadges: [],
+    services: [],
+    backgroundImage: null,
+    backgroundOverlay: null,
+    orderIndex: 0,
+  },
+];
 
 const parseSlideRow = (row) => {
   const slide = { ...row };
@@ -39,22 +63,22 @@ const parseSlideRow = (row) => {
 };
 
 const getNextOrderIndex = async () => {
-  const result = await pool.query('SELECT COALESCE(MAX(order_index), -1) AS maxOrder FROM hero_slides');
-  return result.rows[0].maxOrder + 1;
+  const result = await db.query('SELECT COALESCE(MAX(order_index), -1) AS maxOrder FROM hero_slides');
+  return result.rows[0].maxorder + 1;
 };
 
 const shiftOrderIndexes = async (fromIndex, increment = 1) => {
-  await pool.query(
-    'UPDATE hero_slides SET order_index = order_index + ? WHERE order_index >= ?',
+  await db.query(
+    'UPDATE hero_slides SET order_index = order_index + $1 WHERE order_index >= $2',
     [increment, fromIndex]
   );
 };
 
 const normalizeOrderIndexes = async () => {
-  const result = await pool.query('SELECT id FROM hero_slides ORDER BY order_index ASC');
+  const result = await db.query('SELECT id FROM hero_slides ORDER BY order_index ASC');
   const slides = result.rows;
   for (let i = 0; i < slides.length; i++) {
-    await pool.query('UPDATE hero_slides SET order_index = ? WHERE id = ?', [i, slides[i].id]);
+    await db.query('UPDATE hero_slides SET order_index = $1 WHERE id = $2', [i, slides[i].id]);
   }
 };
 
@@ -65,7 +89,7 @@ const calculateOrderIndex = async (position = 'end', referenceSlideId = null) =>
   }
 
   if (position === 'after' && referenceSlideId) {
-    const refResult = await pool.query('SELECT order_index FROM hero_slides WHERE id = ?', [referenceSlideId]);
+    const refResult = await db.query('SELECT order_index FROM hero_slides WHERE id = $1', [referenceSlideId]);
     if (refResult.rows.length) {
       const refOrder = refResult.rows[0].order_index;
       await shiftOrderIndexes(refOrder + 1, 1);
@@ -74,7 +98,7 @@ const calculateOrderIndex = async (position = 'end', referenceSlideId = null) =>
   }
 
   if (position === 'before' && referenceSlideId) {
-    const refResult = await pool.query('SELECT order_index FROM hero_slides WHERE id = ?', [referenceSlideId]);
+    const refResult = await db.query('SELECT order_index FROM hero_slides WHERE id = $1', [referenceSlideId]);
     if (refResult.rows.length) {
       const refOrder = refResult.rows[0].order_index;
       await shiftOrderIndexes(refOrder, 1);
@@ -82,7 +106,6 @@ const calculateOrderIndex = async (position = 'end', referenceSlideId = null) =>
     }
   }
 
-  // default to end
   return await getNextOrderIndex();
 };
 
@@ -144,27 +167,34 @@ const buildPayload = (body) => {
 
 const getHeroSlides = async (_req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM hero_slides ORDER BY order_index ASC');
+    if (!db.isDatabaseAvailable()) {
+      return res.json({ slides: fallbackSlides });
+    }
+    const result = await db.query('SELECT * FROM hero_slides ORDER BY order_index ASC');
     const slides = result.rows.map(parseSlideRow);
-    res.json({ slides });
+    res.json({ slides: slides.length > 0 ? slides : fallbackSlides });
   } catch (error) {
     console.error('Get hero slides error:', error);
-    res.status(500).json({ error: 'Server error' });
+    res.json({ slides: fallbackSlides });
   }
 };
 
 const createHeroSlide = async (req, res) => {
   try {
+    if (!db.isDatabaseAvailable()) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
     const payload = buildPayload(req.body);
     const { position = 'end', referenceSlideId = null } = req.body;
     const orderIndex = await calculateOrderIndex(position, referenceSlideId);
 
-    const insertResult = await pool.query(
+    const insertResult = await db.query(
       `INSERT INTO hero_slides
         (variant, title, highlight, subtitle, button_text, pre_heading, heading, description,
          categories, primary_cta_label, primary_cta_route, secondary_cta_label, secondary_cta_route,
          trust_badges, background_image, background_overlay, services, order_index)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
        RETURNING *`,
       [
         payload.variant,
@@ -197,55 +227,57 @@ const createHeroSlide = async (req, res) => {
 
 const updateHeroSlide = async (req, res) => {
   try {
+    if (!db.isDatabaseAvailable()) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
     const { id } = req.params;
-    const existingResult = await pool.query('SELECT * FROM hero_slides WHERE id = ?', [id]);
+    const existingResult = await db.query('SELECT * FROM hero_slides WHERE id = $1', [id]);
 
     if (existingResult.rows.length === 0) {
       return res.status(404).json({ error: 'Slide not found' });
     }
 
     const payload = buildPayload(req.body);
-    const fields = [
-      payload.variant,
-      payload.title,
-      payload.highlight,
-      payload.subtitle,
-      payload.button_text,
-      payload.pre_heading,
-      payload.heading,
-      payload.description,
-      payload.categories,
-      payload.primary_cta_label,
-      payload.primary_cta_route,
-      payload.secondary_cta_label,
-      payload.secondary_cta_route,
-      payload.trust_badges,
-      payload.background_image,
-      payload.background_overlay,
-      payload.services,
-      id,
-    ];
 
-    await pool.query(
+    await db.query(
       `UPDATE hero_slides
-       SET variant=?, title=?, highlight=?, subtitle=?, button_text=?, pre_heading=?, heading=?, description=?,
-           categories=?, primary_cta_label=?, primary_cta_route=?, secondary_cta_label=?, secondary_cta_route=?,
-           trust_badges=?, background_image=?, background_overlay=?, services=?, updated_at=NOW()
-       WHERE id = ?`,
-      fields
+       SET variant=$1, title=$2, highlight=$3, subtitle=$4, button_text=$5, pre_heading=$6, heading=$7, description=$8,
+           categories=$9, primary_cta_label=$10, primary_cta_route=$11, secondary_cta_label=$12, secondary_cta_route=$13,
+           trust_badges=$14, background_image=$15, background_overlay=$16, services=$17, updated_at=NOW()
+       WHERE id = $18`,
+      [
+        payload.variant,
+        payload.title,
+        payload.highlight,
+        payload.subtitle,
+        payload.button_text,
+        payload.pre_heading,
+        payload.heading,
+        payload.description,
+        payload.categories,
+        payload.primary_cta_label,
+        payload.primary_cta_route,
+        payload.secondary_cta_label,
+        payload.secondary_cta_route,
+        payload.trust_badges,
+        payload.background_image,
+        payload.background_overlay,
+        payload.services,
+        id,
+      ]
     );
 
     const { position, referenceSlideId } = req.body;
     if (position && ['start', 'end', 'after', 'before'].includes(position)) {
-      // Remove slide from current spot (temporarily make order_index large)
-      await pool.query('UPDATE hero_slides SET order_index = -1 WHERE id = ?', [id]);
+      await db.query('UPDATE hero_slides SET order_index = -1 WHERE id = $1', [id]);
       await normalizeOrderIndexes();
       const newOrderIndex = await calculateOrderIndex(position, referenceSlideId);
-      await pool.query('UPDATE hero_slides SET order_index = ? WHERE id = ?', [newOrderIndex, id]);
+      await db.query('UPDATE hero_slides SET order_index = $1 WHERE id = $2', [newOrderIndex, id]);
       await normalizeOrderIndexes();
     }
 
-    const updatedResult = await pool.query('SELECT * FROM hero_slides WHERE id = ?', [id]);
+    const updatedResult = await db.query('SELECT * FROM hero_slides WHERE id = $1', [id]);
     res.json({ slide: parseSlideRow(updatedResult.rows[0]) });
   } catch (error) {
     console.error('Update hero slide error:', error);
@@ -255,8 +287,12 @@ const updateHeroSlide = async (req, res) => {
 
 const deleteHeroSlide = async (req, res) => {
   try {
+    if (!db.isDatabaseAvailable()) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
     const { id } = req.params;
-    const deleteResult = await pool.query('DELETE FROM hero_slides WHERE id = ? RETURNING *', [id]);
+    const deleteResult = await db.query('DELETE FROM hero_slides WHERE id = $1 RETURNING *', [id]);
 
     if (deleteResult.rows.length === 0) {
       return res.status(404).json({ error: 'Slide not found' });
@@ -276,4 +312,3 @@ module.exports = {
   updateHeroSlide,
   deleteHeroSlide,
 };
-

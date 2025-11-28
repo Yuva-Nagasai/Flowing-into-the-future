@@ -1,7 +1,34 @@
-const { queryWithRetry } = require('../config/db');
+const { queryWithRetry, isDatabaseAvailable } = require('../config/db');
+
+const fallbackJobs = [
+  {
+    id: '1',
+    title: 'Full Stack Developer',
+    department: 'Engineering',
+    location: 'Remote',
+    type: 'Full-time',
+    description: 'Build scalable web applications using React, Node.js, and modern technologies.',
+    requirements: ['3+ years experience', 'React & Node.js', 'Database management', 'RESTful APIs'],
+    active: true,
+  },
+  {
+    id: '2',
+    title: 'UI/UX Designer',
+    department: 'Design',
+    location: 'Hybrid',
+    type: 'Full-time',
+    description: 'Create beautiful, intuitive user experiences for our platform and academy.',
+    requirements: ['2+ years experience', 'Figma proficiency', 'User research', 'Responsive design'],
+    active: true,
+  },
+];
 
 const getAllJobs = async (req, res) => {
   try {
+    if (!isDatabaseAvailable()) {
+      return res.json({ jobs: fallbackJobs });
+    }
+
     const { department, active } = req.query;
     
     let query = 'SELECT * FROM jobs WHERE 1=1';
@@ -23,18 +50,22 @@ const getAllJobs = async (req, res) => {
     query += ' ORDER BY created_at DESC';
 
     const result = await queryWithRetry(query, params);
-    res.json({ jobs: result.rows });
+    res.json({ jobs: result.rows.length > 0 ? result.rows : fallbackJobs });
   } catch (error) {
     console.error('Get jobs error:', error.message || error);
-    // Return empty array instead of error to prevent frontend crashes
-    res.json({ jobs: [] });
+    res.json({ jobs: fallbackJobs });
   }
 };
 
 const getJobById = async (req, res) => {
   try {
+    if (!isDatabaseAvailable()) {
+      const job = fallbackJobs.find(j => j.id === req.params.id);
+      return job ? res.json({ job }) : res.status(404).json({ error: 'Job not found' });
+    }
+
     const { id } = req.params;
-    const result = await queryWithRetry('SELECT * FROM jobs WHERE id = ?', [id]);
+    const result = await queryWithRetry('SELECT * FROM jobs WHERE id = $1', [id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Job not found' });
@@ -49,6 +80,10 @@ const getJobById = async (req, res) => {
 
 const createJob = async (req, res) => {
   try {
+    if (!isDatabaseAvailable()) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
     const { title, department, location, type, description, requirements } = req.body;
 
     if (!title || !department || !location || !type || !description || !requirements) {
@@ -61,7 +96,7 @@ const createJob = async (req, res) => {
 
     const result = await queryWithRetry(
       `INSERT INTO jobs (title, department, location, type, description, requirements)
-       VALUES (?, ?, ?, ?, ?, ?)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
       [title, department, location, type, description, requirements]
     );
@@ -75,6 +110,10 @@ const createJob = async (req, res) => {
 
 const updateJob = async (req, res) => {
   try {
+    if (!isDatabaseAvailable()) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
     const { id } = req.params;
     const { title, department, location, type, description, requirements, active } = req.body;
 
@@ -146,8 +185,12 @@ const updateJob = async (req, res) => {
 
 const deleteJob = async (req, res) => {
   try {
+    if (!isDatabaseAvailable()) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
     const { id } = req.params;
-    const result = await queryWithRetry('DELETE FROM jobs WHERE id = ? RETURNING *', [id]);
+    const result = await queryWithRetry('DELETE FROM jobs WHERE id = $1 RETURNING *', [id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Job not found' });

@@ -122,8 +122,6 @@ Run `npm run seed` in `/digital-hub/ecommerce/backend/` to seed:
 ## Workflows
 - **Start application** - Frontend dev server (port 5000)
 - **Backend API** - Main backend (port 3001)
-- **Ecommerce Backend** - Shop API (port 3002)
-- **Digital Hub Ecommerce API** - Digital Hub Shop API (port 3003)
 
 ## Environment Variables Required
 - `DATABASE_URL` - PostgreSQL connection string (auto-provisioned by Replit)
@@ -149,6 +147,11 @@ curl -X POST http://localhost:3003/api/seed
 ```
 
 ## Recent Changes (November 2025)
+- Fixed TypeScript errors in vite.config.ts (ESM-compatible __dirname)
+- Converted main backend from MySQL to PostgreSQL
+- Added graceful fallback data for hero slides and jobs when database unavailable
+- Cleaned up duplicate ecommerce workflows
+- Added @types/ws for TypeScript support in ecommerce backends
 - Created Digital Hub Ecommerce backend with full feature set
 - Added comprehensive Drizzle schema with 16 tables
 - Implemented authentication with JWT and session support

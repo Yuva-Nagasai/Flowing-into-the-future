@@ -1,64 +1,26 @@
-const mysql = require('mysql2/promise');
+const { Pool } = require('pg');
 
-const {
-  MYSQLHOST = 'localhost',
-  MYSQLPORT = '3306',
-  MYSQLUSER = 'root',
-  MYSQLPASSWORD = '',
-  MYSQLDATABASE = 'nanoflows',
-  DATABASE_URL
-} = process.env;
+const { DATABASE_URL } = process.env;
 
-const buildConfigFromUrl = () => {
-  if (!DATABASE_URL || !DATABASE_URL.startsWith('mysql://')) {
-    return null;
-  }
+if (!DATABASE_URL) {
+  console.warn('⚠️  DATABASE_URL is not set. Database features will use fallback data.');
+}
 
-  try {
-    const url = new URL(DATABASE_URL);
-    return {
-      host: url.hostname,
-      port: url.port ? parseInt(url.port, 10) : 3306,
-      user: decodeURIComponent(url.username),
-      password: decodeURIComponent(url.password),
-      database: url.pathname.replace('/', '') || MYSQLDATABASE
-    };
-  } catch (error) {
-    console.warn('⚠️  Could not parse DATABASE_URL, falling back to individual MySQL vars:', error.message);
-    return null;
-  }
-};
-
-const connectionConfig = buildConfigFromUrl() || {
-  host: MYSQLHOST,
-  port: parseInt(MYSQLPORT, 10),
-  user: MYSQLUSER,
-  password: MYSQLPASSWORD,
-  database: MYSQLDATABASE
-};
-
-const pool = mysql.createPool({
-  ...connectionConfig,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  multipleStatements: false // keep this false for security; run extra selects separately
-});
-
-const normalizeQuery = (queryText = '') => {
-  return queryText
-    .replace(/LIKE/gi, 'LIKE')
-    .replace(/\$(\d+)/g, '?');
-};
+const pool = DATABASE_URL ? new Pool({
+  connectionString: DATABASE_URL,
+  ssl: DATABASE_URL.includes('neon') ? { rejectUnauthorized: false } : false,
+}) : null;
 
 const query = async (queryText, params = []) => {
-  const sql = normalizeQuery(queryText);
-  const [rows] = await pool.execute(sql, params);
-  return { rows };
+  if (!pool) {
+    throw new Error('Database connection not available');
+  }
+  const result = await pool.query(queryText, params);
+  return { rows: result.rows };
 };
 
 const isTransientError = (error) => {
-  const transientCodes = ['ETIMEDOUT', 'ENOTFOUND', 'ECONNREFUSED', 'ER_LOCK_DEADLOCK', 'PROTOCOL_SEQUENCE_TIMEOUT'];
+  const transientCodes = ['ETIMEDOUT', 'ENOTFOUND', 'ECONNREFUSED', 'ECONNRESET', '40001'];
   return transientCodes.includes(error?.code);
 };
 
@@ -79,11 +41,19 @@ const queryWithRetry = async (queryText, params = [], retries = 2) => {
   }
 };
 
-const getConnection = () => pool.getConnection();
+const getConnection = async () => {
+  if (!pool) {
+    throw new Error('Database connection not available');
+  }
+  return pool.connect();
+};
+
+const isDatabaseAvailable = () => !!pool;
 
 module.exports = {
   query,
   queryWithRetry,
   getConnection,
-  pool
+  pool,
+  isDatabaseAvailable
 };
