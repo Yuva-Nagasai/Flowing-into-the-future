@@ -74,13 +74,13 @@ waitForPort = 3002
 name = "Digital Hub Ecommerce API"
 author = "agent"
 
+[workflows.workflow.metadata]
+outputType = "console"
+
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd digital-hub/ecommerce/backend && npm run dev"
 waitForPort = 3003
-
-[workflows.workflow.metadata]
-outputType = "console"
 
 [[ports]]
 localPort = 3001
@@ -89,10 +89,6 @@ externalPort = 3001
 [[ports]]
 localPort = 3002
 externalPort = 3002
-
-[[ports]]
-localPort = 3003
-externalPort = 3003
 
 [[ports]]
 localPort = 5000
@@ -109,6 +105,10 @@ externalPort = 80
 [[ports]]
 localPort = 40235
 externalPort = 3002
+
+[[ports]]
+localPort = 40503
+externalPort = 8080
 
 [[ports]]
 localPort = 41797

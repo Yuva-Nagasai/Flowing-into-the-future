@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,7 +20,7 @@ export default defineConfig({
     dedupe: ['motion-dom', 'motion-utils'],
     alias: {
       // Point @assets to the shared attached_assets folder at the repo root
-      '@assets': path.resolve(__dirname, '../attached_assets'),
+      '@assets': resolve(__dirname, '../attached_assets'),
     },
   },
   server: {
