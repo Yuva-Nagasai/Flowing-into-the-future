@@ -30,6 +30,10 @@ args = "Start application"
 task = "workflow.run"
 args = "Ecommerce Backend"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Digital Hub Ecommerce API"
+
 [[workflows.workflow]]
 name = "Backend API"
 author = "agent"
@@ -66,6 +70,18 @@ task = "shell.exec"
 args = "cd ecommerce/backend && npm run dev"
 waitForPort = 3002
 
+[[workflows.workflow]]
+name = "Digital Hub Ecommerce API"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd digital-hub/ecommerce/backend && npm run dev"
+waitForPort = 3003
+
+[workflows.workflow.metadata]
+outputType = "console"
+
 [[ports]]
 localPort = 3001
 externalPort = 3001
@@ -73,6 +89,14 @@ externalPort = 3001
 [[ports]]
 localPort = 3002
 externalPort = 3002
+
+[[ports]]
+localPort = 3003
+externalPort = 3003
+
+[[ports]]
+localPort = 5000
+externalPort = 80
 
 [[ports]]
 localPort = 5173
@@ -115,16 +139,16 @@ localPort = 45699
 externalPort = 5000
 
 [[ports]]
+localPort = 46527
+externalPort = 6800
+
+[[ports]]
 localPort = 46579
 externalPort = 4200
 
 [[ports]]
 localPort = 46593
 externalPort = 3001
-
-[[ports]]
-localPort = 5000
-externalPort = 80
 
 [userenv]
 
