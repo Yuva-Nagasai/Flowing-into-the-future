@@ -24,6 +24,11 @@ export default defineConfig({
     port: 5000,
     allowedHosts: true,
     proxy: {
+      '/api/ecommerce': {
+        target: 'http://localhost:3002',
+        changeOrigin: true,
+        secure: false,
+      },
       '/api': {
         target: 'http://localhost:3001',
         changeOrigin: true,
@@ -31,11 +36,6 @@ export default defineConfig({
       },
       '/uploads': {
         target: 'http://localhost:3001',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/ecommerce': {
-        target: 'http://localhost:5173',
         changeOrigin: true,
         secure: false,
       },

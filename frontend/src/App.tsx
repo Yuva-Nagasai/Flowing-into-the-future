@@ -79,6 +79,10 @@ import AIToolsHome from './pages/aitools/AIToolsHome';
 import AIToolsExplore from './pages/aitools/AIToolsExplore';
 import AIToolDetail from './pages/aitools/AIToolDetail';
 import AIToolsAbout from './pages/aitools/AIToolsAbout';
+import { ShopProvider } from './contexts/ShopContext';
+import ShopHome from './pages/shop/ShopHome';
+import ShopProducts from './pages/shop/ShopProducts';
+import ShopCart from './pages/shop/ShopCart';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -91,11 +95,11 @@ function AnimatedRoutes() {
   }, [location.pathname, location.hash]);
 
   const showFloatingContact = useMemo(() => {
-    // Hide floating contact on home, contact pages, Academy, e-learning, and AI tools sections
+    // Hide floating contact on home, contact pages, Academy, e-learning, AI tools, and shop sections
     const hiddenExactPaths = ['/', '/contact', '/elearning/contact'];
     if (hiddenExactPaths.includes(location.pathname)) return false;
 
-    const hiddenPrefixes = ['/academy', '/elearning', '/aitools'];
+    const hiddenPrefixes = ['/academy', '/elearning', '/aitools', '/shop'];
     return !hiddenPrefixes.some((prefix) => location.pathname.startsWith(prefix));
   }, [location.pathname]);
 
@@ -621,6 +625,48 @@ function AnimatedRoutes() {
               <PageTransition>
                 <ProductItemDetail />
               </PageTransition>
+            }
+          />
+
+          {/* Shop Routes */}
+          <Route
+            path="/shop"
+            element={
+              <ShopProvider>
+                <ShopHome />
+              </ShopProvider>
+            }
+          />
+          <Route
+            path="/shop/products"
+            element={
+              <ShopProvider>
+                <ShopProducts />
+              </ShopProvider>
+            }
+          />
+          <Route
+            path="/shop/products/:slug"
+            element={
+              <ShopProvider>
+                <ShopProducts />
+              </ShopProvider>
+            }
+          />
+          <Route
+            path="/shop/cart"
+            element={
+              <ShopProvider>
+                <ShopCart />
+              </ShopProvider>
+            }
+          />
+          <Route
+            path="/shop/categories"
+            element={
+              <ShopProvider>
+                <ShopProducts />
+              </ShopProvider>
             }
           />
 

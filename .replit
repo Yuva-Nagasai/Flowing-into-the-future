@@ -1,4 +1,4 @@
-modules = ["nodejs-20", "web"]
+modules = ["nodejs-20", "web", "postgresql-16"]
 [agent]
 expertMode = true
 
@@ -30,10 +30,6 @@ args = "Start application"
 task = "workflow.run"
 args = "Ecommerce Backend"
 
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Ecommerce Frontend"
-
 [[workflows.workflow]]
 name = "Backend API"
 author = "agent"
@@ -50,37 +46,25 @@ outputType = "console"
 name = "Start application"
 author = "agent"
 
+[workflows.workflow.metadata]
+outputType = "webview"
+
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd frontend && npm run dev"
 waitForPort = 5000
 
-[workflows.workflow.metadata]
-outputType = "webview"
-
 [[workflows.workflow]]
 name = "Ecommerce Backend"
 author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "console"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd ecommerce/backend && npm run dev"
 waitForPort = 3002
-
-[workflows.workflow.metadata]
-outputType = "console"
-
-[[workflows.workflow]]
-name = "Ecommerce Frontend"
-author = "agent"
-
-[workflows.workflow.metadata]
-outputType = "console"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd ecommerce/frontend && npm run dev"
-waitForPort = 5173
 
 [[ports]]
 localPort = 3001
@@ -91,12 +75,12 @@ localPort = 3002
 externalPort = 3002
 
 [[ports]]
-localPort = 5000
-externalPort = 80
-
-[[ports]]
 localPort = 5173
 externalPort = 5173
+
+[[ports]]
+localPort = 35875
+externalPort = 80
 
 [[ports]]
 localPort = 40235
@@ -137,6 +121,10 @@ externalPort = 4200
 [[ports]]
 localPort = 46593
 externalPort = 3001
+
+[[ports]]
+localPort = 5000
+externalPort = 80
 
 [userenv]
 

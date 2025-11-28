@@ -1,12 +1,20 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
-import pg from 'pg';
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import { drizzle, NeonDatabase } from 'drizzle-orm/neon-serverless';
+import ws from 'ws';
 import * as schema from './schema.js';
 
-const { Pool } = pg;
+neonConfig.webSocketConstructor = ws;
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
-});
+export const isDatabaseAvailable = !!process.env.DATABASE_URL;
 
-export const db = drizzle(pool, { schema });
-export { schema };
+let db: NeonDatabase<typeof schema> | null = null;
+let pool: Pool | null = null;
+
+if (isDatabaseAvailable) {
+  pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  db = drizzle(pool, { schema });
+} else {
+  console.warn('DATABASE_URL is not set. Using sample data fallback.');
+}
+
+export { db, pool, schema };

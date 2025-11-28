@@ -1,52 +1,63 @@
 import 'dotenv/config';
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
-import session from 'express-session';
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import ws from 'ws';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import pg from 'pg';
+import * as schema from './src/db/schema.js';
+import { sql } from 'drizzle-orm';
 
-import authRoutes from './routes/auth.js';
-import productRoutes from './routes/products.js';
-import cartRoutes from './routes/cart.js';
-import orderRoutes from './routes/orders.js';
-import wishlistRoutes from './routes/wishlist.js';
-import reviewRoutes from './routes/reviews.js';
+const { Pool } = pg;
 
-neonConfig.webSocketConstructor = ws;
-
-async function runMigrations() {
+async function migrate() {
   const connectionString = process.env.DATABASE_URL;
+  
   if (!connectionString) {
-    console.log('DATABASE_URL not set, skipping migrations');
-    return;
+    console.error('DATABASE_URL is not set');
+    process.exit(1);
   }
   
-  const pool = new Pool({ connectionString });
+  console.log('Connecting to database...');
+  
+  const pool = new Pool({
+    connectionString
+  });
+  
+  const db = drizzle(pool, { schema });
   
   try {
-    console.log('Running database migrations...');
+    console.log('Creating enums...');
     
     await pool.query(`
-      DO $$ BEGIN CREATE TYPE product_category AS ENUM ('electronics', 'clothing', 'home', 'books', 'sports', 'beauty', 'toys', 'food', 'other');
-      EXCEPTION WHEN duplicate_object THEN null; END $$;
+      DO $$ BEGIN
+        CREATE TYPE product_category AS ENUM ('electronics', 'clothing', 'home', 'books', 'sports', 'beauty', 'toys', 'food', 'other');
+      EXCEPTION
+        WHEN duplicate_object THEN null;
+      END $$;
     `);
     
     await pool.query(`
-      DO $$ BEGIN CREATE TYPE order_status AS ENUM ('pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded');
-      EXCEPTION WHEN duplicate_object THEN null; END $$;
+      DO $$ BEGIN
+        CREATE TYPE order_status AS ENUM ('pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded');
+      EXCEPTION
+        WHEN duplicate_object THEN null;
+      END $$;
     `);
     
     await pool.query(`
-      DO $$ BEGIN CREATE TYPE payment_status AS ENUM ('pending', 'completed', 'failed', 'refunded');
-      EXCEPTION WHEN duplicate_object THEN null; END $$;
+      DO $$ BEGIN
+        CREATE TYPE payment_status AS ENUM ('pending', 'completed', 'failed', 'refunded');
+      EXCEPTION
+        WHEN duplicate_object THEN null;
+      END $$;
     `);
     
     await pool.query(`
-      DO $$ BEGIN CREATE TYPE user_role AS ENUM ('user', 'admin');
-      EXCEPTION WHEN duplicate_object THEN null; END $$;
+      DO $$ BEGIN
+        CREATE TYPE user_role AS ENUM ('user', 'admin');
+      EXCEPTION
+        WHEN duplicate_object THEN null;
+      END $$;
     `);
+    
+    console.log('Creating tables...');
     
     await pool.query(`
       CREATE TABLE IF NOT EXISTS ecommerce_users (
@@ -151,67 +162,23 @@ async function runMigrations() {
       );
     `);
     
-    console.log('Database migrations completed successfully!');
+    console.log('All tables created successfully!');
+    
+    const tables = await pool.query(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public'
+      ORDER BY table_name;
+    `);
+    
+    console.log('Tables in database:', tables.rows.map(r => r.table_name));
+    
   } catch (error) {
-    console.error('Migration error:', error);
+    console.error('Migration failed:', error);
+    process.exit(1);
   } finally {
     await pool.end();
   }
 }
 
-const app = express();
-const PORT = process.env.ECOMMERCE_PORT || 3002;
-
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: 'cross-origin' },
-  contentSecurityPolicy: false
-}));
-
-app.use(cors({
-  origin: true,
-  credentials: true
-}));
-
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
-
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'ecommerce-session-secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000
-  }
-}));
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: { success: false, error: 'Too many requests, please try again later' }
-});
-
-app.use('/api/ecommerce', limiter);
-
-app.get('/api/ecommerce/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Ecommerce API is running' });
-});
-
-app.use('/api/ecommerce/auth', authRoutes);
-app.use('/api/ecommerce/products', productRoutes);
-app.use('/api/ecommerce/cart', cartRoutes);
-app.use('/api/ecommerce/orders', orderRoutes);
-app.use('/api/ecommerce/wishlist', wishlistRoutes);
-app.use('/api/ecommerce/reviews', reviewRoutes);
-
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('Error:', err);
-  res.status(500).json({ success: false, error: 'Internal server error' });
-});
-
-runMigrations().then(() => {
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Ecommerce API running on port ${PORT}`);
-  });
-});
+migrate();
