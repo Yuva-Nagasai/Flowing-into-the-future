@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
 import { aiToolsAPI } from '../../utils/api';
 import AIToolsNav from '../../components/aitools/AIToolsNav';
@@ -23,7 +23,8 @@ import {
   Mic,
   Video,
   BarChart3,
-  Languages
+  Languages,
+  Play
 } from 'lucide-react';
 import heroImage1 from '@assets/stock_images/artificial_intellige_f33bc633.jpg';
 import heroImage2 from '@assets/stock_images/artificial_intellige_cc95d560.jpg';
@@ -176,157 +177,126 @@ const AIToolsHome = () => {
     }`}>
       <AIToolsNav />
 
-      <section className="relative overflow-hidden py-12 lg:py-20">
-        <div className={`absolute inset-0 ${
-          theme === 'dark'
-            ? 'bg-gradient-to-br from-dark-bg via-dark-card to-dark-bg'
-            : 'bg-gradient-to-br from-white via-gray-50 to-white'
-        }`} />
-        <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-30 ${
-          theme === 'dark' ? 'bg-electric-blue' : 'bg-accent-red'
-        }`} />
-        <div className={`absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-20 ${
-          theme === 'dark' ? 'bg-electric-green' : 'bg-accent-blue'
-        }`} />
+      <section className="relative min-h-[600px] overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7 }}
+            className="absolute inset-0"
+          >
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${heroSlides[currentSlide]?.image || heroImage1})` }}
+            />
+            <div className={`absolute inset-0 ${
+              theme === 'dark' 
+                ? 'bg-gradient-to-r from-dark-bg/95 via-dark-bg/80 to-transparent' 
+                : 'bg-gradient-to-r from-white/95 via-white/80 to-transparent'
+            }`} />
+          </motion.div>
+        </AnimatePresence>
 
-        <div className="container mx-auto px-4 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <motion.div
-              key={currentSlide}
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 30 }}
-              transition={{ duration: 0.6 }}
-            >
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className={`absolute -top-40 -right-40 w-80 h-80 rounded-full blur-3xl ${
+            theme === 'dark' ? 'bg-electric-blue/20' : 'bg-accent-blue/20'
+          }`} />
+          <div className={`absolute -bottom-40 -left-40 w-80 h-80 rounded-full blur-3xl ${
+            theme === 'dark' ? 'bg-electric-green/20' : 'bg-accent-red/20'
+          }`} />
+        </div>
+
+        <div className="container mx-auto px-4 lg:px-6 relative z-10 pt-28 pb-20">
+          <div className="max-w-2xl">
+            <AnimatePresence mode="wait">
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                key={currentSlide}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-6 ${
-                  theme === 'dark'
-                    ? 'border-electric-blue/30 bg-electric-blue/10'
-                    : 'border-accent-red/30 bg-accent-red/10'
-                }`}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
               >
-                <Sparkles className={`w-4 h-4 ${
-                  theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
-                }`} />
-                <span className={`text-sm font-semibold ${
-                  theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'
-                }`}>
-                  AI-Powered Tools Platform
-                </span>
-              </motion.div>
-
-              <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight ${
-                theme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                {heroSlides[currentSlide].title}{' '}
-                <span className={`${
-                  theme === 'dark' 
-                    ? 'text-electric-green' 
-                    : 'bg-gradient-to-r from-accent-red to-accent-blue bg-clip-text text-transparent'
-                }`}>
-                  {heroSlides[currentSlide].highlight}
-                </span>{' '}
-                with AI
-              </h1>
-
-              <p className={`text-lg md:text-xl mb-8 ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-              }`}>
-                {heroSlides[currentSlide].description}
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4">
-                <motion.button
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate('/ai-tools/explore')}
-                  className={`px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 ${
+                <div className="mb-6">
+                  <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
                     theme === 'dark'
-                      ? 'bg-gradient-to-r from-electric-blue to-electric-green text-black'
-                      : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
-                  } shadow-lg`}
-                >
-                  <Zap className="w-5 h-5" />
-                  Explore All Tools
-                  <ArrowRight className="w-5 h-5" />
-                </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate('/ai-tools/about')}
-                  className={`px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 border-2 ${
-                    theme === 'dark'
-                      ? 'border-electric-blue/50 text-electric-blue hover:bg-electric-blue/10'
-                      : 'border-accent-red/50 text-accent-red hover:bg-accent-red/10'
-                  }`}
-                >
-                  Learn More
-                </motion.button>
-              </div>
-
-              <div className="flex justify-start space-x-3 mt-8">
-                {heroSlides.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    aria-label={`Go to slide ${index + 1}`}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      currentSlide === index
-                        ? theme === 'dark'
-                          ? 'bg-electric-green w-8'
-                          : 'bg-accent-red w-8'
-                        : theme === 'dark'
-                        ? 'bg-gray-600 hover:bg-gray-500'
-                        : 'bg-gray-300 hover:bg-gray-400'
-                    }`}
-                  />
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              key={`image-${currentSlide}`}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.05 }}
-              transition={{ duration: 0.6 }}
-              className="relative"
-            >
-              <div className={`absolute inset-0 rounded-3xl ${
-                theme === 'dark' 
-                  ? 'bg-gradient-to-br from-electric-blue/20 to-electric-green/20' 
-                  : 'bg-gradient-to-br from-accent-red/20 to-accent-blue/20'
-              } blur-2xl`} />
-              <img
-                src={heroSlides[currentSlide].image}
-                alt="AI Tools Platform"
-                className="relative rounded-3xl shadow-2xl w-full object-cover aspect-[4/3]"
-              />
-              <div className={`absolute -bottom-4 -right-4 p-4 rounded-2xl shadow-xl ${
-                theme === 'dark' ? 'bg-dark-card border border-gray-800' : 'bg-white border border-gray-200'
-              }`}>
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${
-                    theme === 'dark' ? 'bg-electric-green/20' : 'bg-green-100'
+                      ? 'bg-electric-green/10 text-electric-green border border-electric-green/30'
+                      : 'bg-accent-red/10 text-accent-red border border-accent-red/30'
                   }`}>
-                    <Star className={`w-5 h-5 ${
-                      theme === 'dark' ? 'text-electric-green' : 'text-green-600'
-                    }`} />
-                  </div>
-                  <div>
-                    <p className={`text-sm font-bold ${
-                      theme === 'dark' ? 'text-white' : 'text-gray-900'
-                    }`}>{toolCount}+ AI Tools</p>
-                    <p className={`text-xs ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                    }`}>Ready to use</p>
-                  </div>
+                    <Sparkles className="w-4 h-4" />
+                    AI-Powered Tools Platform
+                  </span>
                 </div>
-              </div>
-            </motion.div>
+
+                <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 ${
+                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                }`}>
+                  {heroSlides[currentSlide].title}{' '}
+                  <span className={`${
+                    theme === 'dark' 
+                      ? 'text-electric-green' 
+                      : 'bg-gradient-to-r from-accent-red to-accent-blue bg-clip-text text-transparent'
+                  }`}>
+                    {heroSlides[currentSlide].highlight}
+                  </span>
+                </h1>
+
+                <p className={`text-lg md:text-xl mb-8 ${
+                  theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+                }`}>
+                  {heroSlides[currentSlide].description}
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-start gap-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate('/ai-tools/explore')}
+                    className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
+                        : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
+                    }`}
+                  >
+                    <Zap className="w-5 h-5" />
+                    Explore All Tools
+                    <ArrowRight className="w-5 h-5" />
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate('/ai-tools/about')}
+                    className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all border ${
+                      theme === 'dark'
+                        ? 'border-slate-600 text-gray-300 hover:bg-slate-800'
+                        : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <Play className="w-5 h-5" />
+                    Learn More
+                  </motion.button>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="flex items-center gap-3 mt-10">
+              {heroSlides.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    currentSlide === idx
+                      ? theme === 'dark'
+                        ? 'w-8 bg-electric-green'
+                        : 'w-8 bg-accent-red'
+                      : theme === 'dark'
+                        ? 'w-2 bg-white/30 hover:bg-white/50'
+                        : 'w-2 bg-gray-900/30 hover:bg-gray-900/50'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
