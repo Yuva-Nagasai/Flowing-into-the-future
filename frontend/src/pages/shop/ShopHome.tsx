@@ -44,12 +44,6 @@ interface HeroSlide {
   secondaryCtaLink?: string;
 }
 
-const announcements = [
-  "Free shipping on orders over $50!",
-  "New arrivals - Check out our latest digital products",
-  "Use code SAVE20 for 20% off your first purchase"
-];
-
 const categories = [
   { name: 'Software & Tools', slug: 'software', icon: '💻', color: 'from-blue-500 to-cyan-500', count: 45 },
   { name: 'Templates', slug: 'templates', icon: '📄', color: 'from-pink-500 to-rose-500', count: 120 },
@@ -144,7 +138,6 @@ export default function ShopHome() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [currentAnnouncement, setCurrentAnnouncement] = useState(0);
   const [requestForm, setRequestForm] = useState({ name: '', email: '', product: '', message: '' });
   const [requestSubmitting, setRequestSubmitting] = useState(false);
   const [requestSuccess, setRequestSuccess] = useState(false);
@@ -157,13 +150,6 @@ export default function ShopHome() {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
     }, 6000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentAnnouncement((prev) => (prev + 1) % announcements.length);
-    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
@@ -208,24 +194,6 @@ export default function ShopHome() {
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-950' : 'bg-gray-50'}`}>
-      <div className={`py-2 text-center text-sm font-medium overflow-hidden ${
-        theme === 'dark' 
-          ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900' 
-          : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
-      }`}>
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={currentAnnouncement}
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -20, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {announcements[currentAnnouncement]}
-          </motion.p>
-        </AnimatePresence>
-      </div>
-
       <ShopNav />
       
       <section className="relative min-h-[600px] overflow-hidden">
