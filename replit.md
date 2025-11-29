@@ -190,6 +190,19 @@ curl -X POST http://localhost:3003/api/seed
 ```
 
 ## Recent Changes (November 2025)
+
+### Digital Hub UI Enhancements
+- Enhanced ShopNav with search bar functionality for product search
+- Added Deals link to shop navigation
+- Added Wishlist quick-access button in navigation (desktop + mobile)
+- Updated TopFeatureNav to point "Digital Hub" to /shop
+- Added Trust badges/Stats section (50K+ customers, 1,200+ products, 4.9 rating, 24/7 support)
+- Added New Arrivals section with "New" badge and trending icon
+- Added Customer Testimonials section with 5-star reviews
+- Added Newsletter subscription section with email form
+- Improved mobile navigation with expandable search and wishlist link
+
+### Previous Changes
 - Updated ShopAbout.tsx with Digital Hub branding (was NanoFlows Shop)
 - Updated ShopContact.tsx for digital product support (removed physical product references)
 - About page now highlights: Software & Tools, Templates & Assets, Digital Courses
