@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Filter, Grid, List, ShoppingCart, Heart, Star, Search, X } from 'lucide-react';
+import { Filter, Grid, List, ShoppingCart, Heart, Search } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
-import { useShop } from '../../contexts/ShopContext';
+import { useShopAuth } from '../../contexts/ShopAuthContext';
 import ShopNav from '../../components/shop/ShopNav';
 import Footer from '../../components/Footer';
 
@@ -37,7 +37,7 @@ const categories = [
 
 export default function ShopProducts() {
   const { theme } = useTheme();
-  const { addToCart } = useShop();
+  const { addToCart } = useShopAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,7 +100,7 @@ export default function ShopProducts() {
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product);
+    addToCart(product.id);
   };
 
   return (

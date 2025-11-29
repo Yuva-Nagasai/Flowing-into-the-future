@@ -2,13 +2,14 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
-import { useShop } from '../../contexts/ShopContext';
+import { useShopAuth } from '../../contexts/ShopAuthContext';
 import ShopNav from '../../components/shop/ShopNav';
 import Footer from '../../components/Footer';
 
 export default function ShopCart() {
   const { theme } = useTheme();
-  const { cart, cartCount, cartTotal, updateCartQuantity, removeFromCart, clearCart } = useShop();
+  const { cart, cartTotal, updateCartItem, removeFromCart, clearCart } = useShopAuth();
+  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   if (cart.length === 0) {
     return (
@@ -85,10 +86,10 @@ export default function ShopCart() {
                 }`}
               >
                 <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden">
-                  {item.product.thumbnail || item.product.images[0] ? (
+                  {item.product?.thumbnail || item.product?.images?.[0] ? (
                     <img
                       src={item.product.thumbnail || item.product.images[0]}
-                      alt={item.product.name}
+                      alt={item.product?.name || 'Product'}
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -104,21 +105,21 @@ export default function ShopCart() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <Link
-                        to={`/shop/products/${item.product.slug}`}
+                        to={`/shop/products/${item.product?.slug || ''}`}
                         className={`font-semibold hover:underline ${
                           theme === 'dark' ? 'text-white' : 'text-gray-900'
                         }`}
                       >
-                        {item.product.name}
+                        {item.product?.name || 'Unknown Product'}
                       </Link>
                       <p className={`text-sm ${
                         theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                       }`}>
-                        {item.product.category}
+                        {typeof item.product?.category === 'object' ? item.product?.category?.name : item.product?.category || ''}
                       </p>
                     </div>
                     <button
-                      onClick={() => removeFromCart(item.product.id)}
+                      onClick={() => removeFromCart(item.id)}
                       className={`p-2 rounded-lg transition-colors ${
                         theme === 'dark'
                           ? 'hover:bg-slate-700 text-gray-400 hover:text-red-400'
@@ -134,7 +135,7 @@ export default function ShopCart() {
                       theme === 'dark' ? 'border-slate-600' : 'border-gray-300'
                     }`}>
                       <button
-                        onClick={() => updateCartQuantity(item.product.id, item.quantity - 1)}
+                        onClick={() => updateCartItem(item.id, item.quantity - 1)}
                         className={`p-2 transition-colors ${
                           theme === 'dark'
                             ? 'hover:bg-slate-700 text-gray-400'
@@ -149,7 +150,7 @@ export default function ShopCart() {
                         {item.quantity}
                       </span>
                       <button
-                        onClick={() => updateCartQuantity(item.product.id, item.quantity + 1)}
+                        onClick={() => updateCartItem(item.id, item.quantity + 1)}
                         className={`p-2 transition-colors ${
                           theme === 'dark'
                             ? 'hover:bg-slate-700 text-gray-400'
@@ -163,7 +164,7 @@ export default function ShopCart() {
                     <span className={`text-lg font-bold ${
                       theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
                     }`}>
-                      ${(parseFloat(item.product.price) * item.quantity).toFixed(2)}
+                      ${(parseFloat(item.product?.price || '0') * item.quantity).toFixed(2)}
                     </span>
                   </div>
                 </div>

@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Sun, Moon, ShoppingCart, User, LogOut, Search } from 'lucide-react';
+import { Menu, X, Sun, Moon, ShoppingCart, User, LogOut, Search, Settings } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
-import { useShop } from '../../contexts/ShopContext';
+import { useShopAuth } from '../../contexts/ShopAuthContext';
 import TopFeatureNav from '../TopFeatureNav';
 
 const ShopNav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  const { user, cartCount, logout } = useShop();
+  const { user, cart, isAdmin, logout } = useShopAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const cartCount = cart.length;
 
   const navLinks = [
     { name: 'Home', path: '/shop' },
@@ -92,8 +93,21 @@ const ShopNav = () => {
 
               {user ? (
                 <div className="hidden md:flex items-center gap-3">
+                  {isAdmin && (
+                    <Link
+                      to="/shop/admin"
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                        theme === 'dark' 
+                          ? 'bg-electric-green/20 text-electric-green hover:bg-electric-green/30' 
+                          : 'bg-accent-blue/10 text-accent-blue hover:bg-accent-blue/20'
+                      }`}
+                    >
+                      <Settings className="w-4 h-4" />
+                      <span className="text-sm font-medium">Admin</span>
+                    </Link>
+                  )}
                   <Link
-                    to="/shop/profile"
+                    to="/shop/account"
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
                       theme === 'dark' 
                         ? 'hover:bg-slate-800 text-gray-300' 
@@ -165,15 +179,27 @@ const ShopNav = () => {
               }`}>
                 {user ? (
                   <>
+                    {isAdmin && (
+                      <Link
+                        to="/shop/admin"
+                        onClick={() => setIsMenuOpen(false)}
+                        className={`flex items-center gap-2 py-3 ${
+                          theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
+                        }`}
+                      >
+                        <Settings className="w-5 h-5" />
+                        Admin Dashboard
+                      </Link>
+                    )}
                     <Link
-                      to="/shop/profile"
+                      to="/shop/account"
                       onClick={() => setIsMenuOpen(false)}
                       className={`flex items-center gap-2 py-3 ${
                         theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                       }`}
                     >
                       <User className="w-5 h-5" />
-                      My Profile
+                      My Account
                     </Link>
                     <Link
                       to="/shop/orders"

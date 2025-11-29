@@ -119,6 +119,49 @@ Run `npm run seed` in `/digital-hub/ecommerce/backend/` to seed:
 - Sample categories (Electronics, Clothing, Home, Books, Sports, Beauty, Toys, Food)
 - Sample products
 
+## Digital Hub Frontend Routes (`/shop/*`)
+
+### Public Routes
+- `/shop` - Shop homepage
+- `/shop/products` - Product listing
+- `/shop/products/:slug` - Product detail page
+- `/shop/categories` - Category listing
+- `/shop/categories/:slug` - Category products page
+- `/shop/deals` - Deals page
+- `/shop/about` - About page
+- `/shop/contact` - Contact page
+- `/shop/cart` - Shopping cart
+
+### Authentication Routes
+- `/shop/login` - User login
+- `/shop/register` - User registration
+- `/shop/forgot-password` - Password reset request
+- `/shop/reset-password` - Password reset with token
+
+### Protected User Routes (requires authentication)
+- `/shop/checkout` - Checkout page
+- `/shop/account` - User account dashboard
+- `/shop/orders` - Order history
+- `/shop/orders/:orderNumber` - Order detail page
+- `/shop/order-success` - Order confirmation page
+
+### Admin Routes (requires admin role)
+- `/shop/admin` - Admin dashboard
+- `/shop/admin/products` - Manage products
+- `/shop/admin/categories` - Manage categories
+- `/shop/admin/orders` - Manage orders
+- `/shop/admin/reviews` - Manage reviews
+- `/shop/admin/deals` - Manage deals
+- `/shop/admin/announcements` - Manage announcements
+- `/shop/admin/testimonials` - Manage testimonials
+- `/shop/admin/newsletter` - Manage newsletter subscribers
+
+### Key Frontend Components
+- `ShopAuthContext` - Authentication context (user, cart, wishlist management)
+- `ShopProtectedRoute` - Route protection with admin-only support
+- `ShopNav` - Shop navigation with user/admin links
+- `shopApi` - API utility for backend communication
+
 ## Workflows
 - **Start application** - Frontend dev server (port 5000)
 - **Backend API** - Main backend (port 3001)

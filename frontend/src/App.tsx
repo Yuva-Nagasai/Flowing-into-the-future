@@ -80,10 +80,37 @@ import AIToolsHome from './pages/aitools/AIToolsHome';
 import AIToolsExplore from './pages/aitools/AIToolsExplore';
 import AIToolDetail from './pages/aitools/AIToolDetail';
 import AIToolsAbout from './pages/aitools/AIToolsAbout';
-import { ShopProvider } from './contexts/ShopContext';
+import ShopLayout from './components/shop/ShopLayout';
+import ShopProtectedRoute from './components/shop/ShopProtectedRoute';
 import ShopHome from './pages/shop/ShopHome';
 import ShopProducts from './pages/shop/ShopProducts';
+import ShopProductDetail from './pages/shop/ShopProductDetail';
 import ShopCart from './pages/shop/ShopCart';
+import ShopCheckout from './pages/shop/ShopCheckout';
+import ShopLogin from './pages/shop/ShopLogin';
+import ShopRegister from './pages/shop/ShopRegister';
+import ShopForgotPassword from './pages/shop/ShopForgotPassword';
+import ShopResetPassword from './pages/shop/ShopResetPassword';
+import ShopAccount from './pages/shop/ShopAccount';
+import ShopOrders from './pages/shop/ShopOrders';
+import ShopOrderDetail from './pages/shop/ShopOrderDetail';
+import ShopOrderSuccess from './pages/shop/ShopOrderSuccess';
+import ShopCategories from './pages/shop/ShopCategories';
+import ShopCategoryProducts from './pages/shop/ShopCategoryProducts';
+import ShopDeals from './pages/shop/ShopDeals';
+import ShopAbout from './pages/shop/ShopAbout';
+import ShopContact from './pages/shop/ShopContact';
+import Shop404 from './pages/shop/Shop404';
+import ShopAdminDashboard from './pages/shop/admin/ShopAdminDashboard';
+import ShopAdminProducts from './pages/shop/admin/ShopAdminProducts';
+import ShopAdminCategories from './pages/shop/admin/ShopAdminCategories';
+import ShopAdminOrders from './pages/shop/admin/ShopAdminOrders';
+import ShopAdminReviews from './pages/shop/admin/ShopAdminReviews';
+import ShopAdminDeals from './pages/shop/admin/ShopAdminDeals';
+import ShopAdminAnnouncements from './pages/shop/admin/ShopAdminAnnouncements';
+import ShopAdminTestimonials from './pages/shop/admin/ShopAdminTestimonials';
+import ShopAdminNewsletter from './pages/shop/admin/ShopAdminNewsletter';
+import { Navigate } from 'react-router-dom';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -630,47 +657,38 @@ function AnimatedRoutes() {
             }
           />
 
-          {/* Shop Routes */}
-          <Route
-            path="/shop"
-            element={
-              <ShopProvider>
-                <ShopHome />
-              </ShopProvider>
-            }
-          />
-          <Route
-            path="/shop/products"
-            element={
-              <ShopProvider>
-                <ShopProducts />
-              </ShopProvider>
-            }
-          />
-          <Route
-            path="/shop/products/:slug"
-            element={
-              <ShopProvider>
-                <ShopProducts />
-              </ShopProvider>
-            }
-          />
-          <Route
-            path="/shop/cart"
-            element={
-              <ShopProvider>
-                <ShopCart />
-              </ShopProvider>
-            }
-          />
-          <Route
-            path="/shop/categories"
-            element={
-              <ShopProvider>
-                <ShopProducts />
-              </ShopProvider>
-            }
-          />
+          {/* Shop Routes - Single ShopAuthProvider wrapping all routes */}
+          <Route path="/shop" element={<ShopLayout />}>
+            <Route index element={<ShopHome />} />
+            <Route path="products" element={<ShopProducts />} />
+            <Route path="products/:slug" element={<ShopProductDetail />} />
+            <Route path="cart" element={<ShopCart />} />
+            <Route path="categories" element={<ShopCategories />} />
+            <Route path="categories/:slug" element={<ShopCategoryProducts />} />
+            <Route path="deals" element={<ShopDeals />} />
+            <Route path="about" element={<ShopAbout />} />
+            <Route path="contact" element={<ShopContact />} />
+            <Route path="login" element={<ShopLogin />} />
+            <Route path="register" element={<ShopRegister />} />
+            <Route path="forgot-password" element={<ShopForgotPassword />} />
+            <Route path="reset-password" element={<ShopResetPassword />} />
+            <Route path="order-success" element={<ShopOrderSuccess />} />
+            <Route path="checkout" element={<ShopProtectedRoute><ShopCheckout /></ShopProtectedRoute>} />
+            <Route path="account" element={<ShopProtectedRoute><ShopAccount /></ShopProtectedRoute>} />
+            <Route path="orders" element={<ShopProtectedRoute><ShopOrders /></ShopProtectedRoute>} />
+            <Route path="orders/:orderNumber" element={<ShopProtectedRoute><ShopOrderDetail /></ShopProtectedRoute>} />
+            <Route path="account/orders/:orderNumber" element={<ShopProtectedRoute><ShopOrderDetail /></ShopProtectedRoute>} />
+            <Route path="admin" element={<ShopProtectedRoute adminOnly><ShopAdminDashboard /></ShopProtectedRoute>} />
+            <Route path="admin/products" element={<ShopProtectedRoute adminOnly><ShopAdminProducts /></ShopProtectedRoute>} />
+            <Route path="admin/categories" element={<ShopProtectedRoute adminOnly><ShopAdminCategories /></ShopProtectedRoute>} />
+            <Route path="admin/orders" element={<ShopProtectedRoute adminOnly><ShopAdminOrders /></ShopProtectedRoute>} />
+            <Route path="admin/reviews" element={<ShopProtectedRoute adminOnly><ShopAdminReviews /></ShopProtectedRoute>} />
+            <Route path="admin/deals" element={<ShopProtectedRoute adminOnly><ShopAdminDeals /></ShopProtectedRoute>} />
+            <Route path="admin/announcements" element={<ShopProtectedRoute adminOnly><ShopAdminAnnouncements /></ShopProtectedRoute>} />
+            <Route path="admin/testimonials" element={<ShopProtectedRoute adminOnly><ShopAdminTestimonials /></ShopProtectedRoute>} />
+            <Route path="admin/newsletter" element={<ShopProtectedRoute adminOnly><ShopAdminNewsletter /></ShopProtectedRoute>} />
+            <Route path="*" element={<Shop404 />} />
+          </Route>
 
           {/* Legal Pages */}
           <Route
