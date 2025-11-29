@@ -156,6 +156,7 @@ table {
   transform: translateY(-50%);
   gap: 0;
   line-height: 0;
+  overflow: visible !important;
 }
 
 /* For screens <= 768px (mobile/tablet), shift to right */
@@ -165,6 +166,12 @@ table {
     right: 0;
     top: 50%;
     transform: translateY(-50%);
+    overflow: visible !important;
+  }
+  
+  /* Prevent the social bar icons from causing horizontal scroll */
+  .social-bar a {
+    transform-origin: right center !important;
   }
 }
 /* Hide horizontal scrollbar on mobile */
@@ -200,6 +207,16 @@ table {
 body.auth-page {
   overflow: hidden;
   padding-top: 0;
+}
+
+/* Floating Contact Widget - prevent overflow scrollbars */
+.floating-contact-widget {
+  overflow: visible !important;
+  pointer-events: auto;
+}
+
+.floating-contact-widget * {
+  overflow: visible !important;
 }
 
 /* Auto-scrolling animation for image galleries */

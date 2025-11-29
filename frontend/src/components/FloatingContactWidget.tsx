@@ -143,10 +143,11 @@ const FloatingContactWidget = () => {
 
   return (
     <div 
-      className="floating-contact-widget fixed left-4 sm:left-6 top-1/2 -translate-y-1/2 z-50"
+      className="floating-contact-widget fixed left-0 top-1/2 -translate-y-1/2 z-50 pl-4 sm:pl-6"
       aria-label="Contact options"
+      style={{ overflow: 'visible', maxWidth: 'calc(100vw - 16px)' }}
     >
-      <div className="flex flex-col items-start gap-3">
+      <div className="flex flex-col items-start gap-3" style={{ overflow: 'visible' }}>
         <AnimatePresence>
           {isOpen && (
             <motion.div
