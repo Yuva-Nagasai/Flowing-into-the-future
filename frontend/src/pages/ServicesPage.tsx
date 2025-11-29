@@ -324,7 +324,7 @@ const services: ServiceData[] = [
       'Predictive Models',
       'NLP Solutions'
     ],
-    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2E3YWVhZW1nbXdpZWE5MGY5NHBwN2g1bXJwYWh4NWoyeWh6OGd5NiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xTiN0CNHgoRf1Ha7CM/giphy.gif',
+    image: '/image4.png',
     cta: 'Explore AI',
     comparison: [
       {
@@ -486,7 +486,7 @@ const services: ServiceData[] = [
       'Corporate AI Training',
       'Process Automation Guidance'
     ],
-    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzFpcGw5YXhsdmduaDBoaXpmaDJ6bWgxcXU5NGl0ZTNhZmphd2QzbCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/LaVp0AyqR5bGsC5Cbm/giphy.gif',
+    image: '/image9.png',
     cta: 'Get Consultation',
     comparison: [
       {
@@ -540,7 +540,7 @@ const services: ServiceData[] = [
       'API Integrations',
       'Bot Development'
     ],
-    image: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHBubGNteDFqYzZhdDVmcWF2d3BjeThsNGprNWk0MTM2bWxxMWFweiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0IylSajlbPRFxH8Y/giphy.gif',
+    image: '/image2.png',
     cta: 'Automate Now',
     comparison: [
       {
