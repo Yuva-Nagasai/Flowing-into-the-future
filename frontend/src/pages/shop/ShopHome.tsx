@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, ArrowRight, Sparkles, Zap, Shield, Download } from 'lucide-react';
+import { ShoppingBag, ArrowRight, Sparkles, Zap, Shield, Download, Users, Package, Star, Clock, Mail, CheckCircle, Quote, TrendingUp, Flame } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import ShopNav from '../../components/shop/ShopNav';
 import Footer from '../../components/Footer';
@@ -52,6 +52,40 @@ const features = [
   { icon: Download, title: 'Lifetime Access', description: 'Download anytime, forever' },
 ];
 
+const stats = [
+  { icon: Users, value: '50K+', label: 'Happy Customers' },
+  { icon: Package, value: '1,200+', label: 'Digital Products' },
+  { icon: Star, value: '4.9', label: 'Average Rating' },
+  { icon: Clock, value: '24/7', label: 'Customer Support' },
+];
+
+const testimonials = [
+  {
+    id: 1,
+    name: 'Sarah Johnson',
+    role: 'UI/UX Designer',
+    avatar: '👩‍💼',
+    rating: 5,
+    text: 'The design templates I purchased saved me weeks of work. Excellent quality and instant download - exactly what I needed for my client projects.'
+  },
+  {
+    id: 2,
+    name: 'Michael Chen',
+    role: 'Software Developer',
+    avatar: '👨‍💻',
+    rating: 5,
+    text: 'Incredible selection of development tools and courses. The quality is top-notch and the customer support team is very responsive.'
+  },
+  {
+    id: 3,
+    name: 'Emily Rodriguez',
+    role: 'Content Creator',
+    avatar: '👩‍🎨',
+    rating: 5,
+    text: 'I love the audio packs and video templates available here. They have helped me take my content to the next level!'
+  },
+];
+
 const heroSlides: HeroSlide[] = [
   {
     id: 1,
@@ -91,11 +125,16 @@ const heroSlides: HeroSlide[] = [
 export default function ShopHome() {
   const { theme } = useTheme();
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [newProducts, setNewProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
 
   useEffect(() => {
     fetchFeaturedProducts();
+    fetchNewProducts();
   }, []);
 
   useEffect(() => {
@@ -116,6 +155,40 @@ export default function ShopHome() {
       console.error('Failed to fetch featured products');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchNewProducts = async () => {
+    try {
+      const response = await fetch('/api/ecommerce/products?sort=newest&limit=4');
+      if (response.ok) {
+        const data = await response.json();
+        setNewProducts(data.products || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch new products');
+    }
+  };
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    
+    setSubscribing(true);
+    try {
+      const response = await fetch('/api/ecommerce/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() })
+      });
+      if (response.ok) {
+        setSubscribed(true);
+        setEmail('');
+      }
+    } catch (error) {
+      console.error('Failed to subscribe');
+    } finally {
+      setSubscribing(false);
     }
   };
 
@@ -440,11 +513,255 @@ export default function ShopHome() {
         </div>
       </section>
 
+      <section className="py-16">
+        <div className="container mx-auto px-4 lg:px-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className={`text-center p-6 rounded-2xl ${
+                  theme === 'dark'
+                    ? 'bg-slate-800/50 border border-slate-700'
+                    : 'bg-white border border-gray-200 shadow-sm'
+                }`}
+              >
+                <stat.icon className={`w-10 h-10 mx-auto mb-3 ${
+                  theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
+                }`} />
+                <div className={`text-3xl md:text-4xl font-bold mb-1 ${
+                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                }`}>
+                  {stat.value}
+                </div>
+                <p className={`text-sm ${
+                  theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                }`}>
+                  {stat.label}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {newProducts.length > 0 && (
+        <section className={`py-16 ${theme === 'dark' ? 'bg-slate-900/50' : 'bg-white'}`}>
+          <div className="container mx-auto px-4 lg:px-6">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <Flame className={`w-6 h-6 ${
+                  theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+                }`} />
+                <h2 className={`text-2xl md:text-3xl font-bold ${
+                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                }`}>
+                  New Arrivals
+                </h2>
+              </div>
+              <Link
+                to="/shop/products?sort=newest"
+                className={`flex items-center gap-1 font-medium ${
+                  theme === 'dark' ? 'text-electric-green hover:text-electric-green/80' : 'text-accent-blue hover:text-accent-blue/80'
+                }`}
+              >
+                View All
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {newProducts.map((product, index) => (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Link
+                    to={`/shop/products/${product.slug}`}
+                    className={`block rounded-2xl overflow-hidden transition-all hover:scale-[1.02] ${
+                      theme === 'dark'
+                        ? 'bg-slate-800 hover:bg-slate-800/80 border border-slate-700'
+                        : 'bg-gray-50 hover:bg-gray-100 border border-gray-200 shadow-sm'
+                    }`}
+                  >
+                    <div className="aspect-square bg-gray-100 dark:bg-slate-700 relative overflow-hidden">
+                      {product.thumbnail || product.images[0] ? (
+                        <img
+                          src={product.thumbnail || product.images[0]}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-6xl">
+                          📦
+                        </div>
+                      )}
+                      <span className={`absolute top-3 left-3 px-2 py-1 text-xs font-semibold rounded flex items-center gap-1 ${
+                        theme === 'dark'
+                          ? 'bg-electric-blue text-white'
+                          : 'bg-accent-blue text-white'
+                      }`}>
+                        <TrendingUp className="w-3 h-3" />
+                        New
+                      </span>
+                    </div>
+                    <div className="p-4">
+                      <h3 className={`font-semibold mb-2 line-clamp-1 ${
+                        theme === 'dark' ? 'text-white' : 'text-gray-900'
+                      }`}>
+                        {product.name}
+                      </h3>
+                      <div className="flex items-center justify-between">
+                        <span className={`text-lg font-bold ${
+                          theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
+                        }`}>
+                          ${parseFloat(product.price).toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="py-16">
+        <div className="container mx-auto px-4 lg:px-6">
+          <div className="text-center mb-12">
+            <Quote className={`w-12 h-12 mx-auto mb-4 ${
+              theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
+            }`} />
+            <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${
+              theme === 'dark' ? 'text-white' : 'text-gray-900'
+            }`}>
+              What Our Customers Say
+            </h2>
+            <p className={`max-w-2xl mx-auto ${
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+            }`}>
+              Trusted by thousands of professionals worldwide
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={testimonial.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className={`p-6 rounded-2xl ${
+                  theme === 'dark'
+                    ? 'bg-slate-800/50 border border-slate-700'
+                    : 'bg-white border border-gray-200 shadow-sm'
+                }`}
+              >
+                <div className="flex items-center gap-1 mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <p className={`mb-6 ${
+                  theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+                }`}>
+                  "{testimonial.text}"
+                </p>
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">{testimonial.avatar}</span>
+                  <div>
+                    <h4 className={`font-semibold ${
+                      theme === 'dark' ? 'text-white' : 'text-gray-900'
+                    }`}>
+                      {testimonial.name}
+                    </h4>
+                    <p className={`text-sm ${
+                      theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                    }`}>
+                      {testimonial.role}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className={`py-16 ${
         theme === 'dark'
           ? 'bg-gradient-to-r from-electric-blue/20 to-electric-green/20'
           : 'bg-gradient-to-r from-accent-red/10 to-accent-blue/10'
       }`}>
+        <div className="container mx-auto px-4 lg:px-6">
+          <div className="max-w-2xl mx-auto text-center">
+            <Mail className={`w-12 h-12 mx-auto mb-4 ${
+              theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
+            }`} />
+            <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${
+              theme === 'dark' ? 'text-white' : 'text-gray-900'
+            }`}>
+              Stay Updated
+            </h2>
+            <p className={`mb-8 ${
+              theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+            }`}>
+              Subscribe to our newsletter for exclusive deals, new product announcements, and special offers.
+            </p>
+            
+            {subscribed ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className={`inline-flex items-center gap-2 px-6 py-4 rounded-xl ${
+                  theme === 'dark'
+                    ? 'bg-electric-green/20 text-electric-green'
+                    : 'bg-green-100 text-green-700'
+                }`}
+              >
+                <CheckCircle className="w-5 h-5" />
+                Thanks for subscribing! Check your inbox for updates.
+              </motion.div>
+            ) : (
+              <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  className={`flex-1 px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
+                    theme === 'dark'
+                      ? 'bg-slate-800 border-slate-600 text-white placeholder-gray-400 focus:ring-electric-green/50'
+                      : 'bg-white border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-accent-blue/50'
+                  }`}
+                />
+                <button
+                  type="submit"
+                  disabled={subscribing}
+                  className={`px-6 py-3 rounded-xl font-semibold transition-all disabled:opacity-50 ${
+                    theme === 'dark'
+                      ? 'bg-electric-green text-slate-900 hover:bg-electric-green/90'
+                      : 'bg-accent-blue text-white hover:bg-accent-blue/90'
+                  }`}
+                >
+                  {subscribing ? 'Subscribing...' : 'Subscribe'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className={`py-16 ${theme === 'dark' ? 'bg-slate-900/50' : 'bg-white'}`}>
         <div className="container mx-auto px-4 lg:px-6 text-center">
           <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${
             theme === 'dark' ? 'text-white' : 'text-gray-900'
@@ -460,8 +777,8 @@ export default function ShopHome() {
             to="/shop/register"
             className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all ${
               theme === 'dark'
-                ? 'bg-white text-slate-900 hover:bg-gray-100'
-                : 'bg-gray-900 text-white hover:bg-gray-800'
+                ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
+                : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
             }`}
           >
             Create Account
