@@ -17,6 +17,8 @@ const ShopNav = () => {
     { name: 'Home', path: '/shop' },
     { name: 'Products', path: '/shop/products' },
     { name: 'Categories', path: '/shop/categories' },
+    { name: 'About', path: '/shop/about' },
+    { name: 'Contact', path: '/shop/contact' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -41,7 +43,7 @@ const ShopNav = () => {
               <span className={`text-2xl font-bold ${
                 theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
               }`}>
-                NanoFlows Shop
+                Digital Hub
               </span>
             </Link>
 
