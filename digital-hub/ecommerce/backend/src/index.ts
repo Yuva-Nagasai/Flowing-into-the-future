@@ -17,6 +17,7 @@ import routes from '../api/routes.js';
 import uploadRoutes from '../api/upload.js';
 import sitemapRoutes from '../api/sitemap.js';
 import storageRoutes from '../api/storage.js';
+import chatbotRoutes from '../api/chatbotRoutes.js';
 import * as schema from '../db/schema.js';
 
 neonConfig.webSocketConstructor = ws;
@@ -465,6 +466,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/storage', storageRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 app.use('/api', routes);
 app.use('/', sitemapRoutes);
 

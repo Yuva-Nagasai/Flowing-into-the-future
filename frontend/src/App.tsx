@@ -110,6 +110,8 @@ import ShopAdminDeals from './pages/shop/admin/ShopAdminDeals';
 import ShopAdminAnnouncements from './pages/shop/admin/ShopAdminAnnouncements';
 import ShopAdminTestimonials from './pages/shop/admin/ShopAdminTestimonials';
 import ShopAdminNewsletter from './pages/shop/admin/ShopAdminNewsletter';
+import ShopAdminProductRequests from './pages/shop/admin/ShopAdminProductRequests';
+import ShopWishlist from './pages/shop/ShopWishlist';
 import { Navigate } from 'react-router-dom';
 
 function AnimatedRoutes() {
@@ -687,6 +689,8 @@ function AnimatedRoutes() {
             <Route path="admin/announcements" element={<ShopProtectedRoute adminOnly><ShopAdminAnnouncements /></ShopProtectedRoute>} />
             <Route path="admin/testimonials" element={<ShopProtectedRoute adminOnly><ShopAdminTestimonials /></ShopProtectedRoute>} />
             <Route path="admin/newsletter" element={<ShopProtectedRoute adminOnly><ShopAdminNewsletter /></ShopProtectedRoute>} />
+            <Route path="admin/product-requests" element={<ShopProtectedRoute adminOnly><ShopAdminProductRequests /></ShopProtectedRoute>} />
+            <Route path="wishlist" element={<ShopProtectedRoute><ShopWishlist /></ShopProtectedRoute>} />
             <Route path="*" element={<Shop404 />} />
           </Route>
 

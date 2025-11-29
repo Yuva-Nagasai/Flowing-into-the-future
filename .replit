@@ -31,7 +31,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd frontend && npm run dev"
+args = "bash -c \"cd digital-hub/ecommerce/backend && npm run dev & cd frontend && npm run dev\""
 waitForPort = 5000
 
 [[ports]]
@@ -39,12 +39,12 @@ localPort = 3001
 externalPort = 3001
 
 [[ports]]
-localPort = 5000
-externalPort = 80
+localPort = 3003
+externalPort = 3002
 
 [[ports]]
-localPort = 37655
-externalPort = 3002
+localPort = 5000
+externalPort = 80
 
 [[ports]]
 localPort = 40503

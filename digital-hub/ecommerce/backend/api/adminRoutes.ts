@@ -816,4 +816,44 @@ router.get('/login-events', async (req: Request, res: Response) => {
   }
 });
 
+router.get('/login-analytics', async (req: Request, res: Response) => {
+  try {
+    if (!db) {
+      return res.status(503).json({ success: false, error: 'Database not available' });
+    }
+
+    const days = parseInt(req.query.days as string) || 30;
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    const events = await db.query.loginEvents.findMany({
+      where: gte(schema.loginEvents.createdAt, startDate),
+      orderBy: asc(schema.loginEvents.createdAt),
+    });
+
+    const analytics: { date: string; count: number }[] = [];
+    const countByDate: Record<string, number> = {};
+
+    events.forEach((event) => {
+      const date = new Date(event.createdAt).toISOString().split('T')[0];
+      countByDate[date] = (countByDate[date] || 0) + 1;
+    });
+
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
+      analytics.push({
+        date: dateStr,
+        count: countByDate[dateStr] || 0,
+      });
+    }
+
+    res.json({ success: true, data: analytics });
+  } catch (error) {
+    console.error('Get login analytics error:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch login analytics' });
+  }
+});
+
 export default router;

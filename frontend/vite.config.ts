@@ -29,9 +29,10 @@ export default defineConfig({
     allowedHosts: true,
     proxy: {
       '/api/ecommerce': {
-        target: 'http://localhost:3002',
+        target: 'http://localhost:3003',
         changeOrigin: true,
         secure: false,
+        rewrite: (path) => path.replace(/^\/api\/ecommerce/, '/api'),
       },
       '/api': {
         target: 'http://localhost:3001',

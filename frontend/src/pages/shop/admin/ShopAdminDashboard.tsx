@@ -68,6 +68,7 @@ export default function ShopAdminDashboard() {
     { label: 'Testimonials', href: '/shop/admin/testimonials', icon: Users },
     { label: 'Newsletter', href: '/shop/admin/newsletter', icon: Users },
     { label: 'Reviews', href: '/shop/admin/reviews', icon: Users },
+    { label: 'Product Requests', href: '/shop/admin/product-requests', icon: Package },
   ];
 
   if (!isAdmin) return null;
