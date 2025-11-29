@@ -1,52 +1,64 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FaWhatsapp, FaPhone, FaEnvelope } from 'react-icons/fa';
-import { HiChatBubbleLeftRight } from 'react-icons/hi2';
-import { X } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { FaHome, FaTools, FaCog, FaEnvelope, FaPhone } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-interface ContactAction {
+interface MenuItem {
+  id: string;
   label: string;
-  href: string;
   icon: React.ElementType;
-  bgColor: string;
-  hoverBg: string;
+  href?: string;
+  action?: string;
   external?: boolean;
-  isRoute?: boolean;
 }
 
-const CONTACT_ACTIONS: ContactAction[] = [
+const MENU_ITEMS: MenuItem[] = [
   {
-    label: 'WhatsApp',
-    href: 'https://wa.me/918019358855',
-    icon: FaWhatsapp,
-    bgColor: '#25D366',
-    hoverBg: '#128C7E',
-    external: true,
+    id: 'home',
+    label: 'Home',
+    icon: FaHome,
+    href: '/',
   },
   {
-    label: 'Call Us',
-    href: 'tel:+918019358855',
-    icon: FaPhone,
-    bgColor: '#007AFF',
-    hoverBg: '#0056CC',
+    id: 'services',
+    label: 'Services',
+    icon: FaTools,
+    href: '/#services',
   },
   {
-    label: 'Email Us',
-    href: 'mailto:nanoflowsvizag@gmail.com?subject=Project%20Enquiry',
+    id: 'contact',
+    label: 'Contact',
     icon: FaEnvelope,
-    bgColor: '#EA4335',
-    hoverBg: '#C5221F',
+    href: '/#contact',
   },
   {
-    label: 'Contact Form',
-    href: '/#contact',
-    icon: HiChatBubbleLeftRight,
-    bgColor: '#6366F1',
-    hoverBg: '#4F46E5',
-    isRoute: true,
+    id: 'call',
+    label: 'Call Us',
+    icon: FaPhone,
+    href: 'tel:+918019358855',
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    icon: FaCog,
+    action: 'settings',
   },
 ];
+
+const GridIcon = () => (
+  <svg 
+    width="24" 
+    height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect x="3" y="3" width="8" height="8" rx="2" fill="currentColor" />
+    <rect x="13" y="3" width="8" height="8" rx="2" fill="currentColor" />
+    <rect x="3" y="13" width="8" height="8" rx="2" fill="currentColor" />
+    <rect x="13" y="13" width="8" height="8" rx="2" fill="currentColor" />
+  </svg>
+);
 
 const FloatingContactWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,7 +68,7 @@ const FloatingContactWidget = () => {
 
   const handleClickOutside = useCallback((e: MouseEvent) => {
     const target = e.target as HTMLElement;
-    if (!target.closest('.floating-contact-widget')) {
+    if (!target.closest('.floating-action-button')) {
       setIsOpen(false);
     }
   }, []);
@@ -81,18 +93,25 @@ const FloatingContactWidget = () => {
     }
   };
 
-  const handleContactClick = (e: React.MouseEvent, href: string) => {
-    if (href.startsWith('/#')) {
+  const handleItemClick = (e: React.MouseEvent, item: MenuItem) => {
+    if (item.href?.startsWith('/#')) {
       e.preventDefault();
-      const sectionId = href.replace('/#', '');
+      const sectionId = item.href.replace('/#', '');
       if (location.pathname !== '/') {
-        navigate(`/#${sectionId}`);
+        navigate('/');
         setTimeout(() => {
           scrollToSection(sectionId);
         }, 300);
       } else {
         scrollToSection(sectionId);
       }
+      setIsOpen(false);
+    } else if (item.href === '/') {
+      e.preventDefault();
+      navigate('/');
+      setIsOpen(false);
+    } else if (item.action === 'settings') {
+      e.preventDefault();
       setIsOpen(false);
     }
   };
@@ -102,14 +121,14 @@ const FloatingContactWidget = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1,
+        staggerChildren: 0.06,
+        delayChildren: 0.05,
       },
     },
     exit: {
       opacity: 0,
       transition: {
-        staggerChildren: 0.05,
+        staggerChildren: 0.04,
         staggerDirection: -1,
       },
     },
@@ -118,8 +137,8 @@ const FloatingContactWidget = () => {
   const itemVariants = {
     hidden: { 
       opacity: 0, 
-      x: 20,
-      scale: 0.8,
+      x: 30,
+      scale: 0.5,
     },
     visible: { 
       opacity: 1, 
@@ -127,27 +146,26 @@ const FloatingContactWidget = () => {
       scale: 1,
       transition: {
         type: 'spring' as const,
-        stiffness: 300,
-        damping: 24,
+        stiffness: 400,
+        damping: 20,
       },
     },
     exit: { 
       opacity: 0, 
-      x: 20,
-      scale: 0.8,
+      x: 30,
+      scale: 0.5,
       transition: {
-        duration: 0.2,
+        duration: 0.15,
       },
     },
   };
 
   return (
     <div 
-      className="floating-contact-widget fixed left-0 top-1/2 -translate-y-1/2 z-50 pl-4 sm:pl-6"
-      aria-label="Contact options"
-      style={{ overflow: 'visible', maxWidth: 'calc(100vw - 16px)' }}
+      className="floating-action-button fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-50"
+      aria-label="Quick actions menu"
     >
-      <div className="flex flex-col items-start gap-3" style={{ overflow: 'visible' }}>
+      <div className="flex items-center gap-3">
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -155,71 +173,72 @@ const FloatingContactWidget = () => {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="flex flex-col gap-2"
+              className="flex items-center gap-2"
             >
-              {CONTACT_ACTIONS.map((action) => {
-                const Icon = action.icon;
-                const isHovered = hoveredItem === action.label;
-                
+              {MENU_ITEMS.map((item) => {
+                const Icon = item.icon;
+                const isHovered = hoveredItem === item.id;
+
                 const buttonContent = (
                   <motion.div
                     variants={itemVariants}
-                    className="flex items-center gap-0 group"
-                    onMouseEnter={() => setHoveredItem(action.label)}
+                    className="relative group"
+                    onMouseEnter={() => setHoveredItem(item.id)}
                     onMouseLeave={() => setHoveredItem(null)}
                   >
-                    <div
-                      className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-110"
+                    <motion.div
+                      className="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-lg cursor-pointer"
                       style={{
-                        backgroundColor: action.bgColor,
                         boxShadow: isHovered 
-                          ? `0 8px 25px ${action.bgColor}60` 
-                          : `0 4px 15px ${action.bgColor}40`,
+                          ? '0 8px 25px rgba(0, 0, 0, 0.25)' 
+                          : '0 4px 15px rgba(0, 0, 0, 0.15)',
                       }}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      <Icon className="w-5 h-5 text-white" />
-                    </div>
+                      <Icon className="w-4 h-4 text-gray-700" />
+                    </motion.div>
                     <AnimatePresence>
                       {isHovered && (
-                        <motion.span
-                          initial={{ opacity: 0, x: -10, width: 0 }}
-                          animate={{ opacity: 1, x: 0, width: 'auto' }}
-                          exit={{ opacity: 0, x: -10, width: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="ml-3 px-3 py-1.5 text-sm font-medium text-white rounded-lg whitespace-nowrap overflow-hidden"
-                          style={{ backgroundColor: action.bgColor }}
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs font-medium rounded whitespace-nowrap"
                         >
-                          {action.label}
-                        </motion.span>
+                          {item.label}
+                        </motion.div>
                       )}
                     </AnimatePresence>
                   </motion.div>
                 );
 
-                if (action.isRoute) {
+                if (item.href && !item.href.startsWith('/#') && item.href !== '/') {
                   return (
-                    <button
-                      key={action.label}
-                      onClick={(e) => handleContactClick(e, action.href)}
-                      className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500"
-                      aria-label={action.label}
+                    <a
+                      key={item.id}
+                      href={item.href}
+                      target={item.external ? '_blank' : undefined}
+                      rel={item.external ? 'noopener noreferrer' : undefined}
+                      className="focus:outline-none"
+                      aria-label={item.label}
+                      onClick={() => setIsOpen(false)}
                     >
                       {buttonContent}
-                    </button>
+                    </a>
                   );
                 }
 
                 return (
-                  <a
-                    key={action.label}
-                    href={action.href}
-                    target={action.external ? '_blank' : undefined}
-                    rel={action.external ? 'noopener noreferrer' : undefined}
-                    className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500"
-                    aria-label={action.label}
+                  <button
+                    key={item.id}
+                    onClick={(e) => handleItemClick(e, item)}
+                    className="focus:outline-none"
+                    aria-label={item.label}
                   >
                     {buttonContent}
-                  </a>
+                  </button>
                 );
               })}
             </motion.div>
@@ -232,58 +251,29 @@ const FloatingContactWidget = () => {
             e.stopPropagation();
             setIsOpen((prev) => !prev);
           }}
-          className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500"
+          className="w-16 h-16 rounded-full flex items-center justify-center shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-500"
           style={{
-            background: isOpen 
-              ? 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)'
-              : 'linear-gradient(135deg, #06B6D4 0%, #0891B2 50%, #0E7490 100%)',
-            boxShadow: isOpen 
-              ? '0 8px 30px rgba(239, 68, 68, 0.4)'
-              : '0 8px 30px rgba(6, 182, 212, 0.4)',
+            backgroundColor: '#F9A825',
+            boxShadow: '0 6px 24px rgba(249, 168, 37, 0.4)',
           }}
-          whileHover={{ scale: 1.08 }}
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          animate={{ 
-            rotate: isOpen ? 0 : 0,
-          }}
           aria-expanded={isOpen}
-          aria-label={isOpen ? 'Close contact options' : 'Open contact options'}
+          aria-label={isOpen ? 'Close menu' : 'Open menu'}
         >
-          <AnimatePresence mode="wait">
-            {isOpen ? (
-              <motion.div
-                key="close"
-                initial={{ rotate: -90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <X className="w-6 h-6 text-white" />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="chat"
-                initial={{ rotate: 90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: -90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="relative"
-              >
-                <HiChatBubbleLeftRight className="w-6 h-6 text-white" />
-                <motion.span
-                  className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"
-                  animate={{
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <motion.div
+            animate={{ 
+              rotate: isOpen ? 45 : 0,
+            }}
+            transition={{ 
+              type: 'spring',
+              stiffness: 300,
+              damping: 20,
+            }}
+            className="text-black"
+          >
+            <GridIcon />
+          </motion.div>
         </motion.button>
       </div>
     </div>

@@ -95,11 +95,8 @@ function AnimatedRoutes() {
   }, [location.pathname, location.hash]);
 
   const showFloatingContact = useMemo(() => {
-    // Hide floating contact on home, contact pages, Academy, e-learning, AI tools, and shop sections
-    const hiddenExactPaths = ['/', '/contact', '/elearning/contact'];
-    if (hiddenExactPaths.includes(location.pathname)) return false;
-
-    const hiddenPrefixes = ['/academy', '/elearning', '/aitools', '/shop'];
+    // Hide floating contact on Academy admin pages only
+    const hiddenPrefixes = ['/academy/admin'];
     return !hiddenPrefixes.some((prefix) => location.pathname.startsWith(prefix));
   }, [location.pathname]);
 
