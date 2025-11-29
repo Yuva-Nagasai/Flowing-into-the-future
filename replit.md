@@ -1,7 +1,7 @@
-# NanoFlows Platform
+# NanoFlows Platform with Digital Hub
 
 ## Overview
-NanoFlows is a comprehensive learning platform with an integrated e-commerce shop system. The platform features a modern React frontend with multiple Node.js backends.
+NanoFlows is a comprehensive learning platform with an integrated Digital Hub e-commerce system that exclusively sells digital products (software, templates, courses, digital tools, e-books, design assets). The platform features a modern React frontend with multiple Node.js backends.
 
 ## Project Structure
 ```
@@ -116,8 +116,8 @@ NanoFlows is a comprehensive learning platform with an integrated e-commerce sho
 Run `npm run seed` in `/digital-hub/ecommerce/backend/` to seed:
 - Admin user: `admin@nanoflows.com` / `admin123`
 - Demo user: `user@nanoflows.com` / `user123`
-- Sample categories (Electronics, Clothing, Home, Books, Sports, Beauty, Toys, Food)
-- Sample products
+- Digital product categories (Software & Tools, Templates, Online Courses, E-Books, Design Assets, Audio & Music, Graphics, Plugins)
+- Sample digital products
 
 ## Digital Hub Frontend Routes (`/shop/*`)
 
