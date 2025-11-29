@@ -166,14 +166,14 @@ const ELearningHome = () => {
       <ELearningNav onSearch={setSearchTerm} searchTerm={searchTerm} />
       
       {/* Hero Section with Slider */}
-      <section className="relative h-[85vh] min-h-[550px] overflow-hidden pt-8">
+      <section className="relative min-h-[600px] overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7 }}
             className="absolute inset-0"
           >
             <div 
@@ -182,57 +182,63 @@ const ELearningHome = () => {
             />
             <div className={`absolute inset-0 ${
               theme === 'dark' 
-                ? 'bg-gradient-to-r from-dark-bg via-dark-bg/90 to-dark-bg/50' 
-                : 'bg-gradient-to-r from-white via-white/90 to-white/50'
+                ? 'bg-gradient-to-r from-dark-bg/95 via-dark-bg/80 to-transparent' 
+                : 'bg-gradient-to-r from-white/95 via-white/80 to-transparent'
             }`} />
           </motion.div>
         </AnimatePresence>
 
-        <div className="container mx-auto px-4 lg:px-8 h-full flex items-center relative z-10">
-          <div className="max-w-3xl">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className={`absolute -top-40 -right-40 w-80 h-80 rounded-full blur-3xl ${
+            theme === 'dark' ? 'bg-electric-blue/20' : 'bg-accent-blue/20'
+          }`} />
+          <div className={`absolute -bottom-40 -left-40 w-80 h-80 rounded-full blur-3xl ${
+            theme === 'dark' ? 'bg-electric-green/20' : 'bg-accent-red/20'
+          }`} />
+        </div>
+
+        <div className="container mx-auto px-4 lg:px-6 relative z-10 pt-28 pb-20">
+          <div className="max-w-2xl">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentSlide}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -30 }}
+                exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5 }}
               >
-                <motion.span
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 ${
+                <div className="mb-6">
+                  <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
                     theme === 'dark'
-                      ? 'bg-electric-green/20 text-electric-green border border-electric-green/30'
+                      ? 'bg-electric-green/10 text-electric-green border border-electric-green/30'
                       : 'bg-accent-red/10 text-accent-red border border-accent-red/30'
-                  }`}
-                >
-                  <Sparkles className="w-4 h-4" />
-                  {activeSlides[currentSlide]?.subtitle}
-                </motion.span>
+                  }`}>
+                    <Sparkles className="w-4 h-4" />
+                    {activeSlides[currentSlide]?.subtitle}
+                  </span>
+                </div>
 
-                <h1 className={`text-5xl md:text-7xl font-bold mb-6 leading-tight ${
+                <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 ${
                   theme === 'dark' ? 'text-white' : 'text-gray-900'
                 }`}>
                   {activeSlides[currentSlide]?.title}
                 </h1>
 
-                <p className={`text-xl md:text-2xl mb-8 max-w-2xl ${
+                <p className={`text-lg md:text-xl mb-8 ${
                   theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                 }`}>
                   {activeSlides[currentSlide]?.description}
                 </p>
 
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-col sm:flex-row items-start gap-4">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => navigate(activeSlides[currentSlide]?.cta_link || '/academy/signup')}
-                    className={`px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 shadow-2xl transition-all ${
+                    className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all ${
                       theme === 'dark'
-                        ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg hover:shadow-electric-green/50'
-                        : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-accent-red/50'
+                        ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
+                        : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
                     }`}
                   >
                     {activeSlides[currentSlide]?.cta_text}
@@ -242,10 +248,10 @@ const ELearningHome = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })}
-                    className={`px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 border-2 transition-all ${
+                    className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all border ${
                       theme === 'dark'
-                        ? 'border-white/30 text-white hover:bg-white/10'
-                        : 'border-gray-900/30 text-gray-900 hover:bg-gray-900/10'
+                        ? 'border-slate-600 text-gray-300 hover:bg-slate-800'
+                        : 'border-gray-300 text-gray-700 hover:bg-gray-100'
                     }`}
                   >
                     <Play className="w-5 h-5" />
@@ -254,27 +260,25 @@ const ELearningHome = () => {
                 </div>
               </motion.div>
             </AnimatePresence>
-          </div>
-        </div>
 
-        {/* Slide Navigation */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20">
-          <div className="flex items-center justify-center gap-2">
-            {activeSlides.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentSlide(idx)}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  currentSlide === idx
-                    ? theme === 'dark'
-                      ? 'w-8 bg-electric-green'
-                      : 'w-8 bg-accent-red'
-                    : theme === 'dark'
-                      ? 'w-2 bg-white/30 hover:bg-white/50'
-                      : 'w-2 bg-gray-900/30 hover:bg-gray-900/50'
-                }`}
-              />
-            ))}
+            {/* Slide Navigation - Bottom Left like E-commerce */}
+            <div className="flex items-center gap-3 mt-10">
+              {activeSlides.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    currentSlide === idx
+                      ? theme === 'dark'
+                        ? 'w-8 bg-electric-green'
+                        : 'w-8 bg-accent-red'
+                      : theme === 'dark'
+                        ? 'w-2 bg-white/30 hover:bg-white/50'
+                        : 'w-2 bg-gray-900/30 hover:bg-gray-900/50'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
