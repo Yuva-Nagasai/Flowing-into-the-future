@@ -176,7 +176,7 @@ const AIToolsHome = () => {
     }`}>
       <AIToolsNav />
 
-      <section className="relative min-h-[600px] overflow-hidden">
+      <section className="relative overflow-hidden py-12 lg:py-20">
         <div className={`absolute inset-0 ${
           theme === 'dark'
             ? 'bg-gradient-to-br from-dark-bg via-dark-card to-dark-bg'
@@ -189,7 +189,7 @@ const AIToolsHome = () => {
           theme === 'dark' ? 'bg-electric-green' : 'bg-accent-blue'
         }`} />
 
-        <div className="container mx-auto px-4 lg:px-6 relative z-10 py-20">
+        <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div
               key={currentSlide}

@@ -197,7 +197,7 @@ const ELearningHome = () => {
           }`} />
         </div>
 
-        <div className="container mx-auto px-4 lg:px-6 relative z-10 py-20">
+        <div className="container mx-auto px-4 lg:px-6 relative z-10 pt-28 pb-20">
           <div className="max-w-2xl">
             <AnimatePresence mode="wait">
               <motion.div
