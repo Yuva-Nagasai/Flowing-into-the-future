@@ -353,7 +353,7 @@ const ELearningNav = () => {
         className="w-full"
         style={{
           height: showTopBar
-            ? `${topBarHeight + 80}`
+            ? `${topBarHeight + 80}px`
             : '80px',
         }}
       />
