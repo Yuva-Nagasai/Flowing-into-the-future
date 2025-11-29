@@ -1,25 +1,36 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Sun, Moon, ShoppingCart, User, LogOut, Search, Settings } from 'lucide-react';
+import { Menu, X, Sun, Moon, ShoppingCart, User, LogOut, Search, Settings, Heart } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useShopAuth } from '../../contexts/ShopAuthContext';
 import TopFeatureNav from '../TopFeatureNav';
 
 const ShopNav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { user, cart, isAdmin, logout } = useShopAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const cartCount = cart.length;
+  const cartCount = cart.reduce((total, item) => total + (item.quantity || 1), 0);
 
   const navLinks = [
     { name: 'Home', path: '/shop' },
     { name: 'Products', path: '/shop/products' },
     { name: 'Categories', path: '/shop/categories' },
+    { name: 'Deals', path: '/shop/deals' },
     { name: 'About', path: '/shop/about' },
-    { name: 'Contact', path: '/shop/contact' },
   ];
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/shop/products?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+      setShowSearch(false);
+    }
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -63,7 +74,46 @@ const ShopNav = () => {
               ))}
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-3">
+              <form onSubmit={handleSearch} className="hidden lg:flex items-center">
+                <div className={`flex items-center rounded-lg border ${
+                  theme === 'dark' 
+                    ? 'bg-slate-800 border-slate-600' 
+                    : 'bg-gray-50 border-gray-200'
+                }`}>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search products..."
+                    className={`w-48 px-3 py-2 text-sm bg-transparent focus:outline-none ${
+                      theme === 'dark' ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'
+                    }`}
+                  />
+                  <button
+                    type="submit"
+                    className={`p-2 rounded-r-lg transition-colors ${
+                      theme === 'dark' 
+                        ? 'hover:bg-slate-700 text-gray-300' 
+                        : 'hover:bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    <Search className="w-4 h-4" />
+                  </button>
+                </div>
+              </form>
+
+              <button
+                onClick={() => setShowSearch(!showSearch)}
+                className={`lg:hidden p-2 rounded-lg transition-colors ${
+                  theme === 'dark' 
+                    ? 'hover:bg-slate-800 text-gray-300' 
+                    : 'hover:bg-gray-100 text-gray-600'
+                }`}
+              >
+                <Search className="w-5 h-5" />
+              </button>
+
               <button
                 onClick={toggleTheme}
                 className={`p-2 rounded-lg transition-colors ${
@@ -74,6 +124,19 @@ const ShopNav = () => {
               >
                 {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
+
+              {user && (
+                <Link
+                  to="/shop/wishlist"
+                  className={`relative p-2 rounded-lg transition-colors ${
+                    theme === 'dark' 
+                      ? 'hover:bg-slate-800 text-gray-300' 
+                      : 'hover:bg-gray-100 text-gray-600'
+                  }`}
+                >
+                  <Heart className="w-5 h-5" />
+                </Link>
+              )}
 
               <Link
                 to="/shop/cart"
@@ -157,6 +220,39 @@ const ShopNav = () => {
             </div>
           </div>
 
+          {showSearch && (
+            <div className={`lg:hidden py-3 border-t ${
+              theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
+            }`}>
+              <form onSubmit={handleSearch} className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products..."
+                  autoFocus
+                  className={`flex-1 px-4 py-2 rounded-lg border ${
+                    theme === 'dark' 
+                      ? 'bg-slate-800 border-slate-600 text-white placeholder-gray-400' 
+                      : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500'
+                  } focus:outline-none focus:ring-2 ${
+                    theme === 'dark' ? 'focus:ring-electric-green/50' : 'focus:ring-accent-blue/50'
+                  }`}
+                />
+                <button
+                  type="submit"
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    theme === 'dark'
+                      ? 'bg-electric-green text-slate-900 hover:bg-electric-green/90'
+                      : 'bg-accent-blue text-white hover:bg-accent-blue/90'
+                  }`}
+                >
+                  Search
+                </button>
+              </form>
+            </div>
+          )}
+
           {isMenuOpen && (
             <div className={`md:hidden py-4 border-t ${
               theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
@@ -193,6 +289,16 @@ const ShopNav = () => {
                         Admin Dashboard
                       </Link>
                     )}
+                    <Link
+                      to="/shop/wishlist"
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`flex items-center gap-2 py-3 ${
+                        theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+                      }`}
+                    >
+                      <Heart className="w-5 h-5" />
+                      My Wishlist
+                    </Link>
                     <Link
                       to="/shop/account"
                       onClick={() => setIsMenuOpen(false)}

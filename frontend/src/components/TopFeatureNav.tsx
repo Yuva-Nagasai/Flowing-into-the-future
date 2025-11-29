@@ -1,13 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Globe, GraduationCap, Cpu, LayoutGrid, ShoppingBag } from 'lucide-react';
+import { Globe, GraduationCap, Cpu, LayoutGrid } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const items = [
   { label: '1 Website', to: '/', icon: Globe, featured: true, type: 'main' as const },
   { label: '2 E-Learning', to: '/elearning', icon: GraduationCap },
   { label: '3 AI Tools', to: '/ai-tools', icon: Cpu },
-  { label: '4 Shop', to: '/shop', icon: ShoppingBag },
-  { label: '5 Digital Hub', to: '/contact', icon: LayoutGrid },
+  { label: '4 Digital Hub', to: '/shop', icon: LayoutGrid, type: 'shop' as const },
 ];
 
 const TopFeatureNav = () => {
@@ -26,7 +25,7 @@ const TopFeatureNav = () => {
     <div className={`${wrapperClasses} backdrop-blur-[2px]`}>
       <div className="container mx-auto px-4 lg:px-6">
         <div
-          className="grid grid-cols-5 gap-2 py-3 sm:gap-3 md:flex md:flex-nowrap md:justify-between md:gap-3 lg:gap-4 md:overflow-x-auto no-scrollbar"
+          className="grid grid-cols-4 gap-2 py-3 sm:gap-3 md:flex md:flex-nowrap md:justify-between md:gap-3 lg:gap-4 md:overflow-x-auto no-scrollbar"
           style={{ scrollbarWidth: 'none' as const, msOverflowStyle: 'none' as const }}
         >
           {items.map(({ label, to, icon: Icon, type }) => {
