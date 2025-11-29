@@ -24,14 +24,14 @@ interface Product {
 
 const categories = [
   { name: 'All', value: '' },
-  { name: 'Electronics', value: 'electronics' },
-  { name: 'Clothing', value: 'clothing' },
-  { name: 'Home', value: 'home' },
-  { name: 'Books', value: 'books' },
-  { name: 'Sports', value: 'sports' },
-  { name: 'Beauty', value: 'beauty' },
-  { name: 'Toys', value: 'toys' },
-  { name: 'Food', value: 'food' },
+  { name: 'Software & Tools', value: 'software' },
+  { name: 'Templates', value: 'templates' },
+  { name: 'Online Courses', value: 'courses' },
+  { name: 'E-Books', value: 'ebooks' },
+  { name: 'Design Assets', value: 'design-assets' },
+  { name: 'Audio & Music', value: 'audio' },
+  { name: 'Graphics', value: 'graphics' },
+  { name: 'Plugins', value: 'plugins' },
   { name: 'Other', value: 'other' },
 ];
 
@@ -113,10 +113,10 @@ export default function ShopProducts() {
             <h1 className={`text-3xl font-bold ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
-              All Products
+              Digital Products
             </h1>
             <p className={`mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-              {products.length} products found
+              {products.length} digital products found
             </p>
           </div>
           
@@ -129,7 +129,7 @@ export default function ShopProducts() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
+                placeholder="Search digital products..."
                 className={`pl-10 pr-4 py-2 rounded-lg border w-full md:w-64 ${
                   theme === 'dark'
                     ? 'bg-slate-800 border-slate-700 text-white placeholder-gray-500'
@@ -306,13 +306,6 @@ export default function ShopProducts() {
                             Featured
                           </span>
                         )}
-                        {product.stock === 0 && (
-                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                            <span className="bg-red-500 text-white px-3 py-1 rounded font-medium">
-                              Out of Stock
-                            </span>
-                          </div>
-                        )}
                       </div>
                       
                       <div className={`p-4 flex-1 ${viewMode === 'list' ? 'flex flex-col justify-between' : ''}`}>
@@ -369,13 +362,10 @@ export default function ShopProducts() {
                           
                           <button
                             onClick={(e) => handleAddToCart(e, product)}
-                            disabled={product.stock === 0}
                             className={`flex items-center gap-1 px-3 py-2 rounded-lg font-medium text-sm transition-colors ${
-                              product.stock === 0
-                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                : theme === 'dark'
-                                  ? 'bg-electric-green text-slate-900 hover:bg-electric-green/90'
-                                  : 'bg-accent-blue text-white hover:bg-accent-blue/90'
+                              theme === 'dark'
+                                ? 'bg-electric-green text-slate-900 hover:bg-electric-green/90'
+                                : 'bg-accent-blue text-white hover:bg-accent-blue/90'
                             }`}
                           >
                             <ShoppingCart className="w-4 h-4" />

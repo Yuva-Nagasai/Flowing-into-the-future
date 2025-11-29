@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Package, ChevronRight, Truck, CheckCircle, Clock, XCircle, MapPin, CreditCard, ArrowLeft } from 'lucide-react';
+import { Package, ChevronRight, CheckCircle, Clock, XCircle, Mail, CreditCard, ArrowLeft, Download, Zap } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useShopAuth } from '../../contexts/ShopAuthContext';
 import ShopNav from '../../components/shop/ShopNav';
@@ -47,7 +47,7 @@ export default function ShopOrderDetail() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'delivered': return 'bg-green-500/20 text-green-500 border-green-500/30';
-      case 'shipped': return 'bg-blue-500/20 text-blue-500 border-blue-500/30';
+      case 'shipped': return 'bg-electric-green/20 text-electric-green border-electric-green/30';
       case 'processing': return 'bg-yellow-500/20 text-yellow-500 border-yellow-500/30';
       case 'pending': return 'bg-gray-500/20 text-gray-500 border-gray-500/30';
       case 'cancelled': return 'bg-red-500/20 text-red-500 border-red-500/30';
@@ -55,11 +55,22 @@ export default function ShopOrderDetail() {
     }
   };
 
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'delivered': return 'Completed';
+      case 'shipped': return 'Available';
+      case 'processing': return 'Processing';
+      case 'pending': return 'Pending';
+      case 'cancelled': return 'Cancelled';
+      default: return status;
+    }
+  };
+
   const trackingSteps = [
     { status: 'pending', label: 'Order Placed', icon: Package },
     { status: 'processing', label: 'Processing', icon: Clock },
-    { status: 'shipped', label: 'Shipped', icon: Truck },
-    { status: 'delivered', label: 'Delivered', icon: CheckCircle },
+    { status: 'shipped', label: 'Available for Download', icon: Download },
+    { status: 'delivered', label: 'Completed', icon: CheckCircle },
   ];
 
   const getCurrentStep = (status: string) => {
@@ -103,7 +114,7 @@ export default function ShopOrderDetail() {
                 : 'bg-accent-blue text-white hover:bg-accent-blue/90'
             }`}
           >
-            View All Orders
+            View All Purchases
           </Link>
         </div>
         <Footer />
@@ -125,7 +136,7 @@ export default function ShopOrderDetail() {
           </Link>
           <ChevronRight className="w-4 h-4 text-gray-400" />
           <Link to="/shop/orders" className={theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'}>
-            Orders
+            Purchases
           </Link>
           <ChevronRight className="w-4 h-4 text-gray-400" />
           <span className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>#{order.orderNumber}</span>
@@ -142,7 +153,7 @@ export default function ShopOrderDetail() {
               }`}
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Orders
+              Back to Purchases
             </Link>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
@@ -159,8 +170,8 @@ export default function ShopOrderDetail() {
                   })}
                 </p>
               </div>
-              <span className={`px-4 py-2 rounded-full text-sm font-medium capitalize border ${getStatusColor(order.status)}`}>
-                {order.status}
+              <span className={`px-4 py-2 rounded-full text-sm font-medium border ${getStatusColor(order.status)}`}>
+                {getStatusLabel(order.status)}
               </span>
             </div>
           </div>
@@ -176,7 +187,7 @@ export default function ShopOrderDetail() {
                   }`}
                 >
                   <h2 className={`text-lg font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                    Order Tracking
+                    Access Status
                   </h2>
                   <div className="relative">
                     <div className={`absolute left-6 top-6 bottom-6 w-0.5 ${
@@ -226,7 +237,7 @@ export default function ShopOrderDetail() {
                 }`}
               >
                 <h2 className={`text-lg font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                  Order Items
+                  Purchased Products
                 </h2>
                 <div className="space-y-4">
                   {order.items?.map((item) => (
@@ -245,7 +256,7 @@ export default function ShopOrderDetail() {
                           {item.productName}
                         </p>
                         <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                          Qty: {item.quantity} x ${parseFloat(item.price).toFixed(2)}
+                          {item.quantity > 1 ? `${item.quantity} licenses` : '1 license'} x ${parseFloat(item.price).toFixed(2)}
                         </p>
                       </div>
                       <span className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
@@ -266,16 +277,23 @@ export default function ShopOrderDetail() {
                   }`}
                 >
                   <div className="flex items-center gap-3 mb-4">
-                    <MapPin className={theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'} />
+                    <Mail className={theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'} />
                     <h3 className={`font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                      Shipping Address
+                      Download Access
                     </h3>
                   </div>
                   <div className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                    <p className="font-medium">{order.shippingAddress?.name}</p>
-                    <p>{order.shippingAddress?.street}</p>
-                    <p>{order.shippingAddress?.city}, {order.shippingAddress?.state} {order.shippingAddress?.postalCode}</p>
-                    <p>{order.shippingAddress?.country}</p>
+                    <p className="font-medium mb-2">{order.shippingAddress?.name || order.billingAddress?.name}</p>
+                    <p className="flex items-center gap-2">
+                      <Mail className="w-4 h-4" />
+                      {order.shippingAddress?.email || order.billingAddress?.email}
+                    </p>
+                    <div className={`mt-3 p-3 rounded-lg ${theme === 'dark' ? 'bg-electric-green/10' : 'bg-green-50'}`}>
+                      <p className={`text-xs flex items-center gap-1 ${theme === 'dark' ? 'text-electric-green' : 'text-green-600'}`}>
+                        <Zap className="w-3 h-3" />
+                        Download links sent to email
+                      </p>
+                    </div>
                   </div>
                 </motion.div>
 
@@ -324,9 +342,10 @@ export default function ShopOrderDetail() {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Shipping</span>
-                    <span className={parseFloat(order.shipping) === 0 ? 'text-green-500' : theme === 'dark' ? 'text-white' : 'text-gray-900'}>
-                      {parseFloat(order.shipping) === 0 ? 'Free' : `$${parseFloat(order.shipping).toFixed(2)}`}
+                    <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Delivery</span>
+                    <span className={`text-green-500 flex items-center gap-1`}>
+                      <Zap className="w-3 h-3" />
+                      Instant
                     </span>
                   </div>
                   <div className="flex justify-between">

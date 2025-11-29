@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Star, ArrowRight, Sparkles, Truck, Shield, RefreshCw, Gift, Percent, CreditCard } from 'lucide-react';
+import { ShoppingBag, ArrowRight, Sparkles, Zap, Shield, Download } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import ShopNav from '../../components/shop/ShopNav';
 import Footer from '../../components/Footer';
@@ -38,37 +38,37 @@ interface HeroSlide {
 }
 
 const categories = [
-  { name: 'Electronics', slug: 'electronics', icon: '📱', color: 'from-blue-500 to-cyan-500' },
-  { name: 'Clothing', slug: 'clothing', icon: '👕', color: 'from-pink-500 to-rose-500' },
-  { name: 'Home', slug: 'home', icon: '🏠', color: 'from-amber-500 to-orange-500' },
-  { name: 'Books', slug: 'books', icon: '📚', color: 'from-green-500 to-emerald-500' },
-  { name: 'Sports', slug: 'sports', icon: '⚽', color: 'from-purple-500 to-violet-500' },
-  { name: 'Beauty', slug: 'beauty', icon: '💄', color: 'from-rose-500 to-pink-500' },
+  { name: 'Software & Tools', slug: 'software', icon: '💻', color: 'from-blue-500 to-cyan-500' },
+  { name: 'Templates', slug: 'templates', icon: '📄', color: 'from-pink-500 to-rose-500' },
+  { name: 'Online Courses', slug: 'courses', icon: '🎓', color: 'from-amber-500 to-orange-500' },
+  { name: 'E-Books', slug: 'ebooks', icon: '📚', color: 'from-green-500 to-emerald-500' },
+  { name: 'Design Assets', slug: 'design-assets', icon: '🎨', color: 'from-purple-500 to-violet-500' },
+  { name: 'Audio & Music', slug: 'audio', icon: '🎵', color: 'from-rose-500 to-pink-500' },
 ];
 
 const features = [
-  { icon: Truck, title: 'Free Shipping', description: 'On orders over $50' },
+  { icon: Zap, title: 'Instant Access', description: 'Download immediately after purchase' },
   { icon: Shield, title: 'Secure Payment', description: '100% secure checkout' },
-  { icon: RefreshCw, title: 'Easy Returns', description: '30-day return policy' },
+  { icon: Download, title: 'Lifetime Access', description: 'Download anytime, forever' },
 ];
 
 const heroSlides: HeroSlide[] = [
   {
     id: 1,
-    title: 'Discover Amazing',
+    title: 'Premium Digital',
     highlight: 'Products',
-    description: 'Shop the latest trends in electronics, fashion, home goods, and more. Quality products at competitive prices with fast delivery.',
+    description: 'Discover top-quality software, templates, courses, and digital tools. Instant access after purchase with lifetime downloads.',
     image: heroImage1,
-    ctaText: 'Shop Now',
+    ctaText: 'Browse Products',
     ctaLink: '/shop/products',
-    secondaryCtaText: 'Browse Categories',
+    secondaryCtaText: 'View Categories',
     secondaryCtaLink: '/shop/categories'
   },
   {
     id: 2,
-    title: 'Exclusive Deals &',
-    highlight: 'Offers',
-    description: 'Get up to 50% off on selected items. Limited time offers on premium products. Don\'t miss out on these amazing deals!',
+    title: 'Exclusive Digital',
+    highlight: 'Deals',
+    description: 'Get up to 50% off on premium digital products. Limited time offers on top-rated software, templates, and courses!',
     image: heroImage2,
     ctaText: 'View Deals',
     ctaLink: '/shop/products?sale=true',
@@ -77,9 +77,9 @@ const heroSlides: HeroSlide[] = [
   },
   {
     id: 3,
-    title: 'Premium Quality',
+    title: 'Instant Access',
     highlight: 'Guaranteed',
-    description: 'Every product in our store is carefully curated for quality. Enjoy hassle-free returns and dedicated customer support.',
+    description: 'Every digital product is carefully vetted for quality. Get immediate access after purchase with dedicated support.',
     image: heroImage3,
     ctaText: 'Explore Now',
     ctaLink: '/shop/products',
@@ -170,7 +170,7 @@ export default function ShopHome() {
                     : 'bg-accent-blue/10 text-accent-blue border border-accent-blue/30'
                 }`}>
                   <Sparkles className="w-4 h-4" />
-                  Welcome to NanoFlows Shop
+                  Welcome to Digital Hub
                 </span>
                 
                 <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 ${

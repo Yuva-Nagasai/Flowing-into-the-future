@@ -195,10 +195,10 @@ export default function ShopCart() {
                 </div>
                 <div className="flex justify-between">
                   <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
-                    Shipping
+                    Delivery
                   </span>
-                  <span className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>
-                    {cartTotal >= 50 ? 'Free' : '$4.99'}
+                  <span className="text-green-500">
+                    Instant Access
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -223,7 +223,7 @@ export default function ShopCart() {
                   <span className={`text-lg font-bold ${
                     theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
                   }`}>
-                    ${(cartTotal + (cartTotal >= 50 ? 0 : 4.99) + cartTotal * 0.08).toFixed(2)}
+                    ${(cartTotal + cartTotal * 0.08).toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -251,13 +251,11 @@ export default function ShopCart() {
                 Continue Shopping
               </Link>
               
-              {cartTotal < 50 && (
-                <p className={`text-center text-sm mt-4 ${
-                  theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                }`}>
-                  Add ${(50 - cartTotal).toFixed(2)} more for free shipping!
-                </p>
-              )}
+              <p className={`text-center text-sm mt-4 ${
+                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+              }`}>
+                All digital products include instant download access
+              </p>
             </div>
           </div>
         </div>

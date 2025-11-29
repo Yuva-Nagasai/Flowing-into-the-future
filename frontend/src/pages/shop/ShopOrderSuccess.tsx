@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CheckCircle, Package, ArrowRight, Download, Mail } from 'lucide-react';
+import { CheckCircle, Download, ArrowRight, Zap, Loader2 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import ShopNav from '../../components/shop/ShopNav';
 import Footer from '../../components/Footer';
@@ -44,6 +44,11 @@ export default function ShopOrderSuccess() {
 
       <section className="py-16">
         <div className="container mx-auto px-4 lg:px-6">
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className={`w-8 h-8 animate-spin ${theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'}`} />
+            </div>
+          ) : (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -65,10 +70,10 @@ export default function ShopOrderSuccess() {
             <h1 className={`text-3xl md:text-4xl font-bold mb-4 ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
-              Thank You for Your Order!
+              Thank You for Your Purchase!
             </h1>
             <p className={`text-lg mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-              Your order has been placed successfully. We've sent a confirmation email with the details.
+              Your digital products are now available. Check your email for download links and access instructions.
             </p>
 
             {order && (
@@ -100,7 +105,7 @@ export default function ShopOrderSuccess() {
                 }`}>
                   <div>
                     <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                      Order Date
+                      Purchase Date
                     </p>
                     <p className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>
                       {new Date(order.createdAt).toLocaleDateString()}
@@ -108,10 +113,11 @@ export default function ShopOrderSuccess() {
                   </div>
                   <div>
                     <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                      Estimated Delivery
+                      Access Status
                     </p>
-                    <p className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>
-                      {new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                    <p className="text-green-500 font-medium flex items-center gap-1">
+                      <Zap className="w-4 h-4" />
+                      Available Now
                     </p>
                   </div>
                 </div>
@@ -126,7 +132,7 @@ export default function ShopOrderSuccess() {
                           {item.productImage ? (
                             <img src={item.productImage} alt="" className="w-full h-full object-cover rounded-lg" />
                           ) : (
-                            <Package className="w-6 h-6 text-gray-400" />
+                            <Download className="w-6 h-6 text-gray-400" />
                           )}
                         </div>
                         <div className="flex-1">
@@ -134,7 +140,7 @@ export default function ShopOrderSuccess() {
                             {item.productName}
                           </p>
                           <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                            Qty: {item.quantity} x ${parseFloat(item.price).toFixed(2)}
+                            License x {item.quantity} - ${parseFloat(item.price).toFixed(2)}
                           </p>
                         </div>
                         <span className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
@@ -153,9 +159,9 @@ export default function ShopOrderSuccess() {
                     </span>
                   </div>
                   <div className="flex justify-between mb-2">
-                    <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Shipping</span>
-                    <span className={parseFloat(order.shipping) === 0 ? 'text-green-500' : theme === 'dark' ? 'text-white' : 'text-gray-900'}>
-                      {parseFloat(order.shipping) === 0 ? 'Free' : `$${parseFloat(order.shipping).toFixed(2)}`}
+                    <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Delivery</span>
+                    <span className="text-green-500">
+                      Instant Access
                     </span>
                   </div>
                   <div className="flex justify-between mb-2">
@@ -172,15 +178,14 @@ export default function ShopOrderSuccess() {
                   </div>
                 </div>
 
-                <div className={`mt-4 p-4 rounded-lg ${theme === 'dark' ? 'bg-slate-700/50' : 'bg-gray-50'}`}>
-                  <p className={`text-sm font-medium mb-1 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                    Shipping To:
+                <div className={`mt-4 p-4 rounded-lg ${theme === 'dark' ? 'bg-electric-green/10 border border-electric-green/30' : 'bg-green-50 border border-green-200'}`}>
+                  <p className={`text-sm font-medium mb-1 flex items-center gap-2 ${theme === 'dark' ? 'text-electric-green' : 'text-green-700'}`}>
+                    <Download className="w-4 h-4" />
+                    How to Access Your Products:
                   </p>
-                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                    {order.shippingAddress.name}<br />
-                    {order.shippingAddress.street}<br />
-                    {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.postalCode}<br />
-                    {order.shippingAddress.country}
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                    Your download links have been sent to {order.shippingAddress?.email || 'your email'}. 
+                    You can also access all your purchases from your account dashboard.
                   </p>
                 </div>
               </div>
@@ -195,8 +200,8 @@ export default function ShopOrderSuccess() {
                     : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg'
                 }`}
               >
-                <Package className="w-5 h-5" />
-                Track Order
+                <Download className="w-5 h-5" />
+                Access Downloads
               </Link>
               <Link
                 to="/shop/products"
@@ -206,11 +211,12 @@ export default function ShopOrderSuccess() {
                     : 'border-gray-300 text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                Continue Shopping
+                Browse More Products
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
           </motion.div>
+          )}
         </div>
       </section>
 

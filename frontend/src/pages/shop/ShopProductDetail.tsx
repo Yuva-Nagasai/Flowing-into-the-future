@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ShoppingCart, Heart, Share2, Star, ChevronRight, Minus, Plus, Check, Truck, Shield, RefreshCw, Package } from 'lucide-react';
+import { ShoppingCart, Heart, Share2, Star, ChevronRight, Minus, Plus, Check, Zap, Shield, Download, Package } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useShopAuth } from '../../contexts/ShopAuthContext';
 import ShopNav from '../../components/shop/ShopNav';
@@ -10,7 +9,7 @@ import SEOHead from '../../components/shop/SEOHead';
 import ProductGallery from '../../components/shop/ProductGallery';
 import ProductGrid from '../../components/shop/ProductGrid';
 import shopApi from '../../utils/shopApi';
-import type { Product, Review } from '../../types/shop';
+import type { Product } from '../../types/shop';
 
 export default function ShopProductDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -20,7 +19,7 @@ export default function ShopProductDetail() {
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<'description' | 'reviews' | 'shipping'>('description');
+  const [activeTab, setActiveTab] = useState<'description' | 'reviews' | 'license'>('description');
   const [addingToCart, setAddingToCart] = useState(false);
 
   useEffect(() => {
@@ -231,7 +230,7 @@ export default function ShopProductDetail() {
               theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
             }`}>
               <span className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                Quantity:
+                Licenses:
               </span>
               <div className={`flex items-center gap-2 border rounded-lg ${
                 theme === 'dark' ? 'border-slate-600' : 'border-gray-300'
@@ -248,27 +247,19 @@ export default function ShopProductDetail() {
                   {quantity}
                 </span>
                 <button
-                  onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                  disabled={quantity >= product.stock}
-                  className={`p-2 transition-colors disabled:opacity-50 ${
+                  onClick={() => setQuantity(quantity + 1)}
+                  className={`p-2 transition-colors ${
                     theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100'
                   }`}
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
-              <span className={`text-sm ${
-                product.stock > 10
-                  ? theme === 'dark' ? 'text-electric-green' : 'text-green-600'
-                  : product.stock > 0
-                    ? 'text-orange-500'
-                    : 'text-red-500'
+              <span className={`text-sm flex items-center gap-1 ${
+                theme === 'dark' ? 'text-electric-green' : 'text-green-600'
               }`}>
-                {product.stock > 10
-                  ? 'In Stock'
-                  : product.stock > 0
-                    ? `Only ${product.stock} left`
-                    : 'Out of Stock'}
+                <Zap className="w-4 h-4" />
+                Instant Download
               </span>
             </div>
 
@@ -276,7 +267,7 @@ export default function ShopProductDetail() {
               {isAuthenticated ? (
                 <button
                   onClick={handleAddToCart}
-                  disabled={product.stock === 0 || addingToCart}
+                  disabled={addingToCart}
                   className={`flex-1 flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all disabled:opacity-50 ${
                     theme === 'dark'
                       ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
@@ -335,14 +326,14 @@ export default function ShopProductDetail() {
               theme === 'dark' ? 'bg-slate-800/50' : 'bg-gray-100'
             }`}>
               <div className="text-center">
-                <Truck className={`w-6 h-6 mx-auto mb-2 ${
+                <Zap className={`w-6 h-6 mx-auto mb-2 ${
                   theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
                 }`} />
                 <p className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                  Free Shipping
+                  Instant Access
                 </p>
                 <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                  On $50+
+                  Download Now
                 </p>
               </div>
               <div className="text-center">
@@ -357,14 +348,14 @@ export default function ShopProductDetail() {
                 </p>
               </div>
               <div className="text-center">
-                <RefreshCw className={`w-6 h-6 mx-auto mb-2 ${
+                <Download className={`w-6 h-6 mx-auto mb-2 ${
                   theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
                 }`} />
                 <p className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                  Easy Return
+                  Lifetime Access
                 </p>
                 <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                  30 Days
+                  Forever
                 </p>
               </div>
             </div>
@@ -398,7 +389,7 @@ export default function ShopProductDetail() {
       <section className="container mx-auto px-4 lg:px-6 py-8">
         <div className={`border-b ${theme === 'dark' ? 'border-slate-700' : 'border-gray-200'}`}>
           <div className="flex gap-8">
-            {(['description', 'reviews', 'shipping'] as const).map((tab) => (
+            {(['description', 'reviews', 'license'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -412,7 +403,7 @@ export default function ShopProductDetail() {
                       : 'border-transparent text-gray-500 hover:text-gray-900'
                 }`}
               >
-                {tab}
+                {tab === 'license' ? 'License & Access' : tab}
                 {tab === 'reviews' && product.totalReviews > 0 && ` (${product.totalReviews})`}
               </button>
             ))}
@@ -498,28 +489,38 @@ export default function ShopProductDetail() {
             </div>
           )}
 
-          {activeTab === 'shipping' && (
+          {activeTab === 'license' && (
             <div className="space-y-4">
               <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white border border-gray-200'}`}>
                 <h4 className={`font-medium mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                  Shipping Information
+                  Instant Access
                 </h4>
                 <ul className={`space-y-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                  <li>• Free standard shipping on orders over $50</li>
-                  <li>• Standard shipping: 3-5 business days</li>
-                  <li>• Express shipping: 1-2 business days (additional fee)</li>
-                  <li>• International shipping available to select countries</li>
+                  <li>• Immediate download after purchase</li>
+                  <li>• Access from your account dashboard anytime</li>
+                  <li>• Lifetime access to your purchased products</li>
+                  <li>• Download on unlimited devices for personal use</li>
                 </ul>
               </div>
               <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white border border-gray-200'}`}>
                 <h4 className={`font-medium mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                  Return Policy
+                  License Terms
                 </h4>
                 <ul className={`space-y-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                  <li>• 30-day return policy for unused items</li>
-                  <li>• Items must be in original packaging</li>
-                  <li>• Free returns on defective products</li>
-                  <li>• Refund processed within 5-7 business days</li>
+                  <li>• Personal license included with purchase</li>
+                  <li>• Commercial license available (check product details)</li>
+                  <li>• No redistribution or resale permitted</li>
+                  <li>• Contact support for extended licensing options</li>
+                </ul>
+              </div>
+              <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white border border-gray-200'}`}>
+                <h4 className={`font-medium mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                  Refund Policy
+                </h4>
+                <ul className={`space-y-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <li>• 14-day money-back guarantee</li>
+                  <li>• Contact support for any issues</li>
+                  <li>• Refunds processed within 3-5 business days</li>
                 </ul>
               </div>
             </div>

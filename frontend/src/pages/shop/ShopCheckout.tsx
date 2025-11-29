@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CreditCard, Truck, ShoppingBag, ChevronRight, Lock, Loader2, AlertCircle } from 'lucide-react';
+import { CreditCard, Zap, ShoppingBag, ChevronRight, Lock, Loader2, AlertCircle, Download } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useShopAuth } from '../../contexts/ShopAuthContext';
 import ShopNav from '../../components/shop/ShopNav';
 import Footer from '../../components/Footer';
 import SEOHead from '../../components/shop/SEOHead';
 import shopApi from '../../utils/shopApi';
-import type { OrderAddress } from '../../types/shop';
 
 export default function ShopCheckout() {
   const { theme } = useTheme();
@@ -16,19 +15,11 @@ export default function ShopCheckout() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [step, setStep] = useState<'shipping' | 'payment'>('shipping');
   const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'razorpay'>('stripe');
-  const [shippingAddress, setShippingAddress] = useState<OrderAddress>({
+  const [contactInfo, setContactInfo] = useState({
     name: user?.name || '',
     email: user?.email || '',
-    phone: '',
-    street: user?.address?.street || '',
-    city: user?.address?.city || '',
-    state: user?.address?.state || '',
-    postalCode: user?.address?.postalCode || '',
-    country: user?.address?.country || 'US',
   });
-  const [sameAsBilling, setSameAsBilling] = useState(true);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -38,21 +29,15 @@ export default function ShopCheckout() {
 
   useEffect(() => {
     if (user) {
-      setShippingAddress((prev) => ({
-        ...prev,
+      setContactInfo({
         name: user.name,
         email: user.email,
-        street: user.address?.street || prev.street,
-        city: user.address?.city || prev.city,
-        state: user.address?.state || prev.state,
-        postalCode: user.address?.postalCode || prev.postalCode,
-        country: user.address?.country || prev.country,
-      }));
+      });
     }
   }, [user]);
 
-  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setShippingAddress({ ...shippingAddress, [e.target.name]: e.target.value });
+  const handleContactChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setContactInfo({ ...contactInfo, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
@@ -61,8 +46,10 @@ export default function ShopCheckout() {
 
     try {
       const res = await shopApi.checkout({
-        shippingAddress,
-        billingAddress: sameAsBilling ? undefined : shippingAddress,
+        contactInfo: {
+          name: contactInfo.name,
+          email: contactInfo.email,
+        },
         paymentMethod,
       });
 
@@ -89,9 +76,8 @@ export default function ShopCheckout() {
   };
 
   const subtotal = cartTotal;
-  const shipping = subtotal >= 50 ? 0 : 5.99;
   const tax = subtotal * 0.08;
-  const total = subtotal + shipping + tax;
+  const total = subtotal + tax;
 
   if (cart.length === 0) {
     return (
@@ -154,15 +140,24 @@ export default function ShopCheckout() {
               >
                 <div className="flex items-center gap-3 mb-6">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    step === 'shipping'
-                      ? theme === 'dark' ? 'bg-electric-green text-slate-900' : 'bg-accent-blue text-white'
-                      : theme === 'dark' ? 'bg-slate-700 text-gray-400' : 'bg-gray-200 text-gray-600'
+                    theme === 'dark' ? 'bg-electric-green text-slate-900' : 'bg-accent-blue text-white'
                   }`}>
-                    <Truck className="w-5 h-5" />
+                    <Zap className="w-5 h-5" />
                   </div>
                   <h2 className={`text-xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                    Shipping Address
+                    Account Information
                   </h2>
+                </div>
+
+                <div className={`p-4 rounded-xl mb-6 ${
+                  theme === 'dark' ? 'bg-electric-green/10 border border-electric-green/30' : 'bg-green-50 border border-green-200'
+                }`}>
+                  <div className="flex items-center gap-3">
+                    <Download className={`w-5 h-5 ${theme === 'dark' ? 'text-electric-green' : 'text-green-600'}`} />
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <strong>Instant Access:</strong> Your digital products will be available for download immediately after payment.
+                    </p>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -173,8 +168,8 @@ export default function ShopCheckout() {
                     <input
                       type="text"
                       name="name"
-                      value={shippingAddress.name}
-                      onChange={handleAddressChange}
+                      value={contactInfo.name}
+                      onChange={handleContactChange}
                       required
                       className={`w-full px-4 py-3 rounded-xl border transition-all focus:outline-none focus:ring-2 ${
                         theme === 'dark'
@@ -185,118 +180,13 @@ export default function ShopCheckout() {
                   </div>
                   <div>
                     <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                      Email *
+                      Email (for download link) *
                     </label>
                     <input
                       type="email"
                       name="email"
-                      value={shippingAddress.email}
-                      onChange={handleAddressChange}
-                      required
-                      className={`w-full px-4 py-3 rounded-xl border transition-all focus:outline-none focus:ring-2 ${
-                        theme === 'dark'
-                          ? 'bg-slate-700 border-slate-600 text-white focus:border-electric-blue focus:ring-electric-blue/20'
-                          : 'bg-white border-gray-300 text-gray-900 focus:border-accent-blue focus:ring-accent-blue/20'
-                      }`}
-                    />
-                  </div>
-                  <div>
-                    <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                      Phone *
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={shippingAddress.phone}
-                      onChange={handleAddressChange}
-                      required
-                      className={`w-full px-4 py-3 rounded-xl border transition-all focus:outline-none focus:ring-2 ${
-                        theme === 'dark'
-                          ? 'bg-slate-700 border-slate-600 text-white focus:border-electric-blue focus:ring-electric-blue/20'
-                          : 'bg-white border-gray-300 text-gray-900 focus:border-accent-blue focus:ring-accent-blue/20'
-                      }`}
-                    />
-                  </div>
-                  <div>
-                    <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                      Country *
-                    </label>
-                    <select
-                      name="country"
-                      value={shippingAddress.country}
-                      onChange={handleAddressChange}
-                      className={`w-full px-4 py-3 rounded-xl border transition-all focus:outline-none focus:ring-2 ${
-                        theme === 'dark'
-                          ? 'bg-slate-700 border-slate-600 text-white focus:border-electric-blue focus:ring-electric-blue/20'
-                          : 'bg-white border-gray-300 text-gray-900 focus:border-accent-blue focus:ring-accent-blue/20'
-                      }`}
-                    >
-                      <option value="US">United States</option>
-                      <option value="CA">Canada</option>
-                      <option value="UK">United Kingdom</option>
-                      <option value="AU">Australia</option>
-                    </select>
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                      Street Address *
-                    </label>
-                    <input
-                      type="text"
-                      name="street"
-                      value={shippingAddress.street}
-                      onChange={handleAddressChange}
-                      required
-                      className={`w-full px-4 py-3 rounded-xl border transition-all focus:outline-none focus:ring-2 ${
-                        theme === 'dark'
-                          ? 'bg-slate-700 border-slate-600 text-white focus:border-electric-blue focus:ring-electric-blue/20'
-                          : 'bg-white border-gray-300 text-gray-900 focus:border-accent-blue focus:ring-accent-blue/20'
-                      }`}
-                    />
-                  </div>
-                  <div>
-                    <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                      City *
-                    </label>
-                    <input
-                      type="text"
-                      name="city"
-                      value={shippingAddress.city}
-                      onChange={handleAddressChange}
-                      required
-                      className={`w-full px-4 py-3 rounded-xl border transition-all focus:outline-none focus:ring-2 ${
-                        theme === 'dark'
-                          ? 'bg-slate-700 border-slate-600 text-white focus:border-electric-blue focus:ring-electric-blue/20'
-                          : 'bg-white border-gray-300 text-gray-900 focus:border-accent-blue focus:ring-accent-blue/20'
-                      }`}
-                    />
-                  </div>
-                  <div>
-                    <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                      State/Province *
-                    </label>
-                    <input
-                      type="text"
-                      name="state"
-                      value={shippingAddress.state}
-                      onChange={handleAddressChange}
-                      required
-                      className={`w-full px-4 py-3 rounded-xl border transition-all focus:outline-none focus:ring-2 ${
-                        theme === 'dark'
-                          ? 'bg-slate-700 border-slate-600 text-white focus:border-electric-blue focus:ring-electric-blue/20'
-                          : 'bg-white border-gray-300 text-gray-900 focus:border-accent-blue focus:ring-accent-blue/20'
-                      }`}
-                    />
-                  </div>
-                  <div>
-                    <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                      Postal Code *
-                    </label>
-                    <input
-                      type="text"
-                      name="postalCode"
-                      value={shippingAddress.postalCode}
-                      onChange={handleAddressChange}
+                      value={contactInfo.email}
+                      onChange={handleContactChange}
                       required
                       className={`w-full px-4 py-3 rounded-xl border transition-all focus:outline-none focus:ring-2 ${
                         theme === 'dark'
@@ -448,10 +338,8 @@ export default function ShopCheckout() {
                     <span className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>${subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Shipping</span>
-                    <span className={shipping === 0 ? 'text-green-500' : theme === 'dark' ? 'text-white' : 'text-gray-900'}>
-                      {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
-                    </span>
+                    <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Delivery</span>
+                    <span className="text-green-500">Instant Access</span>
                   </div>
                   <div className="flex justify-between">
                     <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Tax</span>
