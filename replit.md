@@ -190,6 +190,11 @@ curl -X POST http://localhost:3003/api/seed
 ```
 
 ## Recent Changes (November 2025)
+- Updated ShopAbout.tsx with Digital Hub branding (was NanoFlows Shop)
+- Updated ShopContact.tsx for digital product support (removed physical product references)
+- About page now highlights: Software & Tools, Templates & Assets, Digital Courses
+- Contact page now has: Pre-Sales Questions, Technical Support, Feature Requests categories
+- Updated FAQs for digital products (instant access, lifetime access, licensing)
 - Fixed TypeScript errors in vite.config.ts (ESM-compatible __dirname)
 - Converted main backend from MySQL to PostgreSQL
 - Added graceful fallback data for hero slides and jobs when database unavailable
