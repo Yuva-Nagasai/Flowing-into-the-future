@@ -156,6 +156,7 @@ export interface Deal {
   description?: string;
   discountType: string;
   discountValue: string;
+  code?: string;
   productId?: number;
   categoryId?: number;
   startDate: string;

@@ -191,6 +191,43 @@ curl -X POST http://localhost:3003/api/seed
 
 ## Recent Changes (November 2025)
 
+### Shop Page Layout Updates (Latest)
+Updated all 4 main shop pages with comprehensive new layouts:
+
+**ShopHome.tsx:**
+- Announcement bar with rotating messages at top
+- Hero carousel with navigation arrows (left/right) and slide indicators
+- Our Story section with background and content
+- Why Choose Us section (6 benefit cards)
+- Category grid section
+- Featured Products grid with enhanced cards
+- Product Request form section
+- Testimonials section with quotes
+- CTA section before footer
+
+**ShopProducts.tsx:**
+- Two-column layout: left sidebar + right product grid
+- Sidebar: Category filters with item counts, Price range filters with radio buttons
+- Header: Title, product count, mobile filter toggle, view mode (grid/list), sort dropdown
+- Enhanced product cards: badges, author name, star ratings, review count, add to cart button
+- Grid/List view toggle support
+- Mobile-responsive filter drawer
+
+**ShopDeals.tsx:**
+- Centered header with icon and title
+- Deal cards grid with: icon, title, discount badge, promo code display, validity date
+- Modal/dialog for deal details with copy code functionality
+- Graceful handling for deals without promo codes
+
+**ShopContact.tsx:**
+- Header section with icon and title
+- Analytics/metrics cards (4-column grid): icons, values, change percentages
+- Charts section (2-column): bar chart for monthly sales, progress bars for category performance
+- Two-column contact container: contact info + embedded Google Map on left, contact form on right
+
+**Types Updated:**
+- Added optional `code` property to Deal interface for promo codes
+
 ### Digital Hub UI Enhancements
 - Enhanced ShopNav with search bar functionality for product search
 - Added Deals link to shop navigation
