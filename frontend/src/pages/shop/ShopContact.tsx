@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, Clock, MessageCircle, Loader2, Check } from 'lucide-react';
+import { Mail, Globe, HelpCircle, Send, Clock, MessageCircle, Loader2, Check, Zap, FileQuestion, RefreshCw } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import ShopNav from '../../components/shop/ShopNav';
 import Footer from '../../components/Footer';
@@ -12,10 +12,9 @@ export default function ShopContact() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    productName: '',
-    description: '',
+    subject: '',
+    message: '',
     category: '',
-    budget: '',
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -27,16 +26,23 @@ export default function ShopContact() {
     setError('');
 
     try {
-      const res = await shopApi.submitProductRequest(formData);
+      const res = await shopApi.submitProductRequest({
+        name: formData.name,
+        email: formData.email,
+        productName: formData.subject,
+        description: formData.message,
+        category: formData.category,
+        budget: '',
+      });
       if (res.success) {
         setSuccess(true);
-        setFormData({ name: '', email: '', productName: '', description: '', category: '', budget: '' });
+        setFormData({ name: '', email: '', subject: '', message: '', category: '' });
         setTimeout(() => setSuccess(false), 5000);
       } else {
-        setError(res.error || 'Failed to submit request');
+        setError(res.error || 'Failed to submit message');
       }
     } catch {
-      setError('Failed to submit request. Please try again.');
+      setError('Failed to submit message. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -47,17 +53,54 @@ export default function ShopContact() {
   };
 
   const contactInfo = [
-    { icon: Mail, label: 'Email', value: 'support@nanoflows.shop', href: 'mailto:support@nanoflows.shop' },
-    { icon: Phone, label: 'Phone', value: '1-800-NANO-SHOP', href: 'tel:1-800-626-6746' },
-    { icon: MapPin, label: 'Address', value: '123 Commerce St, Tech City, TC 12345', href: '#' },
-    { icon: Clock, label: 'Hours', value: 'Mon-Fri: 9AM-6PM EST', href: '#' },
+    { icon: Mail, label: 'Email', value: 'support@digitalhub.store', href: 'mailto:support@digitalhub.store' },
+    { icon: Globe, label: 'Website', value: 'www.digitalhub.store', href: '#' },
+    { icon: Clock, label: 'Support Hours', value: '24/7 Digital Support', href: '#' },
+    { icon: HelpCircle, label: 'Help Center', value: 'Browse FAQs & Guides', href: '#' },
+  ];
+
+  const faqs = [
+    {
+      q: 'How do I access my purchased products?',
+      a: 'After purchase, you\'ll receive instant access via email and your account dashboard. All digital products are available for immediate download.',
+    },
+    {
+      q: 'What is your refund policy?',
+      a: 'We offer a 30-day money-back guarantee on most digital products. If you\'re not satisfied, contact us for a full refund.',
+    },
+    {
+      q: 'Do I get lifetime access to my purchases?',
+      a: 'Yes! Once purchased, you have lifetime access to your digital products including all future updates.',
+    },
+    {
+      q: 'Can I use products for commercial projects?',
+      a: 'License terms vary by product. Check the product description for specific licensing details. Most products include commercial use rights.',
+    },
+  ];
+
+  const supportCategories = [
+    {
+      icon: FileQuestion,
+      title: 'Pre-Sales Questions',
+      description: 'Have questions before purchasing? We\'re happy to help you choose the right product.',
+    },
+    {
+      icon: RefreshCw,
+      title: 'Technical Support',
+      description: 'Need help with installation, setup, or using your digital products? Our team is ready to assist.',
+    },
+    {
+      icon: Zap,
+      title: 'Feature Requests',
+      description: 'Have ideas for new products or features? We love hearing from our customers.',
+    },
   ];
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-950' : 'bg-gray-50'}`}>
       <SEOHead
-        title="Contact Us"
-        description="Get in touch with NanoFlows Shop. We're here to help with your questions, requests, and feedback."
+        title="Contact Us - Digital Hub"
+        description="Get in touch with Digital Hub. We're here to help with your digital product questions, support, and feedback."
       />
       <ShopNav />
 
@@ -84,10 +127,42 @@ export default function ShopContact() {
               </span>
             </h1>
             <p className={`text-lg ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-              Have a question, product request, or just want to say hello?
+              Have questions about our digital products? Need technical support?
               We'd love to hear from you!
             </p>
           </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {supportCategories.map((category, index) => (
+              <motion.div
+                key={category.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className={`p-6 rounded-2xl text-center ${
+                  theme === 'dark'
+                    ? 'bg-slate-800 border border-slate-700'
+                    : 'bg-white border border-gray-200 shadow-sm'
+                }`}
+              >
+                <div className={`w-14 h-14 mx-auto mb-4 rounded-xl flex items-center justify-center ${
+                  theme === 'dark' ? 'bg-electric-blue/20' : 'bg-accent-blue/10'
+                }`}>
+                  <category.icon className={`w-7 h-7 ${
+                    theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'
+                  }`} />
+                </div>
+                <h3 className={`font-semibold mb-2 ${
+                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                }`}>
+                  {category.title}
+                </h3>
+                <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                  {category.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <motion.div
@@ -138,10 +213,10 @@ export default function ShopContact() {
               <h2 className={`text-2xl font-bold mb-6 ${
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>
-                Request a Product
+                Send Us a Message
               </h2>
               <p className={`mb-6 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                Can't find what you're looking for? Let us know and we'll try to get it for you!
+                Fill out the form below and our team will get back to you within 24 hours.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -186,27 +261,6 @@ export default function ShopContact() {
                   </div>
                 </div>
 
-                <div>
-                  <label className={`block text-sm font-medium mb-2 ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Product Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="productName"
-                    value={formData.productName}
-                    onChange={handleChange}
-                    required
-                    placeholder="What product are you looking for?"
-                    className={`w-full px-4 py-3 rounded-xl border transition-all focus:outline-none focus:ring-2 ${
-                      theme === 'dark'
-                        ? 'bg-slate-700 border-slate-600 text-white placeholder:text-gray-500 focus:border-electric-blue focus:ring-electric-blue/20'
-                        : 'bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-accent-blue focus:ring-accent-blue/20'
-                    }`}
-                  />
-                </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className={`block text-sm font-medium mb-2 ${
@@ -225,12 +279,12 @@ export default function ShopContact() {
                       }`}
                     >
                       <option value="">Select a category</option>
-                      <option value="electronics">Electronics</option>
-                      <option value="clothing">Clothing</option>
-                      <option value="home">Home</option>
-                      <option value="books">Books</option>
-                      <option value="sports">Sports</option>
-                      <option value="beauty">Beauty</option>
+                      <option value="pre-sales">Pre-Sales Question</option>
+                      <option value="technical">Technical Support</option>
+                      <option value="billing">Billing & Payments</option>
+                      <option value="refund">Refund Request</option>
+                      <option value="feature">Feature Request</option>
+                      <option value="partnership">Partnership Inquiry</option>
                       <option value="other">Other</option>
                     </select>
                   </div>
@@ -238,25 +292,21 @@ export default function ShopContact() {
                     <label className={`block text-sm font-medium mb-2 ${
                       theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                     }`}>
-                      Budget Range
+                      Subject *
                     </label>
-                    <select
-                      name="budget"
-                      value={formData.budget}
+                    <input
+                      type="text"
+                      name="subject"
+                      value={formData.subject}
                       onChange={handleChange}
+                      required
+                      placeholder="Brief subject of your message"
                       className={`w-full px-4 py-3 rounded-xl border transition-all focus:outline-none focus:ring-2 ${
                         theme === 'dark'
-                          ? 'bg-slate-700 border-slate-600 text-white focus:border-electric-blue focus:ring-electric-blue/20'
-                          : 'bg-white border-gray-300 text-gray-900 focus:border-accent-blue focus:ring-accent-blue/20'
+                          ? 'bg-slate-700 border-slate-600 text-white placeholder:text-gray-500 focus:border-electric-blue focus:ring-electric-blue/20'
+                          : 'bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-accent-blue focus:ring-accent-blue/20'
                       }`}
-                    >
-                      <option value="">Select budget</option>
-                      <option value="under-25">Under $25</option>
-                      <option value="25-50">$25 - $50</option>
-                      <option value="50-100">$50 - $100</option>
-                      <option value="100-250">$100 - $250</option>
-                      <option value="250-plus">$250+</option>
-                    </select>
+                    />
                   </div>
                 </div>
 
@@ -264,14 +314,15 @@ export default function ShopContact() {
                   <label className={`block text-sm font-medium mb-2 ${
                     theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                   }`}>
-                    Additional Details
+                    Your Message *
                   </label>
                   <textarea
-                    name="description"
-                    value={formData.description}
+                    name="message"
+                    value={formData.message}
                     onChange={handleChange}
-                    rows={4}
-                    placeholder="Tell us more about what you're looking for..."
+                    required
+                    rows={5}
+                    placeholder="Tell us how we can help you..."
                     className={`w-full px-4 py-3 rounded-xl border transition-all focus:outline-none focus:ring-2 resize-none ${
                       theme === 'dark'
                         ? 'bg-slate-700 border-slate-600 text-white placeholder:text-gray-500 focus:border-electric-blue focus:ring-electric-blue/20'
@@ -300,12 +351,12 @@ export default function ShopContact() {
                   ) : success ? (
                     <>
                       <Check className="w-5 h-5" />
-                      Request Submitted!
+                      Message Sent!
                     </>
                   ) : (
                     <>
                       <Send className="w-5 h-5" />
-                      Submit Request
+                      Send Message
                     </>
                   )}
                 </button>
@@ -317,25 +368,25 @@ export default function ShopContact() {
 
       <section className={`py-16 ${theme === 'dark' ? 'bg-slate-900/50' : 'bg-gray-100'}`}>
         <div className="container mx-auto px-4 lg:px-6">
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className={`text-2xl font-bold mb-4 ${
+          <div className="max-w-3xl mx-auto">
+            <h2 className={`text-2xl font-bold text-center mb-8 ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
               Frequently Asked Questions
             </h2>
-            <div className="space-y-4 text-left">
-              {[
-                { q: 'How long does shipping take?', a: 'Standard shipping takes 3-5 business days. Express shipping is 1-2 days.' },
-                { q: 'What is your return policy?', a: 'We offer a 30-day return policy for all unused items in original packaging.' },
-                { q: 'Do you ship internationally?', a: 'Yes! We ship to select countries. Shipping times and costs vary by location.' },
-              ].map((faq, i) => (
-                <div
+            <div className="space-y-4">
+              {faqs.map((faq, i) => (
+                <motion.div
                   key={i}
-                  className={`p-4 rounded-xl ${
-                    theme === 'dark' ? 'bg-slate-800' : 'bg-white'
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className={`p-6 rounded-xl ${
+                    theme === 'dark' ? 'bg-slate-800' : 'bg-white shadow-sm'
                   }`}
                 >
-                  <h3 className={`font-medium mb-2 ${
+                  <h3 className={`font-semibold mb-2 ${
                     theme === 'dark' ? 'text-white' : 'text-gray-900'
                   }`}>
                     {faq.q}
@@ -343,7 +394,7 @@ export default function ShopContact() {
                   <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
                     {faq.a}
                   </p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>

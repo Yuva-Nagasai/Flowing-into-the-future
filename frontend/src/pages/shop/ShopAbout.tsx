@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Store, Users, Shield, Truck, Award, Heart, ArrowRight } from 'lucide-react';
+import { Zap, Users, Shield, Download, Award, Heart, ArrowRight, Code, Sparkles, Globe } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import ShopNav from '../../components/shop/ShopNav';
 import Footer from '../../components/Footer';
@@ -12,32 +12,50 @@ export default function ShopAbout() {
   const { theme } = useTheme();
 
   const stats = [
-    { value: '10K+', label: 'Happy Customers' },
-    { value: '5K+', label: 'Products' },
-    { value: '99%', label: 'Satisfaction Rate' },
+    { value: '50K+', label: 'Happy Customers' },
+    { value: '500+', label: 'Digital Products' },
+    { value: '99.9%', label: 'Uptime' },
     { value: '24/7', label: 'Support' },
   ];
 
   const values = [
     {
       icon: Shield,
-      title: 'Quality First',
-      description: 'Every product is carefully curated and quality-checked before reaching your hands.',
+      title: 'Quality Assured',
+      description: 'Every digital product is rigorously tested and verified before being added to our marketplace.',
     },
     {
-      icon: Truck,
-      title: 'Fast Delivery',
-      description: 'We partner with top carriers to ensure your orders arrive quickly and safely.',
+      icon: Download,
+      title: 'Instant Delivery',
+      description: 'Get immediate access to your purchases. No waiting - download and start using right away.',
     },
     {
       icon: Heart,
-      title: 'Customer Love',
-      description: 'Your satisfaction is our priority. We go above and beyond for our customers.',
+      title: 'Customer First',
+      description: 'Your satisfaction drives everything we do. We\'re committed to your success with our products.',
     },
     {
       icon: Award,
-      title: 'Best Prices',
-      description: 'Competitive pricing without compromising on quality. Value for every penny.',
+      title: 'Best Value',
+      description: 'Premium digital products at competitive prices. Maximize your ROI with every purchase.',
+    },
+  ];
+
+  const whatWeOffer = [
+    {
+      icon: Code,
+      title: 'Software & Tools',
+      description: 'Professional software, plugins, and development tools to supercharge your workflow.',
+    },
+    {
+      icon: Sparkles,
+      title: 'Templates & Assets',
+      description: 'Ready-to-use templates, design assets, and creative resources for any project.',
+    },
+    {
+      icon: Globe,
+      title: 'Digital Courses',
+      description: 'Expert-led courses and tutorials to level up your skills and knowledge.',
     },
   ];
 
@@ -51,8 +69,8 @@ export default function ShopAbout() {
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-950' : 'bg-gray-50'}`}>
       <SEOHead
-        title="About Us"
-        description="Learn about NanoFlows Shop - our mission, values, and the team behind your favorite shopping destination."
+        title="About Us - Digital Hub"
+        description="Learn about Digital Hub - your premier destination for high-quality digital products including software, templates, courses, and more."
       />
       <ShopNav />
 
@@ -67,7 +85,7 @@ export default function ShopAbout() {
             animate={{ opacity: 1, y: 0 }}
             className="text-center max-w-3xl mx-auto"
           >
-            <Store className={`w-16 h-16 mx-auto mb-6 ${
+            <Zap className={`w-16 h-16 mx-auto mb-6 ${
               theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
             }`} />
             <h1 className={`text-4xl md:text-5xl font-bold mb-6 ${
@@ -79,12 +97,12 @@ export default function ShopAbout() {
                   ? 'text-transparent bg-clip-text bg-gradient-to-r from-electric-blue to-electric-green'
                   : 'text-transparent bg-clip-text bg-gradient-to-r from-accent-red to-accent-blue'
               }`}>
-                NanoFlows Shop
+                Digital Hub
               </span>
             </h1>
             <p className={`text-xl ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-              We're on a mission to make online shopping delightful. Quality products,
-              exceptional service, and a community that cares.
+              Your premier destination for high-quality digital products. We curate and deliver
+              the best software, templates, courses, and digital tools to help you succeed.
             </p>
           </motion.div>
         </div>
@@ -132,18 +150,19 @@ export default function ShopAbout() {
               </h2>
               <div className={`space-y-4 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
                 <p>
-                  NanoFlows Shop started with a simple idea: make online shopping better.
-                  We noticed that customers were tired of poor quality products, slow shipping,
-                  and unhelpful customer service.
+                  Digital Hub was born from a simple vision: to create a trusted marketplace
+                  where creators and consumers can connect through high-quality digital products.
+                  We saw the growing demand for digital assets and the need for a curated platform.
                 </p>
                 <p>
-                  So we built something different. A shopping platform where every product is
-                  handpicked for quality, every order is shipped with care, and every customer
-                  is treated like family.
+                  Unlike traditional e-commerce, we specialize exclusively in digital products -
+                  from software and development tools to templates, courses, and creative assets.
+                  Every product is carefully vetted to ensure quality and value.
                 </p>
                 <p>
-                  Today, we serve thousands of happy customers worldwide and continue to grow
-                  our catalog with amazing products that make life better.
+                  Today, Digital Hub serves thousands of customers worldwide, providing instant
+                  access to premium digital products that help businesses and individuals achieve
+                  their goals faster and more efficiently.
                 </p>
               </div>
             </motion.div>
@@ -154,7 +173,7 @@ export default function ShopAbout() {
               viewport={{ once: true }}
               className="grid grid-cols-2 gap-4"
             >
-              {values.map((value, index) => (
+              {values.map((value) => (
                 <div
                   key={value.title}
                   className={`p-6 rounded-2xl ${
@@ -191,6 +210,66 @@ export default function ShopAbout() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
+            <Download className={`w-12 h-12 mx-auto mb-4 ${
+              theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
+            }`} />
+            <h2 className={`text-3xl font-bold mb-4 ${
+              theme === 'dark' ? 'text-white' : 'text-gray-900'
+            }`}>
+              What We Offer
+            </h2>
+            <p className={`max-w-2xl mx-auto ${
+              theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+            }`}>
+              Premium digital products across multiple categories
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {whatWeOffer.map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className={`p-8 rounded-2xl text-center ${
+                  theme === 'dark'
+                    ? 'bg-slate-800 border border-slate-700'
+                    : 'bg-white border border-gray-200 shadow-sm'
+                }`}
+              >
+                <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl flex items-center justify-center ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-br from-electric-blue/20 to-electric-green/20'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10'
+                }`}>
+                  <item.icon className={`w-8 h-8 ${
+                    theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
+                  }`} />
+                </div>
+                <h3 className={`text-xl font-semibold mb-3 ${
+                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                }`}>
+                  {item.title}
+                </h3>
+                <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
+                  {item.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className={`py-20 ${theme === 'dark' ? 'bg-slate-900/50' : 'bg-gray-100'}`}>
+        <div className="container mx-auto px-4 lg:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
             <Users className={`w-12 h-12 mx-auto mb-4 ${
               theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
             }`} />
@@ -202,7 +281,7 @@ export default function ShopAbout() {
             <p className={`max-w-2xl mx-auto ${
               theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
             }`}>
-              The passionate people behind NanoFlows Shop
+              The passionate people behind Digital Hub
             </p>
           </motion.div>
 
@@ -239,7 +318,7 @@ export default function ShopAbout() {
         </div>
       </section>
 
-      <section className={`py-20 ${theme === 'dark' ? 'bg-slate-900/50' : 'bg-gray-100'}`}>
+      <section className="py-20">
         <div className="container mx-auto px-4 lg:px-6">
           <h2 className={`text-3xl font-bold text-center mb-12 ${
             theme === 'dark' ? 'text-white' : 'text-gray-900'
@@ -250,7 +329,7 @@ export default function ShopAbout() {
         </div>
       </section>
 
-      <section className="py-20">
+      <section className={`py-20 ${theme === 'dark' ? 'bg-slate-900/50' : 'bg-gray-100'}`}>
         <div className="container mx-auto px-4 lg:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -265,12 +344,13 @@ export default function ShopAbout() {
             <h2 className={`text-3xl font-bold mb-4 ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
-              Ready to Start Shopping?
+              Ready to Explore Digital Products?
             </h2>
             <p className={`text-lg mb-8 max-w-2xl mx-auto ${
               theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
             }`}>
-              Join thousands of happy customers and discover amazing products at great prices.
+              Discover our curated collection of premium software, templates, courses, and digital tools.
+              Instant delivery, lifetime access, and exceptional quality guaranteed.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
