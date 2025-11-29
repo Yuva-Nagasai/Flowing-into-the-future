@@ -13,6 +13,7 @@ import Careers from './components/Careers';
 import Footer from './components/Footer';
 import AIChat from './components/AIChat';
 import SocialMediaBar from './components/SocialMediaBar';
+import ContactBar from './components/ContactBar';
 import FloatingContactWidget from './components/FloatingContactWidget';
 import EducationDashboard from './components/EducationDashboard';
 import { PageTransition } from './components/animations';
@@ -116,6 +117,7 @@ function AnimatedRoutes() {
                   <Header />
                   <div className="pt-24 lg:pt-32">
                     <SocialMediaBar />
+                    <ContactBar />
                     <Hero />
                     <About />
                     <WebsiteComparison />
