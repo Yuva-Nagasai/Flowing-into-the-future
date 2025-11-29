@@ -147,6 +147,42 @@ const fallbackShowcaseSlides: ShowcaseSlide[] = [
   },
   {
     variant: 'showcase',
+    preHeading: 'NanoFlows Academy',
+    heading: 'Master In-Demand Skills with',
+    highlight: 'E-Learning',
+    description:
+      'Transform your career with expert-led courses. Learn at your own pace with lifetime access, earn industry-recognized certificates, and join thousands of successful learners.',
+    categories: ['Web Development', 'AI & Machine Learning', 'Cloud Computing', 'Data Science', 'DevOps', 'Cybersecurity'],
+    primaryCta: { label: 'Start Learning', route: '/elearning' },
+    secondaryCta: { label: 'View All Courses', route: '/elearning#courses' },
+    trustBadges: ['Industry Experts', 'Certificates', 'Lifetime Access'],
+  },
+  {
+    variant: 'showcase',
+    preHeading: 'AI-Powered Productivity',
+    heading: 'Supercharge Your Workflow with',
+    highlight: 'AI Tools',
+    description:
+      'Discover a curated collection of the most powerful AI tools. From content creation to data analysis, code generation to image synthesis – find the perfect tool for every task.',
+    categories: ['Text Generation', 'Image Creation', 'Code Assistant', 'Audio & Video', 'Data Analysis', 'Automation'],
+    primaryCta: { label: 'Explore AI Tools', route: '/ai-tools' },
+    secondaryCta: { label: 'Browse Categories', route: '/ai-tools#categories' },
+    trustBadges: ['Free Tools', 'Premium Options', 'Expert Curated'],
+  },
+  {
+    variant: 'showcase',
+    preHeading: 'NanoFlows Store',
+    heading: 'Premium Digital Products for',
+    highlight: 'E-Commerce',
+    description:
+      'Shop our exclusive collection of digital products, templates, and solutions. Built with cutting-edge technology to accelerate your business growth and digital transformation.',
+    categories: ['Templates', 'UI Kits', 'Plugins', 'Source Code', 'Digital Assets', 'Business Tools'],
+    primaryCta: { label: 'Visit Shop', route: '/shop' },
+    secondaryCta: { label: 'View Best Sellers', route: '/shop#featured' },
+    trustBadges: ['Secure Checkout', 'Instant Download', 'Premium Support'],
+  },
+  {
+    variant: 'showcase',
     preHeading: 'Hire NanoFlows Squads',
     heading: 'Build AI-Native Products with',
     highlight: 'Dedicated Teams',
