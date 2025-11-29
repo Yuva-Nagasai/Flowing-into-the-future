@@ -1,0 +1,301 @@
+PART 1 — ARCHITECTURE & PROJECT SETUP (DIGITAL HUB VERSION)
+
+Create inside my existing Digital Hub project:
+
+/digital-hub/
+  /ecommerce/              ← Entire ecommerce module lives inside this folder
+     /frontend/
+     /backend/
+     /shared/
+
+
+Root-level Digital Hub stays unchanged.
+Just add the ecommerce folder.
+
+Frontend Requirements
+
+React 18
+
+Vite
+
+TypeScript
+
+Tailwind CSS
+
+React Router v7
+
+Radix UI (primitive only)
+
+TanStack Query
+
+Stripe JS
+
+Styling rules:
+
+No third-party themes
+
+Neutral greys + one accent (--brand-accent)
+
+Fully responsive + accessible
+
+Backend Requirements
+
+Express 4
+
+TypeScript
+
+Drizzle ORM (MySQL) — use existing database
+
+Stripe + Razorpay
+
+Multer
+
+Nodemailer
+
+JWT + sessions
+
+bcrypt
+
+express-mysql-session
+
+CORS
+
+Secure headers
+
+Rate limiting
+
+Build Tools
+
+Backend:
+
+Dev: tsx
+
+Build: esbuild → dist/index.js
+
+Frontend:
+
+Vite build
+
+Shared Types
+
+Place inside /digital-hub/ecommerce/shared/schema.ts:
+
+Drizzle tables
+
+Zod validators
+
+Typescript exports for both FE & BE
+
+Backend middleware should include
+
+CORS
+
+JSON + cookie parsing
+
+Rate limiting
+
+Helmet security headers
+
+Session store
+
+CSRF-ready logic
+
+HTTPS-ready config
+
+✅ PART 2 — FEATURES, DATABASE, ROUTES & ADMIN (DIGITAL HUB VERSION)
+Core Features
+
+Authentication
+Catalog / Products
+Cart & Wishlist
+Checkout (Stripe + Razorpay)
+Orders
+Reviews (verified only)
+Testimonials
+Newsletter
+Announcements
+Deals
+AI search
+AI recommendations
+AI chatbot API
+Admin panel with full CRUD
+
+Backend API Structure
+
+All under:
+
+/digital-hub/ecommerce/backend/api/
+
+
+Route files:
+
+authRoutes.ts
+
+adminRoutes.ts
+
+paymentRoutes.ts
+
+routes.ts
+
+upload.ts
+
+sitemap.ts
+
+storage.ts
+
+Required Drizzle Tables
+
+Use existing MySQL database (tables already created):
+
+users
+
+products
+
+categories
+
+deals
+
+announcements
+
+cart_items
+
+wishlist
+
+orders
+
+order_items
+
+payments
+
+reviews
+
+testimonials
+
+login_events
+
+newsletter_subscribers
+
+product_requests
+
+password_reset_tokens
+
+Seed Script
+
+Create /digital-hub/ecommerce/backend/seed.ts
+
+Seeds:
+
+Admin user → admin@nanoflows.com / admin123
+
+Demo user → user@nanoflows.com / user123
+
+Sample categories
+
+Sample products
+
+✅ PART 3 — FRONTEND PAGES & COMPONENTS (DIGITAL HUB VERSION)
+Frontend pages (inside /ecommerce/frontend)
+
+Public:
+
+Home
+
+Products list + filters
+
+Product detail
+
+Categories list
+
+Category slug page
+
+Deals
+
+About
+
+Contact
+
+Cart
+
+Checkout
+
+Order success
+
+Login
+
+Register
+
+Forgot password
+
+Reset password
+
+404
+
+User:
+
+Account dashboard
+
+Admin (/admin):
+
+Dashboard
+
+CRUD for:
+
+Products
+
+Categories
+
+Deals
+
+Announcements
+
+Testimonials
+
+Newsletter
+
+Product Requests
+
+Reviews moderation
+
+Login analytics chart
+
+Image uploads (Multer → /public/products)
+
+Reusable Components
+
+Navigation with announcement bar
+
+SEOHead
+
+Hero section
+
+Featured carousel
+
+Category cards
+
+Product grid
+
+Product gallery
+
+Testimonials slider
+
+Newsletter form
+
+Chatbot floating widget
+
+Footer
+
+CTA/Pricing blocks
+
+Admin: File upload, tables, dialogs
+
+✅ Build Commands (DIGITAL HUB VERSION)
+Backend
+npm run ecommerce:dev
+npm run ecommerce:build
+npm run ecommerce:start
+npm run ecommerce:db:push
+
+Frontend
+npm run ecommerce:dev
+npm run ecommerce:build
+npm run ecommerce:preview
