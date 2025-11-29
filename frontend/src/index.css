@@ -154,6 +154,8 @@ table {
   left: 0;
   top: 50%;
   transform: translateY(-50%);
+  gap: 0;
+  line-height: 0;
   overflow: visible !important;
 }
 
@@ -165,11 +167,9 @@ table {
     top: 50%;
     transform: translateY(-50%);
     overflow: visible !important;
-    border-radius: 12px 0 0 12px !important;
-    border-right: none !important;
-    border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
   }
   
+  /* Prevent the social bar icons from causing horizontal scroll */
   .social-bar a {
     transform-origin: right center !important;
   }

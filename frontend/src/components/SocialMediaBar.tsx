@@ -1,36 +1,34 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
+import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import { SiThreads } from 'react-icons/si';
-import { useTheme } from '../context/ThemeContext';
 
 type SocialLabel = 'Facebook' | 'Instagram' | 'LinkedIn' | 'Twitter' | 'Threads';
 
-interface SocialLink {
-  icon: React.ElementType;
-  href: string;
-  label: SocialLabel;
-  brandColor: string;
-}
+const iconBgColors: Record<SocialLabel, string> = {
+  Facebook: '#1877f2',
+  Instagram:
+    'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+  LinkedIn: '#0077B5',
+  Twitter: '#1DA1F2',
+  Threads: '#000000',
+};
 
-const socialLinks: SocialLink[] = [
-  { icon: FaFacebookF, href: 'https://www.facebook.com/nanoflows', label: 'Facebook', brandColor: '#1877f2' },
-  { icon: FaInstagram, href: 'https://www.instagram.com/nanoflows/', label: 'Instagram', brandColor: '#E4405F' },
-  { icon: FaLinkedinIn, href: 'https://www.linkedin.com/in/nanoflows', label: 'LinkedIn', brandColor: '#0A66C2' },
-  { icon: FaXTwitter, href: 'https://x.com/NanoFlows', label: 'Twitter', brandColor: '#000000' },
-  { icon: SiThreads, href: 'https://www.threads.com/@nanoflows', label: 'Threads', brandColor: '#000000' },
-];
-
-const ICON_CONTAINER_SIZE = 42;
-const ICON_SIZE = 18;
+const SMALL_ICON_SIZE = 40;
+const ICON_SIZE = 24;
 const TOUCH_RESET_MS = 350;
 
+const socialLinks = [
+  { icon: FaFacebook, href: 'https://www.facebook.com/nanoflows', label: 'Facebook' },
+  { icon: FaInstagram, href: 'https://www.instagram.com/nanoflows/', label: 'Instagram' },
+  { icon: FaLinkedin, href: 'https://www.linkedin.com/in/nanoflows', label: 'LinkedIn' },
+  { icon: FaTwitter, href: 'https://x.com/NanoFlows', label: 'Twitter' },
+  { icon: SiThreads, href: 'https://www.threads.com/@nanoflows', label: 'Threads' },
+];
+
 const SocialMediaBar: React.FC = () => {
-  const { theme } = useTheme();
   const [activeLabel, setActiveLabel] = useState<string | null>(null);
   const [canHover, setCanHover] = useState<boolean>(true);
   const touchResetTimers = useRef<Record<string, number | null>>({});
-
-  const isDark = theme === 'dark';
 
   useEffect(() => {
     const mq = typeof window !== 'undefined' && window.matchMedia
@@ -63,60 +61,15 @@ const SocialMediaBar: React.FC = () => {
     }, TOUCH_RESET_MS);
   };
 
-  const getIconStyle = (label: SocialLabel, isActive: boolean) => {
-    const link = socialLinks.find(l => l.label === label);
-    const brandColor = link?.brandColor || '#666';
-    
-    if (isActive) {
-      return {
-        background: brandColor,
-        borderColor: brandColor,
-        iconColor: '#ffffff',
-      };
-    }
-    
-    if (isDark) {
-      return {
-        background: 'rgba(255, 255, 255, 0.08)',
-        borderColor: 'rgba(255, 255, 255, 0.15)',
-        iconColor: 'rgba(255, 255, 255, 0.85)',
-      };
-    }
-    
-    return {
-      background: 'rgba(0, 0, 0, 0.04)',
-      borderColor: 'rgba(0, 0, 0, 0.12)',
-      iconColor: 'rgba(0, 0, 0, 0.7)',
-    };
-  };
-
   return (
     <div
       className="social-bar"
-      style={{ 
-        display: 'flex', 
-        flexDirection: 'column',
-        gap: '8px', 
-        alignItems: 'center',
-        padding: '12px 8px',
-        borderRadius: '0 12px 12px 0',
-        background: isDark 
-          ? 'rgba(15, 23, 42, 0.85)' 
-          : 'rgba(255, 255, 255, 0.9)',
-        backdropFilter: 'blur(12px)',
-        boxShadow: isDark
-          ? '4px 0 24px rgba(0, 0, 0, 0.4)'
-          : '4px 0 24px rgba(0, 0, 0, 0.08)',
-        border: isDark
-          ? '1px solid rgba(255, 255, 255, 0.08)'
-          : '1px solid rgba(0, 0, 0, 0.06)',
-        borderLeft: 'none',
-      }}
+      style={{ display: 'flex', gap: '0px', alignItems: 'center' }}
     >
       {socialLinks.map(({ icon: Icon, href, label }) => {
         const isActive = activeLabel === label;
         const transformOrigin = canHover ? 'left center' : 'right center';
-        const styles = getIconStyle(label, isActive);
+        const transform = isActive ? 'scaleX(1.35)' : 'scaleX(1)';
 
         return (
           <a
@@ -130,17 +83,22 @@ const SocialMediaBar: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: ICON_CONTAINER_SIZE,
-              height: ICON_CONTAINER_SIZE,
-              borderRadius: '10px',
+              width: SMALL_ICON_SIZE,
+              height: SMALL_ICON_SIZE,
+              borderRadius: 0,
               margin: 0,
               padding: 0,
-              background: styles.background,
-              border: `1.5px solid ${styles.borderColor}`,
+              background:
+                label === 'Instagram'
+                  ? iconBgColors.Instagram
+                  : label === 'Threads'
+                  ? iconBgColors.Threads
+                  : iconBgColors[label as SocialLabel],
               transformOrigin,
-              transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-              willChange: 'transform, background, border-color',
-              transform: isActive ? 'scale(1.1)' : 'scale(1)',
+              transition: 'transform 0.28s ease, filter 0.28s ease',
+              willChange: 'transform',
+              transform,
+              filter: isActive ? 'brightness(1.06)' : 'brightness(1)',
             }}
             onMouseEnter={() => {
               if (canHover) {
@@ -158,13 +116,7 @@ const SocialMediaBar: React.FC = () => {
               }
             }}
           >
-            <Icon 
-              size={ICON_SIZE} 
-              style={{ 
-                color: styles.iconColor,
-                transition: 'color 0.25s ease',
-              }} 
-            />
+            <Icon size={ICON_SIZE} color="white" />
           </a>
         );
       })}
