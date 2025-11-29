@@ -28,7 +28,6 @@ import {
 import heroImage1 from '@assets/stock_images/artificial_intellige_f33bc633.jpg';
 import heroImage2 from '@assets/stock_images/artificial_intellige_cc95d560.jpg';
 import heroImage3 from '@assets/stock_images/technology_coding_pr_24d87b89.jpg';
-import heroImage4 from '@assets/stock_images/technology_coding_pr_95ff9d5f.jpg';
 import featureImage from '@assets/stock_images/artificial_intellige_f7aceee1.jpg';
 
 interface AITool {
@@ -89,12 +88,6 @@ const AIToolsHome = () => {
       title: 'Code Smarter With',
       highlight: 'AI Assistance',
       description: 'Boost your development workflow with AI-powered coding tools. Get intelligent suggestions, debug faster, and ship quality code.'
-    },
-    {
-      image: heroImage4,
-      title: 'Unlock The Power Of',
-      highlight: 'Automation',
-      description: 'Streamline your workflow with intelligent automation. Let AI handle repetitive tasks while you focus on what matters most.'
     }
   ];
 
