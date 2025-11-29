@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ShoppingBag, Star, ArrowRight, Sparkles, Truck, Shield, RefreshCw } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ShoppingBag, Star, ArrowRight, Sparkles, Truck, Shield, RefreshCw, Gift, Percent, CreditCard } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import ShopNav from '../../components/shop/ShopNav';
 import Footer from '../../components/Footer';
+
+import heroImage1 from '@assets/stock_images/professional_e-learn_9e7fdc74.jpg';
+import heroImage2 from '@assets/stock_images/professional_e-learn_64dcaf64.jpg';
+import heroImage3 from '@assets/stock_images/professional_e-learn_6fb000a8.jpg';
 
 interface Product {
   id: number;
@@ -19,6 +23,18 @@ interface Product {
   thumbnail?: string;
   stock: number;
   featured: boolean;
+}
+
+interface HeroSlide {
+  id: number;
+  title: string;
+  highlight: string;
+  description: string;
+  image: string;
+  ctaText: string;
+  ctaLink: string;
+  secondaryCtaText?: string;
+  secondaryCtaLink?: string;
 }
 
 const categories = [
@@ -36,13 +52,57 @@ const features = [
   { icon: RefreshCw, title: 'Easy Returns', description: '30-day return policy' },
 ];
 
+const heroSlides: HeroSlide[] = [
+  {
+    id: 1,
+    title: 'Discover Amazing',
+    highlight: 'Products',
+    description: 'Shop the latest trends in electronics, fashion, home goods, and more. Quality products at competitive prices with fast delivery.',
+    image: heroImage1,
+    ctaText: 'Shop Now',
+    ctaLink: '/shop/products',
+    secondaryCtaText: 'Browse Categories',
+    secondaryCtaLink: '/shop/categories'
+  },
+  {
+    id: 2,
+    title: 'Exclusive Deals &',
+    highlight: 'Offers',
+    description: 'Get up to 50% off on selected items. Limited time offers on premium products. Don\'t miss out on these amazing deals!',
+    image: heroImage2,
+    ctaText: 'View Deals',
+    ctaLink: '/shop/products?sale=true',
+    secondaryCtaText: 'See All Products',
+    secondaryCtaLink: '/shop/products'
+  },
+  {
+    id: 3,
+    title: 'Premium Quality',
+    highlight: 'Guaranteed',
+    description: 'Every product in our store is carefully curated for quality. Enjoy hassle-free returns and dedicated customer support.',
+    image: heroImage3,
+    ctaText: 'Explore Now',
+    ctaLink: '/shop/products',
+    secondaryCtaText: 'Learn More',
+    secondaryCtaLink: '/shop/about'
+  }
+];
+
 export default function ShopHome() {
   const { theme } = useTheme();
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
     fetchFeaturedProducts();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 6000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchFeaturedProducts = async () => {
@@ -63,12 +123,29 @@ export default function ShopHome() {
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-950' : 'bg-gray-50'}`}>
       <ShopNav />
       
-      <section className={`relative py-20 overflow-hidden ${
-        theme === 'dark'
-          ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900'
-          : 'bg-gradient-to-br from-white via-blue-50 to-white'
-      }`}>
-        <div className="absolute inset-0 overflow-hidden">
+      <section className="relative min-h-[600px] overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7 }}
+            className="absolute inset-0"
+          >
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${heroSlides[currentSlide].image})` }}
+            />
+            <div className={`absolute inset-0 ${
+              theme === 'dark'
+                ? 'bg-gradient-to-r from-slate-950/95 via-slate-900/80 to-transparent'
+                : 'bg-gradient-to-r from-white/95 via-white/80 to-transparent'
+            }`} />
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className={`absolute -top-40 -right-40 w-80 h-80 rounded-full blur-3xl ${
             theme === 'dark' ? 'bg-electric-blue/20' : 'bg-accent-blue/20'
           }`} />
@@ -77,67 +154,92 @@ export default function ShopHome() {
           }`} />
         </div>
         
-        <div className="container mx-auto px-4 lg:px-6 relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6 ${
-                theme === 'dark'
-                  ? 'bg-electric-green/10 text-electric-green border border-electric-green/30'
-                  : 'bg-accent-blue/10 text-accent-blue border border-accent-blue/30'
-              }`}>
-                <Sparkles className="w-4 h-4" />
-                Welcome to NanoFlows Shop
-              </span>
-              
-              <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 ${
-                theme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}>
-                Discover Amazing{' '}
-                <span className={`${
+        <div className="container mx-auto px-4 lg:px-6 relative z-10 py-20">
+          <div className="max-w-2xl">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentSlide}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+              >
+                <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6 ${
                   theme === 'dark'
-                    ? 'text-transparent bg-clip-text bg-gradient-to-r from-electric-blue to-electric-green'
-                    : 'text-transparent bg-clip-text bg-gradient-to-r from-accent-red to-accent-blue'
+                    ? 'bg-electric-green/10 text-electric-green border border-electric-green/30'
+                    : 'bg-accent-blue/10 text-accent-blue border border-accent-blue/30'
                 }`}>
-                  Products
+                  <Sparkles className="w-4 h-4" />
+                  Welcome to NanoFlows Shop
                 </span>
-              </h1>
-              
-              <p className={`text-lg md:text-xl mb-8 ${
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-              }`}>
-                Shop the latest trends in electronics, fashion, home goods, and more. Quality products at competitive prices.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link
-                  to="/shop/products"
-                  className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all ${
-                    theme === 'dark'
-                      ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
-                      : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
-                  }`}
-                >
-                  <ShoppingBag className="w-5 h-5" />
-                  Shop Now
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
                 
-                <Link
-                  to="/shop/categories"
-                  className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all border ${
+                <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 ${
+                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                }`}>
+                  {heroSlides[currentSlide].title}{' '}
+                  <span className={`${
                     theme === 'dark'
-                      ? 'border-slate-600 text-gray-300 hover:bg-slate-800'
-                      : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                      ? 'text-transparent bg-clip-text bg-gradient-to-r from-electric-blue to-electric-green'
+                      : 'text-transparent bg-clip-text bg-gradient-to-r from-accent-red to-accent-blue'
+                  }`}>
+                    {heroSlides[currentSlide].highlight}
+                  </span>
+                </h1>
+                
+                <p className={`text-lg md:text-xl mb-8 ${
+                  theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+                }`}>
+                  {heroSlides[currentSlide].description}
+                </p>
+                
+                <div className="flex flex-col sm:flex-row items-start gap-4">
+                  <Link
+                    to={heroSlides[currentSlide].ctaLink}
+                    className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
+                        : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
+                    }`}
+                  >
+                    <ShoppingBag className="w-5 h-5" />
+                    {heroSlides[currentSlide].ctaText}
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
+                  
+                  {heroSlides[currentSlide].secondaryCtaLink && (
+                    <Link
+                      to={heroSlides[currentSlide].secondaryCtaLink!}
+                      className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all border ${
+                        theme === 'dark'
+                          ? 'border-slate-600 text-gray-300 hover:bg-slate-800'
+                          : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      {heroSlides[currentSlide].secondaryCtaText}
+                    </Link>
+                  )}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="flex items-center gap-3 mt-10">
+              {heroSlides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`h-3 rounded-full transition-all duration-300 ${
+                    currentSlide === index
+                      ? theme === 'dark'
+                        ? 'bg-electric-green w-8'
+                        : 'bg-accent-red w-8'
+                      : theme === 'dark'
+                        ? 'bg-gray-600 w-3 hover:bg-gray-500'
+                        : 'bg-gray-300 w-3 hover:bg-gray-400'
                   }`}
-                >
-                  Browse Categories
-                </Link>
-              </div>
-            </motion.div>
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
