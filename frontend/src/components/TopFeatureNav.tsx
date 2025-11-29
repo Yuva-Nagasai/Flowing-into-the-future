@@ -1,12 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Globe, GraduationCap, Cpu, LayoutGrid } from 'lucide-react';
+import { Globe, GraduationCap, Cpu, Store } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const items = [
   { label: '1 Website', to: '/', icon: Globe, featured: true, type: 'main' as const },
   { label: '2 E-Learning', to: '/elearning', icon: GraduationCap },
   { label: '3 AI Tools', to: '/ai-tools', icon: Cpu },
-  { label: '4 Digital Hub', to: '/shop', icon: LayoutGrid, type: 'shop' as const },
+  { label: '4 Digital Hub', to: '/shop', icon: Store, type: 'shop' as const },
 ];
 
 const TopFeatureNav = () => {
