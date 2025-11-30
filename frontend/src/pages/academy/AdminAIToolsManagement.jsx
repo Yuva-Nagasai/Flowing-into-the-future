@@ -70,35 +70,40 @@ const AdminAIToolsManagement = () => {
   });
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+    <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-slate-950' : 'bg-gray-50'}`}>
       {/* Gradient Background Effects */}
       <div className={`fixed inset-0 pointer-events-none ${
         theme === 'dark' 
-          ? 'bg-[radial-gradient(circle_at_top_right,_rgba(0,240,255,0.15),transparent_50%),radial-gradient(circle_at_bottom_left,_rgba(0,232,129,0.10),transparent_60%)]'
-          : 'bg-[radial-gradient(circle_at_top,_rgba(235,50,50,0.20),rgba(255,255,255,0.8)_50%)]'
+          ? 'bg-[radial-gradient(ellipse_at_top_right,_rgba(59,130,246,0.15),transparent_50%),radial-gradient(ellipse_at_bottom_left,_rgba(16,185,129,0.10),transparent_60%)]'
+          : 'bg-[radial-gradient(ellipse_at_top,_rgba(59,130,246,0.08),transparent_50%)]'
       }`} />
-      <header className={`sticky top-0 z-50 border-b backdrop-blur-xl ${
-        theme === 'dark' ? 'border-electric-blue/20 bg-dark-card/90 shadow-lg shadow-black/20' : 'border-gray-200/50 bg-white/90 shadow-md shadow-gray-200/20'
+      <header className={`sticky top-0 z-50 border-b backdrop-blur-2xl ${
+        theme === 'dark' 
+          ? 'border-slate-800/50 bg-slate-950/80 shadow-2xl shadow-black/30' 
+          : 'border-gray-200/80 bg-white/80 shadow-lg shadow-gray-200/50'
       }`}>
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg ${
-                theme === 'dark'
-                  ? 'from-electric-blue to-electric-green shadow-electric-blue/40'
-                  : 'from-accent-red to-accent-blue shadow-accent-red/40'
-              }`}>
-                <Brain className="h-6 w-6 text-white" />
-              </div>
+              <motion.div 
+                whileHover={{ scale: 1.05, rotate: 3 }}
+                className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br shadow-xl ${
+                  theme === 'dark'
+                    ? 'from-violet-500 to-purple-600 shadow-violet-500/30'
+                    : 'from-blue-500 to-indigo-600 shadow-blue-500/30'
+                }`}
+              >
+                <Brain className="h-7 w-7 text-white" />
+              </motion.div>
               <div>
-                <p className={`text-xs font-bold uppercase tracking-[0.25em] ${
-                  theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+                <p className={`text-xs font-bold uppercase tracking-[0.2em] mb-0.5 ${
+                  theme === 'dark' ? 'text-violet-400' : 'text-blue-600'
                 }`}>
-                  NanoFlows Academy
+                  Admin Panel
                 </p>
-                <h1 className={`text-xl font-bold ${
+                <h1 className={`text-2xl font-bold tracking-tight ${
                   theme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                }`}>
                   AI Tools Management
                 </h1>
               </div>
@@ -106,10 +111,10 @@ const AdminAIToolsManagement = () => {
             <div className="flex items-center gap-3">
               <button
                 onClick={toggleTheme}
-                className={`p-2 rounded-xl transition-all ${
+                className={`p-2.5 rounded-xl transition-all ${
                   theme === 'dark'
-                    ? 'bg-dark-lighter hover:bg-gray-800 text-electric-blue'
-                    : 'bg-gray-100 hover:bg-gray-200 text-accent-red'
+                    ? 'bg-slate-800 hover:bg-slate-700 text-violet-400 border border-slate-700'
+                    : 'bg-white hover:bg-gray-50 text-blue-600 border border-gray-200 shadow-sm'
                 }`}
                 aria-label="Toggle theme"
               >
@@ -121,14 +126,14 @@ const AdminAIToolsManagement = () => {
               >
                 <Link
                   to="/academy/admin"
-                  className={`inline-flex items-center gap-0 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 border-2 ${
+                  className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${
                     theme === 'dark'
-                      ? 'bg-transparent border-electric-blue/50 text-electric-blue hover:bg-electric-blue hover:text-black hover:border-electric-blue hover:shadow-lg hover:shadow-electric-blue/30'
-                      : 'bg-transparent border-accent-red/50 text-accent-red hover:bg-accent-red hover:text-white hover:border-accent-red hover:shadow-lg hover:shadow-accent-red/30'
+                      ? 'bg-slate-800 border border-slate-700 text-gray-300 hover:bg-slate-700 hover:text-white'
+                      : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 shadow-sm'
                   }`}
                 >
                   <FiArrowLeft size={18} />
-                  <span className="ml-1">Back</span>
+                  <span>Back to Dashboard</span>
                 </Link>
               </motion.div>
             </div>
@@ -139,59 +144,61 @@ const AdminAIToolsManagement = () => {
       <main className="relative z-10 mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className={`text-2xl font-bold ${
+            <h2 className={`text-2xl font-bold tracking-tight ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
-            }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
+            }`}>
               Manage AI Tools
             </h2>
-            <p className={`text-sm mt-1 ${
+            <p className={`text-sm mt-1.5 ${
               theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
             }`}>
               Create, edit, and manage AI tools for the showcase page
             </p>
           </div>
-          <Link
-            to="/academy/admin/ai-tools/create"
-            className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-white transition ${
-              theme === 'dark'
-                ? 'bg-electric-green hover:bg-electric-blue'
-                : 'bg-accent-red hover:bg-accent-blue'
-            }`}
-          >
-            <FiPlus size={18} />
-            Create New Tool
-          </Link>
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Link
+              to="/academy/admin/ai-tools/create"
+              className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-white shadow-lg transition-all ${
+                theme === 'dark'
+                  ? 'bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 shadow-violet-500/25'
+                  : 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-blue-500/25'
+              }`}
+            >
+              <FiPlus size={18} />
+              Create New Tool
+            </Link>
+          </motion.div>
         </div>
 
-        <div className={`rounded-xl border-2 p-6 shadow-xl mb-6 ${
+        <div className={`rounded-2xl p-5 mb-8 ${
           theme === 'dark'
-            ? 'bg-dark-lighter border-gray-700'
-            : 'bg-white border-gray-200'
+            ? 'bg-slate-900/50 border border-slate-800'
+            : 'bg-white border border-gray-200 shadow-sm'
         }`}>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <div className="relative flex-1">
-              <FiSearch className={`absolute left-3 top-1/2 -translate-y-1/2 ${
+              <FiSearch className={`absolute left-4 top-1/2 -translate-y-1/2 ${
                 theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-              }`} />
+              }`} size={18} />
               <input
                 type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search tools..."
-                className={`w-full pl-10 pr-4 py-2.5 rounded-lg border-2 transition focus:outline-none focus:ring-2 ${
+                className={`w-full pl-11 pr-4 py-3 rounded-xl transition-all focus:outline-none focus:ring-2 ${
                   theme === 'dark'
-                    ? 'bg-dark-card border-gray-700 text-white placeholder:text-gray-500 focus:border-electric-blue focus:ring-electric-blue/20'
-                    : 'bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-accent-red focus:ring-accent-red/20'
+                    ? 'bg-slate-800 border border-slate-700 text-white placeholder:text-gray-500 focus:border-violet-500 focus:ring-violet-500/20'
+                    : 'bg-gray-50 border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500/20'
                 }`}
               />
             </div>
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className={`px-4 py-2.5 rounded-lg border-2 transition focus:outline-none focus:ring-2 ${
+              className={`px-4 py-3 rounded-xl transition-all focus:outline-none focus:ring-2 ${
                 theme === 'dark'
-                  ? 'bg-dark-card border-gray-700 text-white focus:border-electric-blue focus:ring-electric-blue/20'
-                  : 'bg-white border-gray-300 text-gray-900 focus:border-accent-red focus:ring-accent-red/20'
+                  ? 'bg-slate-800 border border-slate-700 text-white focus:border-violet-500 focus:ring-violet-500/20'
+                  : 'bg-gray-50 border border-gray-200 text-gray-900 focus:border-blue-500 focus:ring-blue-500/20'
               }`}
             >
               {categories.map(cat => (
@@ -201,10 +208,10 @@ const AdminAIToolsManagement = () => {
             <select
               value={pricingFilter}
               onChange={(e) => setPricingFilter(e.target.value)}
-              className={`px-4 py-2.5 rounded-lg border-2 transition focus:outline-none focus:ring-2 ${
+              className={`px-4 py-3 rounded-xl transition-all focus:outline-none focus:ring-2 ${
                 theme === 'dark'
-                  ? 'bg-dark-card border-gray-700 text-white focus:border-electric-blue focus:ring-electric-blue/20'
-                  : 'bg-white border-gray-300 text-gray-900 focus:border-accent-red focus:ring-accent-red/20'
+                  ? 'bg-slate-800 border border-slate-700 text-white focus:border-violet-500 focus:ring-violet-500/20'
+                  : 'bg-gray-50 border border-gray-200 text-gray-900 focus:border-blue-500 focus:ring-blue-500/20'
               }`}
             >
               <option value="all">All Pricing</option>
@@ -215,35 +222,39 @@ const AdminAIToolsManagement = () => {
         </div>
 
         {loading ? (
-          <div className={`flex items-center justify-center rounded-xl border-2 py-20 shadow-xl ${
+          <div className={`flex items-center justify-center rounded-2xl py-24 ${
             theme === 'dark'
-              ? 'border-gray-700 bg-dark-lighter'
-              : 'border-gray-200 bg-white'
+              ? 'bg-slate-900/50 border border-slate-800'
+              : 'bg-white border border-gray-200'
           }`}>
-            <div className={`flex items-center gap-3 ${
+            <div className={`flex items-center gap-4 ${
               theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
             }`}>
-              <div className={`h-6 w-6 animate-spin rounded-full border-4 ${
+              <div className={`h-8 w-8 animate-spin rounded-full border-4 ${
                 theme === 'dark'
-                  ? 'border-electric-blue/20 border-t-electric-blue'
-                  : 'border-accent-red/20 border-t-accent-red'
+                  ? 'border-violet-500/20 border-t-violet-500'
+                  : 'border-blue-500/20 border-t-blue-500'
               }`} />
-              Loading tools...
+              <span className="text-lg font-medium">Loading tools...</span>
             </div>
           </div>
         ) : filteredTools.length === 0 ? (
-          <div className={`rounded-xl border-2 p-12 text-center shadow-xl ${
+          <div className={`rounded-2xl p-16 text-center ${
             theme === 'dark'
-              ? 'border-gray-700 bg-dark-lighter'
-              : 'border-gray-200 bg-white'
+              ? 'bg-slate-900/50 border border-slate-800'
+              : 'bg-white border border-gray-200'
           }`}>
-            <Brain className={`h-16 w-16 mx-auto mb-4 ${
-              theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-            }`} />
-            <h3 className={`text-2xl font-bold mb-2 ${
+            <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center ${
+              theme === 'dark' ? 'bg-slate-800' : 'bg-gray-100'
+            }`}>
+              <Brain className={`h-10 w-10 ${
+                theme === 'dark' ? 'text-violet-400' : 'text-blue-500'
+              }`} />
+            </div>
+            <h3 className={`text-2xl font-bold mb-3 ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>No tools found</h3>
-            <p className={`text-base ${
+            <p className={`text-base mb-6 ${
               theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
             }`}>
               {tools.length === 0 
@@ -251,59 +262,82 @@ const AdminAIToolsManagement = () => {
                 : 'No tools match your search criteria'}
             </p>
             {tools.length === 0 && (
-              <Link
-                to="/academy/admin/ai-tools/create"
-                className={`mt-6 inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-white transition ${
-                  theme === 'dark'
-                    ? 'bg-electric-green hover:bg-electric-blue'
-                    : 'bg-accent-red hover:bg-accent-blue'
-                }`}
-              >
-                <FiPlus size={18} />
-                Create First Tool
-              </Link>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Link
+                  to="/academy/admin/ai-tools/create"
+                  className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-white shadow-lg transition-all ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-violet-500 to-purple-600 shadow-violet-500/25'
+                      : 'bg-gradient-to-r from-blue-500 to-indigo-600 shadow-blue-500/25'
+                  }`}
+                >
+                  <FiPlus size={18} />
+                  Create First Tool
+                </Link>
+              </motion.div>
             )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredTools.map((tool, index) => (
+            {filteredTools.map((tool, index) => {
+              const getCategoryGradient = (category) => {
+                const gradients = {
+                  'writing': 'from-blue-500 to-cyan-500',
+                  'image': 'from-purple-500 to-pink-500',
+                  'video': 'from-red-500 to-orange-500',
+                  'audio': 'from-green-500 to-emerald-500',
+                  'code': 'from-violet-500 to-purple-600',
+                  'productivity': 'from-amber-500 to-yellow-500',
+                  'research': 'from-indigo-500 to-blue-500',
+                  'marketing': 'from-rose-500 to-pink-500',
+                  'data': 'from-teal-500 to-cyan-500',
+                  'other': 'from-slate-500 to-gray-500'
+                };
+                return gradients[category?.toLowerCase()] || 'from-violet-500 to-purple-600';
+              };
+              const gradientClass = getCategoryGradient(tool.category);
+              
+              return (
               <motion.div
                 key={tool.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -4 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                className={`rounded-xl border-2 p-6 shadow-lg transition hover:shadow-xl ${
+                className={`group relative rounded-2xl p-6 transition-all duration-300 ${
                   theme === 'dark'
-                    ? 'bg-dark-lighter border-gray-700 hover:border-electric-blue'
-                    : 'bg-white border-gray-200 hover:border-accent-red'
+                    ? 'bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/50 hover:border-violet-500/50 shadow-xl shadow-black/20'
+                    : 'bg-white border border-gray-100 hover:border-blue-200 shadow-lg shadow-gray-200/50 hover:shadow-xl'
                 }`}
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`p-3 rounded-lg bg-gradient-to-br ${tool.color}`}>
-                    <Brain className="h-5 w-5 text-white" />
+                <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-20 transition-opacity group-hover:opacity-30 bg-gradient-to-br ${gradientClass}`} />
+                
+                <div className="relative flex items-start justify-between mb-4">
+                  <div className={`p-3 rounded-xl bg-gradient-to-br shadow-lg ${gradientClass}`}>
+                    <Brain className="h-6 w-6 text-white" />
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
+                    <span className={`text-xs font-bold px-3 py-1.5 rounded-full ${
                       tool.pricing_type === 'free'
                         ? theme === 'dark'
-                          ? 'bg-electric-green/20 text-electric-green'
-                          : 'bg-green-100 text-green-600'
+                          ? 'bg-emerald-500/20 text-emerald-400'
+                          : 'bg-green-100 text-green-700'
                         : theme === 'dark'
-                          ? 'bg-yellow-500/20 text-yellow-400'
-                          : 'bg-yellow-100 text-yellow-600'
+                          ? 'bg-amber-500/20 text-amber-400'
+                          : 'bg-amber-100 text-amber-700'
                     }`}>
                       {tool.pricing_type === 'free' ? 'Free' : 'Paid'}
                     </span>
                     <button
                       onClick={() => handleToggleActive(tool)}
-                      className={`text-xs font-semibold px-3 py-1 rounded-full transition ${
+                      className={`text-xs font-bold px-3 py-1.5 rounded-full transition-all ${
                         tool.active
                           ? theme === 'dark'
-                            ? 'bg-electric-blue/20 text-electric-blue'
-                            : 'bg-blue-100 text-blue-600'
+                            ? 'bg-violet-500/20 text-violet-400 hover:bg-violet-500/30'
+                            : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                           : theme === 'dark'
-                            ? 'bg-gray-700 text-gray-400'
-                            : 'bg-gray-200 text-gray-500'
+                            ? 'bg-slate-700 text-gray-400 hover:bg-slate-600'
+                            : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                       }`}
                     >
                       {tool.active ? 'Active' : 'Inactive'}
@@ -317,43 +351,47 @@ const AdminAIToolsManagement = () => {
                   {tool.name}
                 </h3>
 
-                <p className={`text-sm mb-3 line-clamp-2 ${
+                <p className={`text-sm mb-4 line-clamp-2 leading-relaxed ${
                   theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                 }`}>
                   {tool.description}
                 </p>
 
-                <div className={`flex items-center gap-2 mb-4 text-xs ${
-                  theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
+                <div className={`inline-flex items-center gap-2 mb-4 text-xs font-medium px-2.5 py-1 rounded-lg ${
+                  theme === 'dark' ? 'bg-slate-800 text-gray-400' : 'bg-gray-100 text-gray-600'
                 }`}>
+                  <FiZap size={12} />
                   <span className="capitalize">{tool.category}</span>
                 </div>
 
-                <div className="flex items-center gap-2 pt-4 border-t border-gray-700 dark:border-gray-800">
+                <div className={`flex items-center gap-2 pt-4 border-t ${
+                  theme === 'dark' ? 'border-slate-700/50' : 'border-gray-100'
+                }`}>
                   <Link
                     to={`/academy/admin/ai-tools/edit/${tool.id}`}
-                    className={`flex-1 flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition ${
+                    className={`flex-1 flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all ${
                       theme === 'dark'
-                        ? 'border-gray-700 text-electric-blue hover:border-electric-blue hover:bg-electric-blue/10'
-                        : 'border-gray-200 text-accent-red hover:border-accent-red hover:bg-accent-red/10'
-                    } border-2`}
+                        ? 'bg-slate-800 text-violet-400 hover:bg-violet-500/20 border border-slate-700'
+                        : 'bg-gray-50 text-blue-600 hover:bg-blue-50 border border-gray-200'
+                    }`}
                   >
                     <FiEdit size={16} />
                     Edit
                   </Link>
                   <button
                     onClick={() => handleDelete(tool.id)}
-                    className={`p-2 rounded-lg border-2 transition ${
+                    className={`p-2.5 rounded-xl transition-all ${
                       theme === 'dark'
-                        ? 'border-gray-700 text-red-400 hover:border-red-500 hover:bg-red-500/10'
-                        : 'border-gray-200 text-red-500 hover:border-red-400 hover:bg-red-50'
+                        ? 'bg-slate-800 text-red-400 hover:bg-red-500/20 border border-slate-700'
+                        : 'bg-gray-50 text-red-500 hover:bg-red-50 border border-gray-200'
                     }`}
                   >
                     <FiTrash2 size={16} />
                   </button>
                 </div>
               </motion.div>
-            ))}
+              );
+            })}
           </div>
         )}
       </main>

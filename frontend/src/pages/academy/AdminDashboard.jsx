@@ -258,54 +258,62 @@ const AdminDashboard = () => {
     { id: 'analytics', label: 'Analytics', icon: FiBarChart2 },
   ];
 
-  const StatCard = ({ icon: Icon, label, value, subtitle, trend, trendValue }) => {
+  const StatCard = ({ icon: Icon, label, value, subtitle, trend, trendValue, gradient }) => {
     const isPositive = trend === 'up';
+    const gradientColors = {
+      blue: 'from-blue-500 to-cyan-500',
+      green: 'from-emerald-500 to-teal-500',
+      purple: 'from-purple-500 to-violet-500',
+      orange: 'from-orange-500 to-amber-500',
+      pink: 'from-pink-500 to-rose-500',
+    };
+    const gradientClass = gradientColors[gradient] || (theme === 'dark' ? 'from-electric-blue to-electric-green' : 'from-accent-red to-accent-blue');
+    
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`group relative overflow-hidden rounded-2xl border-2 p-6 transition-all duration-300 ${
+        whileHover={{ y: -4, transition: { duration: 0.2 } }}
+        className={`group relative overflow-hidden rounded-2xl p-6 transition-all duration-300 ${
           theme === 'dark'
-            ? 'bg-dark-card border-gray-700 hover:border-electric-blue hover:shadow-[0_0_30px_rgba(0,240,255,0.2)]'
-            : 'bg-white border-gray-200 hover:border-accent-red hover:shadow-xl'
+            ? 'bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/50 hover:border-electric-blue/50 shadow-xl shadow-black/20 hover:shadow-electric-blue/10'
+            : 'bg-white border border-gray-100 hover:border-gray-200 shadow-lg shadow-gray-200/50 hover:shadow-xl'
         }`}
       >
-        <div className="flex items-start justify-between">
+        <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-20 transition-opacity group-hover:opacity-30 bg-gradient-to-br ${gradientClass}`} />
+        
+        <div className="relative flex items-start justify-between">
           <div className="flex-1">
-            <p className={`text-xs font-semibold uppercase tracking-wide mb-2 ${
-              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+            <p className={`text-xs font-bold uppercase tracking-wider mb-3 ${
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
             }`}>
               {label}
             </p>
-            <p className={`text-3xl font-bold mb-1 ${
+            <p className={`text-3xl font-bold mb-1.5 tracking-tight ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
-            }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
+            }`}>
               {value}
             </p>
             {subtitle && (
-              <p className={`text-xs font-medium ${
+              <p className={`text-sm font-medium ${
                 theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
               }`}>
                 {subtitle}
               </p>
             )}
             {trend && (
-              <div className={`mt-3 flex items-center gap-1 text-xs font-semibold ${
+              <div className={`mt-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
                 isPositive
-                  ? theme === 'dark' ? 'text-electric-green' : 'text-green-600'
-                  : theme === 'dark' ? 'text-red-400' : 'text-red-600'
+                  ? theme === 'dark' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-green-100 text-green-700'
+                  : theme === 'dark' ? 'bg-red-500/20 text-red-400' : 'bg-red-100 text-red-700'
               }`}>
                 {isPositive ? <FiArrowUpRight size={14} /> : <FiArrowDownRight size={14} />}
                 {trendValue}
               </div>
             )}
           </div>
-          <div className={`flex h-12 w-12 items-center justify-center rounded-xl transition-all ${
-            theme === 'dark'
-              ? 'bg-electric-blue/20 text-electric-blue group-hover:bg-electric-blue/30'
-              : 'bg-accent-red/20 text-accent-red group-hover:bg-accent-red/30'
-          }`}>
-            <Icon size={24} />
+          <div className={`flex h-14 w-14 items-center justify-center rounded-2xl shadow-lg transition-all duration-300 bg-gradient-to-br ${gradientClass}`}>
+            <Icon size={24} className="text-white" />
           </div>
         </div>
       </motion.div>
@@ -843,12 +851,14 @@ const AdminDashboard = () => {
                     subtitle="All time earnings"
                     trend="up"
                     trendValue={`+${revenueGrowth}% this month`}
+                    gradient="green"
                   />
                   <StatCard
                     icon={FiBook}
                     label="Total Courses"
                     value={stats.totalCourses}
                     subtitle="Active programs"
+                    gradient="blue"
                   />
                   <StatCard
                     icon={FiUsers}
@@ -857,12 +867,14 @@ const AdminDashboard = () => {
                     subtitle="Total enrollments"
                     trend="up"
                     trendValue={`+${enrollmentGrowth}% this month`}
+                    gradient="purple"
                   />
                   <StatCard
                     icon={FiTrendingUp}
                     label="Monthly Revenue"
                     value={`₹${stats.monthlyRevenue.toLocaleString()}`}
                     subtitle={`${stats.monthlyPurchases} purchases this month`}
+                    gradient="orange"
                   />
                 </div>
 
@@ -873,24 +885,28 @@ const AdminDashboard = () => {
                     label="Total Modules"
                     value={elearningStats.totalModules}
                     subtitle={`${elearningStats.totalLessons} lessons`}
+                    gradient="blue"
                   />
                   <StatCard
                     icon={FiVideo}
                     label="Total Lessons"
                     value={elearningStats.totalLessons}
                     subtitle="Across all courses"
+                    gradient="purple"
                   />
                   <StatCard
                     icon={FiTrendingUp}
                     label="Avg Progress"
                     value={`${elearningStats.avgProgress}%`}
                     subtitle="Student completion rate"
+                    gradient="green"
                   />
                   <StatCard
                     icon={FiAward}
                     label="Completed"
                     value={elearningStats.completedCourses}
                     subtitle="Courses fully completed"
+                    gradient="pink"
                   />
                 </div>
 
