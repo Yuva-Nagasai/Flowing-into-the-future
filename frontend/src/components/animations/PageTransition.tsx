@@ -15,6 +15,7 @@ export const PageTransition = ({ children }: PageTransitionProps) => {
         duration: 0.5,
         ease: 'easeInOut',
       }}
+      style={{ overflow: 'hidden' }}
     >
       {children}
     </motion.div>
