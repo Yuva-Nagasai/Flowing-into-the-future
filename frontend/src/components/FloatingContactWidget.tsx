@@ -10,7 +10,7 @@ interface ContactAction {
   href: string;
   icon: React.ElementType;
   bgColor: string;
-  hoverBg: string;
+  shadowColor: string;
   external?: boolean;
   isRoute?: boolean;
 }
@@ -21,7 +21,7 @@ const CONTACT_ACTIONS: ContactAction[] = [
     href: 'https://wa.me/918019358855',
     icon: FaWhatsapp,
     bgColor: '#25D366',
-    hoverBg: '#128C7E',
+    shadowColor: 'rgba(37, 211, 102, 0.5)',
     external: true,
   },
   {
@@ -29,21 +29,21 @@ const CONTACT_ACTIONS: ContactAction[] = [
     href: 'tel:+918019358855',
     icon: FaPhone,
     bgColor: '#FF6B35',
-    hoverBg: '#E55A2B',
+    shadowColor: 'rgba(255, 107, 53, 0.5)',
   },
   {
     label: 'Email Us',
     href: 'mailto:nanoflowsvizag@gmail.com?subject=Project%20Enquiry',
     icon: FaEnvelope,
     bgColor: '#F59E0B',
-    hoverBg: '#D97706',
+    shadowColor: 'rgba(245, 158, 11, 0.5)',
   },
   {
     label: 'Contact Form',
     href: '/#contact',
     icon: HiChatBubbleLeftRight,
-    bgColor: '#6366F1',
-    hoverBg: '#4F46E5',
+    bgColor: '#8B5CF6',
+    shadowColor: 'rgba(139, 92, 246, 0.5)',
     isRoute: true,
   },
 ];
@@ -97,91 +97,207 @@ const FloatingContactWidget = () => {
     }
   };
 
-  const radius = 70;
-  const startAngle = -90;
-  const angleSpread = 90;
+  const radius = 80;
   const itemCount = CONTACT_ACTIONS.length;
   
   const getItemPosition = (index: number) => {
-    const angleStep = angleSpread / (itemCount - 1);
+    const startAngle = -110;
+    const endAngle = -20;
+    const angleStep = (endAngle - startAngle) / (itemCount - 1);
     const angle = startAngle + (index * angleStep);
     const radian = (angle * Math.PI) / 180;
     
     const x = Math.cos(radian) * radius;
     const y = Math.sin(radian) * radius;
     
-    return { x, y };
+    return { x, y, angle };
+  };
+
+  const mainButtonVariants = {
+    closed: {
+      rotate: 0,
+      scale: 1,
+    },
+    open: {
+      rotate: 45,
+      scale: 1,
+    },
+  };
+
+  const menuItemVariants = {
+    closed: {
+      opacity: 0,
+      scale: 0,
+      x: 0,
+      y: 0,
+    },
+    open: (custom: { x: number; y: number; delay: number }) => ({
+      opacity: 1,
+      scale: 1,
+      x: custom.x,
+      y: custom.y,
+      transition: {
+        type: 'spring' as const,
+        stiffness: 260,
+        damping: 20,
+        delay: custom.delay,
+      },
+    }),
+    exit: () => ({
+      opacity: 0,
+      scale: 0,
+      x: 0,
+      y: 0,
+      transition: {
+        type: 'spring' as const,
+        stiffness: 300,
+        damping: 25,
+      },
+    }),
+  };
+
+  const iconVariants = {
+    closed: { rotate: -180, scale: 0.5 },
+    open: { 
+      rotate: 0, 
+      scale: 1,
+      transition: {
+        type: 'spring' as const,
+        stiffness: 200,
+        damping: 15,
+      }
+    },
+  };
+
+  const labelVariants = {
+    hidden: { 
+      opacity: 0, 
+      x: -8,
+      scale: 0.9,
+    },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      scale: 1,
+      transition: {
+        type: 'spring' as const,
+        stiffness: 300,
+        damping: 25,
+      }
+    },
+    exit: { 
+      opacity: 0, 
+      x: -8,
+      scale: 0.9,
+      transition: {
+        duration: 0.15,
+      }
+    },
   };
 
   return (
     <div 
-      className="floating-contact-widget fixed left-6 top-1/2 -translate-y-1/2 z-50"
+      className="floating-contact-widget fixed left-5 top-1/2 -translate-y-1/2 z-50"
       aria-label="Contact options"
       style={{ overflow: 'visible' }}
     >
       <div className="relative" style={{ width: '56px', height: '56px' }}>
-        <AnimatePresence>
+        <AnimatePresence mode="sync">
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0"
+              style={{ 
+                width: '200px', 
+                height: '200px', 
+                left: '-72px', 
+                top: '-72px',
+                pointerEvents: 'none',
+              }}
+            >
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 0.1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="absolute rounded-full"
+                style={{
+                  width: '200px',
+                  height: '200px',
+                  background: 'radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, transparent 70%)',
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence mode="sync">
           {isOpen && CONTACT_ACTIONS.map((action, index) => {
             const Icon = action.icon;
             const isHovered = hoveredItem === action.label;
             const position = getItemPosition(index);
+            const openDelay = index * 0.06;
             
             const buttonContent = (
               <motion.div
-                initial={{ 
-                  opacity: 0, 
-                  scale: 0,
-                  x: 0,
-                  y: 0,
-                }}
-                animate={{ 
-                  opacity: 1, 
-                  scale: 1,
-                  x: position.x,
-                  y: position.y,
-                }}
-                exit={{ 
-                  opacity: 0, 
-                  scale: 0,
-                  x: 0,
-                  y: 0,
-                }}
-                transition={{
-                  type: 'spring',
-                  stiffness: 400,
-                  damping: 20,
-                  delay: index * 0.05,
-                }}
-                className="absolute flex items-center group"
+                custom={{ x: position.x, y: position.y, delay: openDelay }}
+                variants={menuItemVariants}
+                initial="closed"
+                animate="open"
+                exit="exit"
+                className="absolute flex items-center group cursor-pointer"
                 style={{
-                  left: '50%',
-                  top: '50%',
-                  marginLeft: '-24px',
-                  marginTop: '-24px',
+                  left: '28px',
+                  top: '28px',
+                  zIndex: 10,
                 }}
                 onMouseEnter={() => setHoveredItem(action.label)}
                 onMouseLeave={() => setHoveredItem(null)}
               >
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-110"
+                <motion.div
+                  className="w-11 h-11 rounded-full flex items-center justify-center relative overflow-hidden"
                   style={{
                     backgroundColor: action.bgColor,
                     boxShadow: isHovered 
-                      ? `0 8px 25px ${action.bgColor}60` 
-                      : `0 4px 15px ${action.bgColor}40`,
+                      ? `0 8px 32px ${action.shadowColor}, 0 0 0 3px rgba(255,255,255,0.2)` 
+                      : `0 4px 20px ${action.shadowColor}`,
                   }}
+                  whileHover={{ 
+                    scale: 1.15,
+                    transition: { type: 'spring', stiffness: 400, damping: 17 }
+                  }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Icon className="w-5 h-5 text-white" />
-                </div>
+                  <motion.div
+                    className="absolute inset-0 bg-white"
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 0.15 }}
+                    transition={{ duration: 0.2 }}
+                  />
+                  <motion.div
+                    variants={iconVariants}
+                    initial="closed"
+                    animate="open"
+                  >
+                    <Icon className="w-5 h-5 text-white relative z-10" />
+                  </motion.div>
+                </motion.div>
+                
                 <AnimatePresence>
                   {isHovered && (
                     <motion.span
-                      initial={{ opacity: 0, x: -10, width: 0 }}
-                      animate={{ opacity: 1, x: 0, width: 'auto' }}
-                      exit={{ opacity: 0, x: -10, width: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="ml-3 px-3 py-1.5 text-sm font-medium text-white rounded-lg whitespace-nowrap overflow-hidden"
-                      style={{ backgroundColor: action.bgColor }}
+                      variants={labelVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      className="ml-3 px-4 py-2 text-sm font-semibold text-white rounded-xl whitespace-nowrap backdrop-blur-sm"
+                      style={{ 
+                        backgroundColor: action.bgColor,
+                        boxShadow: `0 4px 15px ${action.shadowColor}`,
+                      }}
                     >
                       {action.label}
                     </motion.span>
@@ -192,15 +308,17 @@ const FloatingContactWidget = () => {
 
             if (action.isRoute) {
               return (
-                <button
-                  key={action.label}
-                  onClick={(e) => handleContactClick(e, action.href)}
-                  className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500"
-                  aria-label={action.label}
-                  style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', background: 'transparent', border: 'none', cursor: 'pointer' }}
-                >
-                  {buttonContent}
-                </button>
+                <div key={action.label} style={{ position: 'absolute', left: 0, top: 0 }}>
+                  <div 
+                    onClick={(e) => handleContactClick(e, action.href)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => e.key === 'Enter' && handleContactClick(e as unknown as React.MouseEvent, action.href)}
+                    aria-label={action.label}
+                  >
+                    {buttonContent}
+                  </div>
+                </div>
               );
             }
 
@@ -210,9 +328,8 @@ const FloatingContactWidget = () => {
                 href={action.href}
                 target={action.external ? '_blank' : undefined}
                 rel={action.external ? 'noopener noreferrer' : undefined}
-                className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500"
                 aria-label={action.label}
-                style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%' }}
+                style={{ position: 'absolute', left: 0, top: 0 }}
               >
                 {buttonContent}
               </a>
@@ -220,72 +337,121 @@ const FloatingContactWidget = () => {
           })}
         </AnimatePresence>
 
-        <motion.button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsOpen((prev) => !prev);
-          }}
-          className="absolute w-14 h-14 rounded-full flex items-center justify-center shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500"
-          style={{
-            left: 0,
-            top: 0,
-            background: isOpen 
-              ? 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)'
-              : 'linear-gradient(135deg, #06B6D4 0%, #0891B2 50%, #0E7490 100%)',
-            boxShadow: isOpen 
-              ? '0 8px 30px rgba(239, 68, 68, 0.4)'
-              : '0 8px 30px rgba(6, 182, 212, 0.4)',
-          }}
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.95 }}
-          animate={{ 
-            rotate: isOpen ? 90 : 0,
-          }}
-          transition={{
-            type: 'spring',
-            stiffness: 300,
-            damping: 20,
-          }}
-          aria-expanded={isOpen}
-          aria-label={isOpen ? 'Close contact options' : 'Open contact options'}
+        <motion.div
+          className="absolute"
+          style={{ left: 0, top: 0 }}
+          initial={false}
+          animate={isOpen ? 'open' : 'closed'}
         >
-          <AnimatePresence mode="wait">
-            {isOpen ? (
-              <motion.div
-                key="close"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.15 }}
-              >
-                <X className="w-6 h-6 text-white" />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="chat"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.15 }}
-                className="relative"
-              >
-                <HiChatBubbleLeftRight className="w-6 h-6 text-white" />
-                <motion.span
-                  className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"
-                  animate={{
-                    scale: [1, 1.2, 1],
+          {!isOpen && (
+            <motion.div
+              className="absolute w-14 h-14 rounded-full"
+              style={{
+                left: 0,
+                top: 0,
+                background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.4) 0%, rgba(14, 116, 144, 0.4) 100%)',
+              }}
+              animate={{
+                scale: [1, 1.3, 1],
+                opacity: [0.6, 0.2, 0.6],
+              }}
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          )}
+          
+          <motion.button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen((prev) => !prev);
+            }}
+            className="relative w-14 h-14 rounded-full flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500"
+            style={{
+              background: isOpen 
+                ? 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)'
+                : 'linear-gradient(135deg, #06B6D4 0%, #0891B2 50%, #0E7490 100%)',
+              boxShadow: isOpen 
+                ? '0 8px 32px rgba(239, 68, 68, 0.5), inset 0 1px 0 rgba(255,255,255,0.2)'
+                : '0 8px 32px rgba(6, 182, 212, 0.5), inset 0 1px 0 rgba(255,255,255,0.2)',
+            }}
+            variants={mainButtonVariants}
+            whileHover={{ 
+              scale: 1.08,
+              boxShadow: isOpen 
+                ? '0 12px 40px rgba(239, 68, 68, 0.6)'
+                : '0 12px 40px rgba(6, 182, 212, 0.6)',
+            }}
+            whileTap={{ scale: 0.92 }}
+            transition={{
+              type: 'spring',
+              stiffness: 400,
+              damping: 17,
+            }}
+            aria-expanded={isOpen}
+            aria-label={isOpen ? 'Close contact options' : 'Open contact options'}
+          >
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%)',
+              }}
+            />
+            
+            <AnimatePresence mode="wait">
+              {isOpen ? (
+                <motion.div
+                  key="close"
+                  initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                  exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                  transition={{ 
+                    type: 'spring',
+                    stiffness: 300,
+                    damping: 20,
                   }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
+                  className="relative z-10"
+                >
+                  <X className="w-6 h-6 text-white" strokeWidth={2.5} />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="chat"
+                  initial={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                  exit={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                  transition={{ 
+                    type: 'spring',
+                    stiffness: 300,
+                    damping: 20,
                   }}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.button>
+                  className="relative z-10"
+                >
+                  <HiChatBubbleLeftRight className="w-6 h-6 text-white" />
+                  <motion.span
+                    className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"
+                    animate={{
+                      scale: [1, 1.3, 1],
+                      boxShadow: [
+                        '0 0 0 0 rgba(74, 222, 128, 0.7)',
+                        '0 0 0 6px rgba(74, 222, 128, 0)',
+                        '0 0 0 0 rgba(74, 222, 128, 0)',
+                      ],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.button>
+        </motion.div>
       </div>
     </div>
   );
