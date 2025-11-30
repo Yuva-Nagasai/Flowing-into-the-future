@@ -10,9 +10,9 @@ import { useTheme } from '../../context/ThemeContext';
 import ShopNav from '../../components/shop/ShopNav';
 import Footer from '../../components/Footer';
 
-import heroImage1 from '@assets/stock_images/professional_e-learn_9e7fdc74.jpg';
-import heroImage2 from '@assets/stock_images/professional_e-learn_64dcaf64.jpg';
-import heroImage3 from '@assets/stock_images/professional_e-learn_6fb000a8.jpg';
+import heroImage1 from '@assets/stock_images/professional_softwar_e2de4ce6.jpg';
+import heroImage2 from '@assets/stock_images/digital_marketplace__091cf657.jpg';
+import heroImage3 from '@assets/stock_images/cloud_computing_inst_f98e3424.jpg';
 
 interface Product {
   id: number;
