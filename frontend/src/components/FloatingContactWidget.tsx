@@ -96,9 +96,10 @@ const FloatingContactWidget = () => {
   };
 
   const getItemFinalPosition = (index: number) => {
-    const verticalSpacing = 56;
+    const verticalSpacing = 52;
+    const horizontalOffset = 12;
     return {
-      x: 0,
+      x: (index + 1) * horizontalOffset,
       y: -(index + 1) * verticalSpacing,
     };
   };
