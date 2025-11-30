@@ -43,7 +43,7 @@ const ShopNav = () => {
     setMobileMenuOpen(false);
   };
 
-  const topBarHeight = 60;
+  const topBarHeight = 68;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -428,8 +428,8 @@ const ShopNav = () => {
         className="w-full"
         style={{
           height: showTopBar
-            ? `${topBarHeight + 80}px`
-            : '80px',
+            ? `${topBarHeight + 64}px`
+            : '64px',
         }}
       />
     </>
