@@ -17,19 +17,11 @@ interface ContactAction {
 
 const CONTACT_ACTIONS: ContactAction[] = [
   {
-    label: 'WhatsApp',
-    href: 'https://wa.me/918019358855',
-    icon: FaWhatsapp,
-    bgColor: '#25D366',
-    shadowColor: 'rgba(37, 211, 102, 0.5)',
-    external: true,
-  },
-  {
     label: 'Call Us',
     href: 'tel:+918019358855',
     icon: FaPhone,
-    bgColor: '#FF6B35',
-    shadowColor: 'rgba(255, 107, 53, 0.5)',
+    bgColor: '#EF4444',
+    shadowColor: 'rgba(239, 68, 68, 0.5)',
   },
   {
     label: 'Email Us',
@@ -42,9 +34,17 @@ const CONTACT_ACTIONS: ContactAction[] = [
     label: 'Contact Form',
     href: '/#contact',
     icon: HiChatBubbleLeftRight,
-    bgColor: '#8B5CF6',
-    shadowColor: 'rgba(139, 92, 246, 0.5)',
+    bgColor: '#F97316',
+    shadowColor: 'rgba(249, 115, 22, 0.5)',
     isRoute: true,
+  },
+  {
+    label: 'WhatsApp',
+    href: 'https://wa.me/918019358855',
+    icon: FaWhatsapp,
+    bgColor: '#25D366',
+    shadowColor: 'rgba(37, 211, 102, 0.5)',
+    external: true,
   },
 ];
 
@@ -97,20 +97,14 @@ const FloatingContactWidget = () => {
     }
   };
 
-  const radius = 80;
-  const itemCount = CONTACT_ACTIONS.length;
-  
   const getItemPosition = (index: number) => {
-    const startAngle = -110;
-    const endAngle = -20;
-    const angleStep = (endAngle - startAngle) / (itemCount - 1);
-    const angle = startAngle + (index * angleStep);
-    const radian = (angle * Math.PI) / 180;
-    
-    const x = Math.cos(radian) * radius;
-    const y = Math.sin(radian) * radius;
-    
-    return { x, y, angle };
+    const positions = [
+      { x: -5, y: -65 },
+      { x: 30, y: -115 },
+      { x: -5, y: -165 },
+      { x: 30, y: -215 },
+    ];
+    return positions[index] || { x: 0, y: 0 };
   };
 
   const mainButtonVariants = {
@@ -119,7 +113,7 @@ const FloatingContactWidget = () => {
       scale: 1,
     },
     open: {
-      rotate: 45,
+      rotate: 90,
       scale: 1,
     },
   };
@@ -138,8 +132,8 @@ const FloatingContactWidget = () => {
       y: custom.y,
       transition: {
         type: 'spring' as const,
-        stiffness: 260,
-        damping: 20,
+        stiffness: 350,
+        damping: 22,
         delay: custom.delay,
       },
     }),
@@ -150,8 +144,8 @@ const FloatingContactWidget = () => {
       y: 0,
       transition: {
         type: 'spring' as const,
-        stiffness: 300,
-        damping: 25,
+        stiffness: 400,
+        damping: 28,
       },
     }),
   };
@@ -197,49 +191,17 @@ const FloatingContactWidget = () => {
 
   return (
     <div 
-      className="floating-contact-widget fixed left-5 top-1/2 -translate-y-1/2 z-50"
+      className="floating-contact-widget fixed left-4 bottom-8 z-50"
       aria-label="Contact options"
       style={{ overflow: 'visible' }}
     >
       <div className="relative" style={{ width: '56px', height: '56px' }}>
         <AnimatePresence mode="sync">
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="absolute inset-0"
-              style={{ 
-                width: '200px', 
-                height: '200px', 
-                left: '-72px', 
-                top: '-72px',
-                pointerEvents: 'none',
-              }}
-            >
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 0.1 }}
-                exit={{ scale: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="absolute rounded-full"
-                style={{
-                  width: '200px',
-                  height: '200px',
-                  background: 'radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, transparent 70%)',
-                }}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence mode="sync">
           {isOpen && CONTACT_ACTIONS.map((action, index) => {
             const Icon = action.icon;
             const isHovered = hoveredItem === action.label;
             const position = getItemPosition(index);
-            const openDelay = index * 0.06;
+            const openDelay = index * 0.05;
             
             const buttonContent = (
               <motion.div
@@ -250,15 +212,15 @@ const FloatingContactWidget = () => {
                 exit="exit"
                 className="absolute flex items-center group cursor-pointer"
                 style={{
-                  left: '28px',
-                  top: '28px',
+                  left: 0,
+                  top: 0,
                   zIndex: 10,
                 }}
                 onMouseEnter={() => setHoveredItem(action.label)}
                 onMouseLeave={() => setHoveredItem(null)}
               >
                 <motion.div
-                  className="w-11 h-11 rounded-full flex items-center justify-center relative overflow-hidden"
+                  className="w-12 h-12 rounded-full flex items-center justify-center relative overflow-hidden"
                   style={{
                     backgroundColor: action.bgColor,
                     boxShadow: isHovered 
@@ -266,7 +228,7 @@ const FloatingContactWidget = () => {
                       : `0 4px 20px ${action.shadowColor}`,
                   }}
                   whileHover={{ 
-                    scale: 1.15,
+                    scale: 1.12,
                     transition: { type: 'spring', stiffness: 400, damping: 17 }
                   }}
                   whileTap={{ scale: 0.95 }}
