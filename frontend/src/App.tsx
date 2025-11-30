@@ -344,7 +344,9 @@ function AnimatedRoutes() {
             path="/ai-tools"
             element={
               <PageTransition>
-                <AIToolsHome />
+                <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
+                  <AIToolsHome />
+                </div>
               </PageTransition>
             }
           />
@@ -352,7 +354,9 @@ function AnimatedRoutes() {
             path="/ai-tools/explore"
             element={
               <PageTransition>
-                <AIToolsExplore />
+                <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
+                  <AIToolsExplore />
+                </div>
               </PageTransition>
             }
           />
@@ -360,7 +364,9 @@ function AnimatedRoutes() {
             path="/ai-tools/tool/:id"
             element={
               <PageTransition>
-                <AIToolDetail />
+                <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
+                  <AIToolDetail />
+                </div>
               </PageTransition>
             }
           />
@@ -368,7 +374,9 @@ function AnimatedRoutes() {
             path="/ai-tools/about"
             element={
               <PageTransition>
-                <AIToolsAbout />
+                <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
+                  <AIToolsAbout />
+                </div>
               </PageTransition>
             }
           />

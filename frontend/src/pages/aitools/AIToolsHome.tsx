@@ -172,7 +172,7 @@ const AIToolsHome = () => {
   ];
 
   return (
-    <div className={`min-h-screen w-full max-w-full overflow-x-hidden ${
+    <div className={`min-h-screen w-full max-w-full overflow-x-hidden flex flex-col ${
       theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'
     }`}>
       <AIToolsNav />

@@ -150,14 +150,14 @@ const AIToolsExplore = () => {
   const hasActiveFilters = searchQuery || selectedCategory !== 'all' || selectedPricing !== 'all';
 
   return (
-    <div className={`min-h-screen w-full max-w-full overflow-x-hidden ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+    <div className={`min-h-screen w-full max-w-full overflow-x-hidden flex flex-col ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
       <AIToolsNav />
 
       <section className={`py-12 ${theme === 'dark' ? 'bg-dark-card' : 'bg-white'}`}>
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             className="text-center mb-8"
           >
             <h1 className={`text-3xl md:text-4xl font-bold mb-4 ${
