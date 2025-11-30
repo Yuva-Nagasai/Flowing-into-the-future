@@ -86,7 +86,7 @@ const AIToolsAbout = () => {
   ];
 
   return (
-    <div className={`min-h-screen overflow-x-hidden overflow-y-auto ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+    <div className={`min-h-screen w-full max-w-full overflow-x-hidden ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
       <AIToolsNav />
 
       <section className="relative overflow-hidden py-20 lg:py-28">

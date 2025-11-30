@@ -141,7 +141,7 @@ const AIToolDetail = () => {
 
   if (loading) {
     return (
-      <div className={`min-h-screen overflow-x-hidden overflow-y-auto ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+      <div className={`min-h-screen w-full max-w-full overflow-x-hidden ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
         <AIToolsNav />
         <div className="container mx-auto px-4 lg:px-8 py-20">
           <div className={`max-w-4xl mx-auto p-8 rounded-3xl animate-pulse ${
@@ -164,7 +164,7 @@ const AIToolDetail = () => {
 
   if (!tool) {
     return (
-      <div className={`min-h-screen overflow-x-hidden overflow-y-auto ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+      <div className={`min-h-screen w-full max-w-full overflow-x-hidden ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
         <AIToolsNav />
         <div className="container mx-auto px-4 lg:px-8 py-20">
           <div className="text-center">
@@ -196,7 +196,7 @@ const AIToolDetail = () => {
   const Icon = getCategoryIcon(tool.category);
 
   return (
-    <div className={`min-h-screen overflow-x-hidden overflow-y-auto ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+    <div className={`min-h-screen w-full max-w-full overflow-x-hidden ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
       <AIToolsNav />
 
       <div className="container mx-auto px-4 lg:px-8 py-8">
