@@ -37,7 +37,7 @@ const AIToolsNav = ({ onSearch, searchTerm = '' }: AIToolsNavProps) => {
     { path: '/ai-tools/contact', label: 'Contact' }
   ];
 
-  const topBarHeight = 60;
+  const topBarHeight = 68;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -271,8 +271,8 @@ const AIToolsNav = ({ onSearch, searchTerm = '' }: AIToolsNavProps) => {
         className="w-full"
         style={{
           height: showTopBar
-            ? `${topBarHeight + 80}px`
-            : '80px',
+            ? `${topBarHeight + 64}px`
+            : '64px',
         }}
       />
     </>
