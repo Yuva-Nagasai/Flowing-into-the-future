@@ -150,7 +150,7 @@ const AIToolsExplore = () => {
   const hasActiveFilters = searchQuery || selectedCategory !== 'all' || selectedPricing !== 'all';
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+    <div className={`min-h-screen overflow-x-hidden overflow-y-auto ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
       <AIToolsNav />
 
       <section className={`py-12 ${theme === 'dark' ? 'bg-dark-card' : 'bg-white'}`}>
