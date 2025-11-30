@@ -172,7 +172,7 @@ const AIToolsHome = () => {
   ];
 
   return (
-    <div className={`min-h-screen ${
+    <div className={`min-h-screen overflow-x-hidden ${
       theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'
     }`}>
       <AIToolsNav />

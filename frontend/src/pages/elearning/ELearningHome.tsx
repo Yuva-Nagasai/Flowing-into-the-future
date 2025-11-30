@@ -63,7 +63,6 @@ const ELearningHome = () => {
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
   const { theme } = useTheme();
   const navigate = useNavigate();
 
@@ -162,8 +161,8 @@ const ELearningHome = () => {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
-      <ELearningNav onSearch={setSearchTerm} searchTerm={searchTerm} />
+    <div className={`min-h-screen overflow-x-hidden transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+      <ELearningNav />
       
       {/* Hero Section with Slider */}
       <section className="relative min-h-[600px] overflow-hidden">

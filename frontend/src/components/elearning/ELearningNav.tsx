@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Sun, Moon, Globe, Cpu, LayoutGrid, ChevronDown, BookOpen, Briefcase, Award, Calendar } from 'lucide-react';
+import { Menu, X, Sun, Moon, ChevronDown, BookOpen, Briefcase, Award, Calendar } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import TopFeatureNav from '../TopFeatureNav';
 
