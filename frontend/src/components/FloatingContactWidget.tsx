@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { FaWhatsapp, FaPhone, FaEnvelope } from 'react-icons/fa';
 import { HiChatBubbleLeftRight } from 'react-icons/hi2';
 import { X } from 'lucide-react';
@@ -48,25 +48,23 @@ const CONTACT_ACTIONS: ContactAction[] = [
   },
 ];
 
+const MATERIAL_EASING: [number, number, number, number] = [0.4, 0, 0.2, 1];
+const STAGGER_DELAY = 0.04;
+
 const FloatingContactWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleClickOutside = useCallback((e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (!target.closest('.floating-contact-widget')) {
-      setIsOpen(false);
-    }
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
   }, []);
 
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('click', handleClickOutside);
-    }
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, [isOpen, handleClickOutside]);
+  const handleBackdropClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    handleClose();
+  }, [handleClose]);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -99,32 +97,9 @@ const FloatingContactWidget = () => {
 
   const getItemFinalPosition = (index: number) => {
     const verticalSpacing = 56;
-    const horizontalOffset = index * 6;
-    
     return {
-      x: horizontalOffset,
+      x: 0,
       y: -(index + 1) * verticalSpacing,
-    };
-  };
-
-  const getCircularPath = (index: number, finalPos: { x: number; y: number }) => {
-    const baseRadius = 40;
-    const radiusGrowth = 12;
-    const radius = baseRadius + (index * radiusGrowth);
-    
-    const angle1 = 30;
-    const angle2 = 60;
-    
-    const mid1X = Math.cos(angle1 * Math.PI / 180) * radius;
-    const mid1Y = -Math.sin(angle1 * Math.PI / 180) * radius;
-    
-    const mid2X = Math.cos(angle2 * Math.PI / 180) * radius * 0.7;
-    const mid2Y = -Math.sin(angle2 * Math.PI / 180) * radius * 1.2;
-    
-    return {
-      x: [0, mid1X, mid2X, finalPos.x],
-      y: [0, mid1Y, mid2Y, finalPos.y],
-      rotate: [-180, -90, -30, 0],
     };
   };
 
@@ -139,9 +114,8 @@ const FloatingContactWidget = () => {
       x: 0,
       scale: 1,
       transition: {
-        type: 'spring' as const,
-        stiffness: 300,
-        damping: 25,
+        duration: 0.2,
+        ease: MATERIAL_EASING,
       }
     },
     exit: { 
@@ -150,71 +124,77 @@ const FloatingContactWidget = () => {
       scale: 0.9,
       transition: {
         duration: 0.15,
+        ease: MATERIAL_EASING,
       }
     },
   };
 
   return (
-    <div 
-      className="floating-contact-widget fixed left-5 top-1/2 -translate-y-1/2 z-50"
-      aria-label="Contact options"
-      style={{ overflow: 'visible' }}
-    >
-      <div className="relative" style={{ width: '56px', height: '56px' }}>
-        <AnimatePresence mode="sync">
-          {isOpen && CONTACT_ACTIONS.map((action, index) => {
-            const Icon = action.icon;
-            const isHovered = hoveredItem === action.label;
-            const finalPosition = getItemFinalPosition(index);
-            const totalItems = CONTACT_ACTIONS.length;
-            const delay = index * 0.1;
-            const exitDelay = (totalItems - 1 - index) * 0.06;
-            const path = getCircularPath(index, finalPosition);
-            
-            const buttonContent = (
-              <motion.div
-                initial={{ 
-                  opacity: 0, 
-                  scale: 0,
-                  x: 0,
-                  y: 0,
-                  rotate: -180,
-                }}
-                animate={{ 
-                  opacity: 1, 
-                  scale: 1,
-                  x: path.x,
-                  y: path.y,
-                  rotate: path.rotate,
-                }}
-                exit={{ 
-                  opacity: 0, 
-                  scale: 0,
-                  x: [...path.x].reverse(),
-                  y: [...path.y].reverse(),
-                  rotate: [...path.rotate].reverse(),
-                  transition: {
-                    duration: 0.5,
-                    delay: exitDelay,
-                    ease: [0.4, 0, 0.2, 1],
-                    times: [0, 0.3, 0.6, 1],
-                  }
-                }}
-                transition={{
-                  duration: 0.7,
-                  delay: delay,
-                  ease: [0.22, 1, 0.36, 1],
-                  times: [0, 0.25, 0.6, 1],
-                }}
-                className="absolute flex items-center group cursor-pointer"
-                style={{
-                  left: '7px',
-                  top: '7px',
-                  zIndex: totalItems - index,
-                }}
-                onMouseEnter={() => setHoveredItem(action.label)}
-                onMouseLeave={() => setHoveredItem(null)}
-              >
+    <>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="fixed inset-0 z-40"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: MATERIAL_EASING }}
+            onClick={handleBackdropClick}
+            aria-hidden="true"
+          />
+        )}
+      </AnimatePresence>
+
+      <div 
+        className="floating-contact-widget fixed left-5 top-1/2 -translate-y-1/2 z-50"
+        aria-label="Contact options"
+        style={{ overflow: 'visible' }}
+      >
+        <div className="relative" style={{ width: '56px', height: '56px' }}>
+          <AnimatePresence mode="sync">
+            {isOpen && CONTACT_ACTIONS.map((action, index) => {
+              const Icon = action.icon;
+              const isHovered = hoveredItem === action.label;
+              const finalPosition = getItemFinalPosition(index);
+              const totalItems = CONTACT_ACTIONS.length;
+              const enterDelay = index * STAGGER_DELAY;
+              const exitDelay = (totalItems - 1 - index) * STAGGER_DELAY;
+              
+              const buttonContent = (
+                <motion.div
+                  initial={{ 
+                    opacity: 0, 
+                    y: 20,
+                  }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: finalPosition.y,
+                    x: finalPosition.x,
+                  }}
+                  exit={{ 
+                    opacity: 0, 
+                    y: 20,
+                    transition: {
+                      duration: 0.2,
+                      delay: exitDelay,
+                      ease: MATERIAL_EASING,
+                    }
+                  }}
+                  transition={{
+                    duration: 0.25,
+                    delay: enterDelay,
+                    ease: MATERIAL_EASING,
+                  }}
+                  className="absolute flex items-center group cursor-pointer"
+                  style={{
+                    left: '7px',
+                    top: '7px',
+                    zIndex: totalItems - index,
+                  }}
+                  onMouseEnter={() => setHoveredItem(action.label)}
+                  onMouseLeave={() => setHoveredItem(null)}
+                >
                 <motion.div
                   className="w-11 h-11 rounded-full flex items-center justify-center relative overflow-hidden"
                   style={{
@@ -329,7 +309,7 @@ const FloatingContactWidget = () => {
                 : '0 8px 32px rgba(6, 182, 212, 0.5), inset 0 1px 0 rgba(255,255,255,0.2)',
             }}
             animate={{
-              rotate: isOpen ? 90 : 0,
+              rotate: isOpen ? 45 : 0,
             }}
             whileHover={{ 
               scale: 1.08,
@@ -406,6 +386,7 @@ const FloatingContactWidget = () => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };
 
