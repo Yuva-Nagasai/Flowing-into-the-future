@@ -15,6 +15,12 @@ export default function ProductGrid({ products, loading = false, columns = 4 }: 
   const { theme } = useTheme();
   const { addToCart, addToWishlist, removeFromWishlist, isInWishlist, isAuthenticated } = useShopAuth();
 
+  const productCardBase =
+    theme === 'dark'
+      ? 'bg-slate-900/80 border border-slate-700/70 backdrop-blur-sm'
+      : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border border-accent-red/30 shadow-lg';
+  const productCardHover = theme === 'dark' ? 'hover:border-electric-blue/50' : 'hover:shadow-2xl';
+
   const gridCols = {
     2: 'grid-cols-1 sm:grid-cols-2',
     3: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
@@ -90,12 +96,8 @@ export default function ProductGrid({ products, loading = false, columns = 4 }: 
             transition={{ delay: index * 0.05 }}
           >
             <Link
-              to={`/shop/product/${product.slug}`}
-              className={`group block rounded-2xl overflow-hidden transition-all hover:scale-[1.02] ${
-                theme === 'dark'
-                  ? 'bg-slate-800 hover:bg-slate-800/80 border border-slate-700 hover:border-electric-blue/50'
-                  : 'bg-white hover:bg-gray-50 border border-gray-200 shadow-sm hover:shadow-lg'
-              }`}
+              to={`/shop/products/${product.slug}`}
+              className={`group block rounded-2xl overflow-hidden transition-all hover:scale-[1.02] flex flex-col h-full ${productCardBase} ${productCardHover}`}
             >
               <div className="aspect-square relative overflow-hidden">
                 {product.thumbnail || product.images[0] ? (
@@ -165,7 +167,7 @@ export default function ProductGrid({ products, loading = false, columns = 4 }: 
                     </>
                   )}
                   <Link
-                    to={`/shop/product/${product.slug}`}
+                    to={`/shop/products/${product.slug}`}
                     className={`p-2 rounded-full transition-colors ${
                       theme === 'dark'
                         ? 'bg-slate-700 text-white hover:bg-slate-600'
@@ -178,27 +180,27 @@ export default function ProductGrid({ products, loading = false, columns = 4 }: 
                 </div>
               </div>
 
-              <div className="p-4">
+              <div className="p-4 flex flex-col flex-1">
                 {product.category && (
-                  <p className={`text-xs font-medium uppercase tracking-wide mb-1 ${
+                  <p className={`text-xs font-medium uppercase tracking-wide mb-1 flex-shrink-0 ${
                     theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
                   }`}>
                     {product.category.name}
                   </p>
                 )}
-                <h3 className={`font-semibold mb-2 line-clamp-1 ${
+                <h3 className={`font-semibold mb-2 line-clamp-1 min-h-[1.5rem] flex-shrink-0 ${
                   theme === 'dark' ? 'text-white' : 'text-gray-900'
                 }`}>
                   {product.name}
                 </h3>
-                <p className={`text-sm mb-3 line-clamp-2 ${
+                <p className={`text-sm mb-3 line-clamp-2 min-h-[2.5rem] flex-shrink-0 ${
                   theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                 }`}>
                   {product.shortDescription || product.description}
                 </p>
 
                 {product.totalReviews > 0 && (
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center gap-2 mb-3 flex-shrink-0">
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
                         <Star
@@ -217,18 +219,22 @@ export default function ProductGrid({ products, loading = false, columns = 4 }: 
                   </div>
                 )}
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mt-auto">
                   <div className="flex items-center gap-2">
-                    <span className={`text-lg font-bold ${
-                      theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
-                    }`}>
-                      ${parseFloat(product.price).toFixed(2)}
+                    <span
+                      className={`text-lg font-bold ${
+                        theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
+                      }`}
+                    >
+                      ₹{parseFloat(product.price).toFixed(2)}
                     </span>
                     {product.comparePrice && (
-                      <span className={`text-sm line-through ${
-                        theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                      }`}>
-                        ${parseFloat(product.comparePrice).toFixed(2)}
+                      <span
+                        className={`text-sm line-through ${
+                          theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                        }`}
+                      >
+                        ₹{parseFloat(product.comparePrice).toFixed(2)}
                       </span>
                     )}
                   </div>

@@ -5,21 +5,20 @@ import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import SEO from '../../components/SEO';
 
 const AISolutions = () => {
   const { theme } = useTheme();
 
-  useEffect(() => {
-    document.title = 'AI Solutions - Nano Flows | Artificial Intelligence Services';
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Nano Flows delivers cutting-edge AI solutions including machine learning, deep learning, NLP, and predictive analytics. Transform your business with intelligent automation.');
-    }
-  }, []);
-
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
-      <Header />
+    <>
+      <SEO
+        title="AI Solutions - NanoFlows | Artificial Intelligence Services"
+        description="NanoFlows delivers cutting-edge AI solutions including machine learning, deep learning, NLP, and predictive analytics. Transform your business with intelligent automation."
+        keywords="AI solutions, artificial intelligence, machine learning, deep learning, NLP, predictive analytics, intelligent automation"
+      />
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+        <Header />
       <main className="pt-24 lg:pt-32">
         {/* Hero Section */}
         <section className={`relative py-12 sm:py-16 md:py-20 overflow-hidden ${
@@ -221,7 +220,8 @@ const AISolutions = () => {
         </section>
       </main>
       <Footer />
-    </div>
+      </div>
+    </>
   );
 };
 

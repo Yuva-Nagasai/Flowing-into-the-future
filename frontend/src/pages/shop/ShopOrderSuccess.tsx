@@ -194,14 +194,23 @@ export default function ShopOrderSuccess() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/shop/account"
-                className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                className={`relative group overflow-hidden inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                   theme === 'dark'
                     ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg'
                     : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg'
                 }`}
               >
-                <Download className="w-5 h-5" />
-                Access Downloads
+                <span className="relative z-10 flex items-center gap-2">
+                  <Download className="w-5 h-5" />
+                  Access Downloads
+                </span>
+                <div
+                  className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                      : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                  }`}
+                />
               </Link>
               <Link
                 to="/shop/products"
@@ -220,7 +229,7 @@ export default function ShopOrderSuccess() {
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="shop" />
     </div>
   );
 }

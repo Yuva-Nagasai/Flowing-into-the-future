@@ -17,6 +17,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import ELearningNav from '../../components/elearning/ELearningNav';
+import Footer from '../../components/Footer';
+import SEO from '../../components/SEO';
 
 import instructorImage1 from '@assets/stock_images/professional_instruc_7306e577.jpg';
 import instructorImage2 from '@assets/stock_images/professional_instruc_7274a63f.jpg';
@@ -31,22 +33,26 @@ const AboutPage = () => {
     {
       icon: Target,
       title: 'Excellence',
-      description: 'We strive for the highest quality in everything we do, from course content to student support.'
+      description: 'We strive for the highest quality in everything we do, from course content to student support.',
+      color: 'from-blue-500 to-cyan-500'
     },
     {
       icon: Heart,
       title: 'Passion',
-      description: 'We are passionate about education and believe in the transformative power of learning.'
+      description: 'We are passionate about education and believe in the transformative power of learning.',
+      color: 'from-pink-500 to-rose-500'
     },
     {
       icon: Users,
       title: 'Community',
-      description: 'We foster a supportive community where learners and educators grow together.'
+      description: 'We foster a supportive community where learners and educators grow together.',
+      color: 'from-green-500 to-emerald-500'
     },
     {
       icon: Lightbulb,
       title: 'Innovation',
-      description: 'We continuously innovate to provide the best learning experience using cutting-edge technology.'
+      description: 'We continuously innovate to provide the best learning experience using cutting-edge technology.',
+      color: 'from-purple-500 to-violet-500'
     }
   ];
 
@@ -93,9 +99,15 @@ const AboutPage = () => {
   ];
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${
-      theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'
-    }`}>
+    <>
+      <SEO
+        title="About | NanoFlows Academy"
+        description="Learn about NanoFlows Academy - your gateway to professional development, skill enhancement, and world-class e-learning."
+        keywords="about academy, e-learning platform, online education, professional development"
+      />
+      <div className={`min-h-screen transition-colors duration-300 ${
+        theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'
+      }`}>
       <ELearningNav />
 
       {/* Hero Section */}
@@ -127,7 +139,11 @@ const AboutPage = () => {
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
               Empowering the Next Generation of{' '}
-              <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
                 Tech Leaders
               </span>
             </h1>
@@ -190,7 +206,11 @@ const AboutPage = () => {
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>
                 Breaking Barriers in{' '}
-                <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>
+                <span className={`bg-gradient-to-r ${
+                  theme === 'dark'
+                    ? 'from-electric-green to-electric-blue'
+                    : 'from-accent-red to-accent-blue'
+                } bg-clip-text text-transparent`}>
                   Tech Education
                 </span>
               </h2>
@@ -266,7 +286,11 @@ const AboutPage = () => {
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
               What Drives{' '}
-              <span className={theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'}>
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
                 Us Forward
               </span>
             </h2>
@@ -284,14 +308,10 @@ const AboutPage = () => {
                 className={`p-8 rounded-2xl border-2 text-center transition-all ${
                   theme === 'dark'
                     ? 'bg-dark-lighter border-gray-800 hover:border-electric-blue'
-                    : 'bg-gray-50 border-gray-200 hover:border-accent-blue'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 hover:border-accent-blue'
                 }`}
               >
-                <div className={`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-6 ${
-                  theme === 'dark'
-                    ? 'bg-gradient-to-br from-electric-blue to-electric-green'
-                    : 'bg-gradient-to-br from-accent-red to-accent-blue'
-                }`}>
+                <div className={`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-6 bg-gradient-to-br ${value.color}`}>
                   <value.icon className="w-8 h-8 text-white" />
                 </div>
                 <h3 className={`text-xl font-bold mb-3 ${
@@ -328,7 +348,11 @@ const AboutPage = () => {
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
               Milestones That{' '}
-              <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
                 Define Us
               </span>
             </h2>
@@ -359,7 +383,9 @@ const AboutPage = () => {
                   } ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'}`} />
                 </div>
                 <div className={`flex-1 p-6 rounded-2xl ${
-                  theme === 'dark' ? 'bg-dark-card' : 'bg-white'
+                  theme === 'dark'
+                    ? 'bg-dark-card'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10'
                 } shadow-lg`}>
                   <h3 className={`text-xl font-bold mb-2 ${
                     theme === 'dark' ? 'text-white' : 'text-gray-900'
@@ -396,7 +422,11 @@ const AboutPage = () => {
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
               Meet the{' '}
-              <span className={theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'}>
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
                 Experts
               </span>
             </h2>
@@ -419,7 +449,7 @@ const AboutPage = () => {
                 className={`rounded-2xl overflow-hidden border-2 transition-all ${
                   theme === 'dark'
                     ? 'bg-dark-lighter border-gray-800 hover:border-electric-blue'
-                    : 'bg-gray-50 border-gray-200 hover:border-accent-blue'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 hover:border-accent-blue'
                 }`}
               >
                 <div className="aspect-[4/3] overflow-hidden">
@@ -485,7 +515,11 @@ const AboutPage = () => {
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
               Ready to Join Our{' '}
-              <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
                 Community?
               </span>
             </h2>
@@ -498,32 +532,31 @@ const AboutPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/academy/signup')}
-              className={`px-10 py-5 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto shadow-2xl ${
+              className={`relative group overflow-hidden px-10 py-5 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto shadow-2xl transition-all duration-300 ${
                 theme === 'dark'
                   ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg hover:shadow-electric-green/50'
                   : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-accent-red/50'
               }`}
             >
+              <span className="relative z-10 flex items-center gap-2">
               Get Started Free
               <ArrowRight className="w-5 h-5" />
+              </span>
+              <div
+                className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                    : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                }`}
+              />
             </motion.button>
           </motion.div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className={`py-8 border-t ${
-        theme === 'dark' ? 'bg-dark-bg border-gray-800' : 'bg-gray-50 border-gray-200'
-      }`}>
-        <div className="container mx-auto px-4 lg:px-8">
-          <p className={`text-center text-sm ${
-            theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-          }`}>
-            © 2024 NanoFlows Academy. All rights reserved.
-          </p>
-        </div>
-      </footer>
-    </div>
+      <Footer variant="elearning" />
+      </div>
+    </>
   );
 };
 

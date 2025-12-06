@@ -11,10 +11,38 @@ import SEOHead from '../../components/shop/SEOHead';
 import shopApi from '../../utils/shopApi';
 
 const metrics = [
-  { icon: Users, label: 'Happy Customers', value: '50,000+', change: '+12%', color: 'from-blue-500 to-cyan-500' },
-  { icon: ShoppingCart, label: 'Orders Completed', value: '125,000+', change: '+8%', color: 'from-green-500 to-emerald-500' },
-  { icon: Package, label: 'Products Delivered', value: '180,000+', change: '+15%', color: 'from-purple-500 to-violet-500' },
-  { icon: Star, label: 'Average Rating', value: '4.9/5', change: '+0.2', color: 'from-amber-500 to-orange-500' },
+  {
+    icon: Globe,
+    title: 'Monthly Reach',
+    value: '128.4K',
+    change: '+12.4%',
+    description: 'Visitors touched the store',
+    color: 'from-blue-500 to-cyan-500',
+  },
+  {
+    icon: Users,
+    title: 'Qualified Leads',
+    value: '3,240',
+    change: '+8.1%',
+    description: 'Forms & demos requested',
+    color: 'from-emerald-500 to-green-500',
+  },
+  {
+    icon: MessageCircle,
+    title: 'Conversation Rate',
+    value: '27%',
+    change: '+3.2%',
+    description: 'Chats that became sales calls',
+    color: 'from-purple-500 to-violet-500',
+  },
+  {
+    icon: Clock,
+    title: 'Avg. Response',
+    value: '1h 12m',
+    change: '-18m',
+    description: 'Median reply time',
+    color: 'from-amber-500 to-orange-500',
+  },
 ];
 
 const salesData = [
@@ -80,10 +108,22 @@ export default function ShopContact() {
   };
 
   const contactInfo = [
-    { icon: Mail, label: 'Email Us', value: 'support@digitalhub.store', href: 'mailto:support@digitalhub.store' },
-    { icon: Phone, label: 'Call Us', value: '+1 (555) 123-4567', href: 'tel:+15551234567' },
-    { icon: Clock, label: 'Support Hours', value: '24/7 Digital Support', href: '#' },
-    { icon: Globe, label: 'Website', value: 'www.digitalhub.store', href: '#' },
+    {
+      icon: Mail,
+      label: 'Email Us',
+      value: 'nanoflowsvizag@gmail.com',
+      href: 'mailto:nanoflowsvizag@gmail.com',
+      color: 'from-blue-500 to-cyan-500'
+    },
+    {
+      icon: Phone,
+      label: 'Call Us',
+      value: '+91 8019358855',
+      href: 'tel:+918019358855',
+      color: 'from-pink-500 to-rose-500'
+    },
+    { icon: Clock, label: 'Support Hours', value: 'Mon-Sat, 9:30 AM - 6:30 PM IST', href: '#', color: 'from-amber-500 to-orange-500' },
+    { icon: Globe, label: 'Website', value: 'www.nanoflows.com', href: 'https://www.nanoflows.com', color: 'from-emerald-500 to-green-500' },
   ];
 
   const maxSalesValue = Math.max(...salesData.map(d => d.value));
@@ -137,39 +177,111 @@ export default function ShopContact() {
 
       <section className="py-12">
         <div className="container mx-auto px-4 lg:px-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {metrics.map((metric, index) => (
-              <motion.div
-                key={metric.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`p-6 rounded-2xl ${
-                  theme === 'dark'
-                    ? 'bg-slate-800/50 border border-slate-700'
-                    : 'bg-white border border-gray-200 shadow-sm'
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
+            <div>
+              <p
+                className={`text-xs font-semibold tracking-[0.25em] uppercase mb-2 ${
+                  theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
                 }`}
               >
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${metric.color}`}>
-                    <metric.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <span className={`text-sm font-medium px-2 py-1 rounded-full ${
-                    theme === 'dark' ? 'bg-electric-green/20 text-electric-green' : 'bg-green-100 text-green-600'
-                  }`}>
-                    {metric.change}
-                  </span>
-                </div>
-                <h3 className={`text-2xl font-bold mb-1 ${
+                Engagement Pulse
+              </p>
+              <h2
+                className={`text-2xl md:text-3xl font-bold ${
                   theme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`}>
-                  {metric.value}
-                </h3>
-                <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                  {metric.label}
-                </p>
-              </motion.div>
-            ))}
+                }`}
+              >
+                See how people reach out before they even submit a form.
+              </h2>
+            </div>
+
+            <div className="inline-flex items-center gap-2 self-start">
+              {['7 days', '30 days', '90 days'].map((label) => {
+                const isActive = label === '30 days';
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    className={`px-3.5 py-2 rounded-full text-xs font-medium border transition-all ${
+                      isActive
+                        ? theme === 'dark'
+                          ? 'bg-orange-500/20 border-orange-500 text-orange-200'
+                          : 'bg-orange-500 text-white border-orange-500 shadow-sm'
+                        : theme === 'dark'
+                          ? 'border-slate-700 text-gray-400 hover:bg-slate-800'
+                          : 'border-gray-300 text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            {metrics.map((metric, index) => {
+              const Icon = metric.icon;
+              const isNegative = metric.change.trim().startsWith('-');
+
+              return (
+                <motion.div
+                  key={metric.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  className={`p-6 rounded-2xl border ${
+                    theme === 'dark'
+                      ? 'bg-slate-900/80 border-slate-700/70 backdrop-blur-sm'
+                      : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 backdrop-blur-sm shadow-lg'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-6">
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br ${metric.color} shadow-lg`}
+                    >
+                      <Icon className="w-5 h-5 text-white" />
+                    </div>
+                    <span
+                      className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                        isNegative
+                          ? theme === 'dark'
+                            ? 'bg-red-500/10 text-red-400'
+                            : 'bg-red-100 text-red-600'
+                          : theme === 'dark'
+                            ? 'bg-emerald-500/10 text-emerald-300'
+                            : 'bg-emerald-100 text-emerald-600'
+                      }`}
+                    >
+                      {metric.change}
+                    </span>
+                  </div>
+
+                  <p
+                    className={`text-sm mb-1 ${
+                      theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                    }`}
+                  >
+                    {metric.title}
+                  </p>
+                  <p
+                    className={`text-3xl font-bold mb-1 ${
+                      theme === 'dark' ? 'text-white' : 'text-gray-900'
+                    }`}
+                  >
+                    {metric.value}
+                  </p>
+                  <p
+                    className={`text-xs ${
+                      theme === 'dark' ? 'text-gray-500' : 'text-gray-600'
+                    }`}
+                  >
+                    {metric.description}
+                  </p>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -180,16 +292,23 @@ export default function ShopContact() {
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className={`p-6 rounded-2xl ${
+              className={`p-6 rounded-2xl border ${
                 theme === 'dark'
-                  ? 'bg-slate-800/50 border border-slate-700'
-                  : 'bg-white border border-gray-200 shadow-sm'
+                  ? 'bg-slate-900/80 border-slate-700/70 backdrop-blur-sm'
+                  : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 backdrop-blur-sm shadow-lg'
               }`}
             >
               <h3 className={`text-lg font-semibold mb-6 ${
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>
-                Monthly Sales Performance
+                Monthly{' '}
+                <span className={
+                  theme === 'dark'
+                    ? 'text-transparent bg-clip-text bg-gradient-to-r from-electric-green to-electric-blue'
+                    : 'text-transparent bg-clip-text bg-gradient-to-r from-accent-red to-accent-blue'
+                }>
+                  Sales Performance
+                </span>
               </h3>
               <div className="flex items-end justify-between h-48 gap-4">
                 {salesData.map((data, index) => (
@@ -232,16 +351,23 @@ export default function ShopContact() {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className={`p-6 rounded-2xl ${
+              className={`p-6 rounded-2xl border ${
                 theme === 'dark'
-                  ? 'bg-slate-800/50 border border-slate-700'
-                  : 'bg-white border border-gray-200 shadow-sm'
+                  ? 'bg-slate-900/80 border-slate-700/70 backdrop-blur-sm'
+                  : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 backdrop-blur-sm shadow-lg'
               }`}
             >
               <h3 className={`text-lg font-semibold mb-6 ${
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>
-                Category Performance
+                Category{' '}
+                <span className={
+                  theme === 'dark'
+                    ? 'text-transparent bg-clip-text bg-gradient-to-r from-electric-green to-electric-blue'
+                    : 'text-transparent bg-clip-text bg-gradient-to-r from-accent-red to-accent-blue'
+                }>
+                  Performance
+                </span>
               </h3>
               <div className="space-y-5">
                 {categoryProgress.map((category, index) => (
@@ -284,15 +410,22 @@ export default function ShopContact() {
               animate={{ opacity: 1, x: 0 }}
               className="space-y-6"
             >
-              <div className={`p-6 rounded-2xl ${
+              <div className={`p-6 rounded-2xl border ${
                 theme === 'dark'
-                  ? 'bg-slate-800/50 border border-slate-700'
-                  : 'bg-white border border-gray-200 shadow-sm'
+                  ? 'bg-slate-900/80 border-slate-700/70 backdrop-blur-sm'
+                  : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 backdrop-blur-sm shadow-lg'
               }`}>
                 <h3 className={`text-xl font-bold mb-6 ${
                   theme === 'dark' ? 'text-white' : 'text-gray-900'
                 }`}>
-                  Contact Information
+                  Contact{' '}
+                  <span className={
+                    theme === 'dark'
+                      ? 'text-transparent bg-clip-text bg-gradient-to-r from-electric-green to-electric-blue'
+                      : 'text-transparent bg-clip-text bg-gradient-to-r from-accent-red to-accent-blue'
+                  }>
+                    Information
+                  </span>
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {contactInfo.map((item) => (
@@ -305,12 +438,8 @@ export default function ShopContact() {
                           : 'bg-gray-50 hover:bg-gray-100'
                       }`}
                     >
-                      <div className={`p-3 rounded-lg ${
-                        theme === 'dark' ? 'bg-electric-blue/20' : 'bg-accent-blue/10'
-                      }`}>
-                        <item.icon className={`w-5 h-5 ${
-                          theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'
-                        }`} />
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br ${item.color} shadow-lg`}>
+                        <item.icon className="w-5 h-5 text-white" />
                       </div>
                       <div>
                         <h4 className={`font-medium ${
@@ -327,10 +456,10 @@ export default function ShopContact() {
                 </div>
               </div>
 
-              <div className={`rounded-2xl overflow-hidden ${
+              <div className={`rounded-2xl overflow-hidden border ${
                 theme === 'dark'
-                  ? 'bg-slate-800/50 border border-slate-700'
-                  : 'bg-white border border-gray-200 shadow-sm'
+                  ? 'bg-slate-900/80 border-slate-700/70 backdrop-blur-sm'
+                  : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 backdrop-blur-sm shadow-lg'
               }`}>
                 <div className={`p-4 border-b ${
                   theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
@@ -348,7 +477,7 @@ export default function ShopContact() {
                 </div>
                 <div className={`h-64 ${theme === 'dark' ? 'bg-slate-700' : 'bg-gray-200'}`}>
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.2219901290355!2d-74.00369368400567!3d40.71312937933185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sin!4v1639988293073!5m2!1sen!2sin"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3798.7308590340035!2d83.20767237517455!3d17.80434178315571!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a39678013ee404f%3A0x184b35589f4bb765!2sNanoflows%20AI%20Software%20Technologies%20Private%20Limited!5e0!3m2!1sen!2sin!4v1762760607244!5m2!1sen!2sin"
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}
@@ -360,7 +489,7 @@ export default function ShopContact() {
                 </div>
                 <div className={`p-4 ${theme === 'dark' ? 'bg-slate-800' : 'bg-gray-50'}`}>
                   <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                    123 Digital Hub Street, Tech District, NY 10001, USA
+                    TF-301, 1-152, Sapthagiri Nagar, Revenue Ward-70, Near Chinamushidiwada, Visakhapatnam - 530051
                   </p>
                 </div>
               </div>
@@ -369,16 +498,23 @@ export default function ShopContact() {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className={`p-8 rounded-2xl ${
+              className={`p-8 rounded-2xl border ${
                 theme === 'dark'
-                  ? 'bg-slate-800 border border-slate-700'
-                  : 'bg-white border border-gray-200 shadow-sm'
+                  ? 'bg-slate-900/80 border-slate-700/70 backdrop-blur-sm'
+                  : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 backdrop-blur-sm shadow-lg'
               }`}
             >
               <h2 className={`text-2xl font-bold mb-2 ${
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>
-                Send Us a Message
+                Send Us a{' '}
+                <span className={
+                  theme === 'dark'
+                    ? 'text-transparent bg-clip-text bg-gradient-to-r from-electric-green to-electric-blue'
+                    : 'text-transparent bg-clip-text bg-gradient-to-r from-accent-red to-accent-blue'
+                }>
+                  Message
+                </span>
               </h2>
               <p className={`mb-6 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                 Fill out the form below and we'll get back to you within 24 hours.
@@ -498,7 +634,7 @@ export default function ShopContact() {
                 <button
                   type="submit"
                   disabled={loading || success}
-                  className={`w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all disabled:opacity-50 ${
+                  className={`relative group overflow-hidden w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 disabled:opacity-50 ${
                     success
                       ? 'bg-green-500 text-white'
                       : theme === 'dark'
@@ -506,18 +642,29 @@ export default function ShopContact() {
                         : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
                   }`}
                 >
-                  {loading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : success ? (
-                    <>
-                      <Check className="w-5 h-5" />
-                      Message Sent!
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-5 h-5" />
-                      Send Message
-                    </>
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    {loading ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : success ? (
+                      <>
+                        <Check className="w-5 h-5" />
+                        Message Sent!
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5" />
+                        Send Message
+                      </>
+                    )}
+                  </span>
+                  {!success && (
+                    <div
+                      className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                        theme === 'dark'
+                          ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                          : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                      }`}
+                    />
                   )}
                 </button>
               </form>
@@ -526,7 +673,7 @@ export default function ShopContact() {
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="shop" />
     </div>
   );
 }

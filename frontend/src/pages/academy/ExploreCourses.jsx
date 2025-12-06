@@ -7,6 +7,7 @@ import { FiSearch, FiLogOut } from 'react-icons/fi';
 import { Sun, Moon, GraduationCap, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import RoleBadge from '../../components/academy/RoleBadge';
+import SEO from '../../components/SEO';
 
 const ExploreCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -42,12 +43,18 @@ const ExploreCourses = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/academy/platform-selection');
+    navigate('/academy/dashboard');
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
-      <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${
+    <>
+      <SEO
+        title="Explore Courses | NanoFlows Academy"
+        description="Browse and explore comprehensive courses on web development, data science, mobile development, DevOps, AI & ML, and more."
+        keywords="courses, online courses, web development courses, data science courses, e-learning, academy courses"
+      />
+      <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+        <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${
         theme === 'dark' 
           ? 'border-gray-800/50 bg-dark-card/90 shadow-lg shadow-black/20' 
           : 'border-gray-200/50 bg-white/90 shadow-md shadow-gray-200/20'
@@ -56,7 +63,7 @@ const ExploreCourses = () => {
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Back Button - Total Left */}
             <motion.button
-              onClick={() => navigate('/academy/platform-selection')}
+                onClick={() => navigate('/academy/dashboard')}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
@@ -104,7 +111,7 @@ const ExploreCourses = () => {
             
             <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
             {/* Logo and Branding */}
-            <Link to="/academy/courses" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
+            <Link to="/academy/dashboard" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
               <motion.div 
                 whileHover={{ scale: 1.05, rotate: 5 }}
                 whileTap={{ scale: 0.95 }}
@@ -492,7 +499,8 @@ const ExploreCourses = () => {
           )}
         </section>
       </main>
-    </div>
+      </div>
+    </>
   );
 };
 

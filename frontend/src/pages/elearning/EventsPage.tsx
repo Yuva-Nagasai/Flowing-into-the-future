@@ -40,7 +40,8 @@ const EventsPage = () => {
       tags: ["n8n", "bootcamp"],
       icon: Zap,
       date: "Jan 15-19, 2026",
-      format: "Online"
+      format: "Online",
+      color: 'from-blue-500 to-cyan-500'
     },
     {
       id: 2,
@@ -50,7 +51,8 @@ const EventsPage = () => {
       tags: ["API", "integrations"],
       icon: Code,
       date: "Jan 22, 2026",
-      format: "Online"
+      format: "Online",
+      color: 'from-purple-500 to-indigo-500'
     },
     {
       id: 3,
@@ -60,7 +62,8 @@ const EventsPage = () => {
       tags: ["AI", "GPT"],
       icon: Bot,
       date: "Jan 28, 2026",
-      format: "Online"
+      format: "Online",
+      color: 'from-emerald-500 to-green-500'
     },
     {
       id: 4,
@@ -70,7 +73,8 @@ const EventsPage = () => {
       tags: ["webhooks"],
       icon: Webhook,
       date: "Feb 5, 2026",
-      format: "Online"
+      format: "Online",
+      color: 'from-teal-500 to-cyan-500'
     },
     {
       id: 5,
@@ -80,7 +84,8 @@ const EventsPage = () => {
       tags: ["social media"],
       icon: Share2,
       date: "Feb 12, 2026",
-      format: "Online"
+      format: "Online",
+      color: 'from-pink-500 to-rose-500'
     },
     {
       id: 6,
@@ -90,7 +95,8 @@ const EventsPage = () => {
       tags: ["ecommerce"],
       icon: ShoppingCart,
       date: "Feb 20, 2026",
-      format: "Online"
+      format: "Online",
+      color: 'from-amber-500 to-orange-500'
     },
     {
       id: 7,
@@ -100,7 +106,8 @@ const EventsPage = () => {
       tags: ["productivity"],
       icon: Briefcase,
       date: "Mar 1-5, 2026",
-      format: "Online"
+      format: "Online",
+      color: 'from-red-500 to-orange-500'
     },
     {
       id: 8,
@@ -110,7 +117,8 @@ const EventsPage = () => {
       tags: ["hosting", "n8n"],
       icon: Cloud,
       date: "Mar 10, 2026",
-      format: "Online"
+      format: "Online",
+      color: 'from-sky-500 to-blue-500'
     },
     {
       id: 9,
@@ -120,7 +128,8 @@ const EventsPage = () => {
       tags: ["CRM"],
       icon: Users,
       date: "Mar 18, 2026",
-      format: "Online"
+      format: "Online",
+      color: 'from-indigo-500 to-blue-700'
     },
     {
       id: 10,
@@ -130,7 +139,8 @@ const EventsPage = () => {
       tags: ["career", "automation"],
       icon: MapPin,
       date: "Mar 25, 2026",
-      format: "Online"
+      format: "Online",
+      color: 'from-fuchsia-500 to-purple-500'
     }
   ];
 
@@ -168,7 +178,13 @@ const EventsPage = () => {
             </span>
             
             <h1 className={`text-4xl md:text-6xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              {pageInfo.title}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Events
+              </span>
             </h1>
             
             <p className={`text-xl mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -191,16 +207,12 @@ const EventsPage = () => {
                 className={`group p-6 rounded-2xl border transition-all duration-300 hover:shadow-xl ${
                   theme === 'dark'
                     ? 'bg-dark-card border-gray-800 hover:border-electric-blue/50'
-                    : 'bg-white border-gray-200 hover:border-accent-blue/50'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 hover:border-accent-blue/60'
                 }`}
               >
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                    theme === 'dark'
-                      ? 'bg-electric-blue/20 text-electric-blue'
-                      : 'bg-accent-blue/10 text-accent-blue'
-                  }`}>
-                    <event.icon className="w-6 h-6" />
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${event.color}`}>
+                    <event.icon className="w-6 h-6 text-white" />
                   </div>
                   <span className={`text-xs font-semibold px-3 py-1 rounded-full border ${getTypeColor(event.type)}`}>
                     {event.type}
@@ -254,16 +266,25 @@ const EventsPage = () => {
                 </div>
                 
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`w-full mt-4 py-3 rounded-xl font-medium flex items-center justify-center gap-2 transition-all ${
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className={`relative group overflow-hidden w-full mt-4 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
                     theme === 'dark'
-                      ? 'bg-electric-blue/20 text-electric-blue hover:bg-electric-blue/30'
-                      : 'bg-accent-blue/10 text-accent-blue hover:bg-accent-blue/20'
+                      ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg hover:shadow-lg hover:shadow-electric-blue/25'
+                      : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
                   }`}
                 >
-                  Register Now
-                  <ArrowRight className="w-4 h-4" />
+                  <span className="relative z-10 flex items-center gap-2">
+                    Register Now
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
+                  <div
+                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                        : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                    }`}
+                  />
                 </motion.button>
               </motion.div>
             ))}
@@ -281,7 +302,14 @@ const EventsPage = () => {
           >
             <div className="text-center mb-12">
               <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                Event Types
+                Event{' '}
+                <span className={`bg-gradient-to-r ${
+                  theme === 'dark'
+                    ? 'from-electric-green to-electric-blue'
+                    : 'from-accent-red to-accent-blue'
+                } bg-clip-text text-transparent`}>
+                  Types
+                </span>
               </h2>
               <p className={`text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                 Choose the learning format that works best for you
@@ -292,23 +320,24 @@ const EventsPage = () => {
               {[
                 { 
                   title: "Bootcamps", 
-                  desc: "Multi-day intensive programs with hands-on projects and live mentorship",
-                  color: theme === 'dark' ? 'from-purple-500/20 to-purple-600/20' : 'from-purple-100 to-purple-200'
+                  desc: "Multi-day intensive programs with hands-on projects and live mentorship"
                 },
                 { 
                   title: "Workshops", 
-                  desc: "Half-day focused sessions on specific automation topics with exercises",
-                  color: theme === 'dark' ? 'from-blue-500/20 to-blue-600/20' : 'from-blue-100 to-blue-200'
+                  desc: "Half-day focused sessions on specific automation topics with exercises"
                 },
                 { 
                   title: "Webinars", 
-                  desc: "1-2 hour online sessions with expert presentations and Q&A",
-                  color: theme === 'dark' ? 'from-green-500/20 to-green-600/20' : 'from-green-100 to-green-200'
+                  desc: "1-2 hour online sessions with expert presentations and Q&A"
                 }
               ].map((type, idx) => (
                 <div
                   key={idx}
-                  className={`p-6 rounded-2xl text-center bg-gradient-to-br ${type.color}`}
+                  className={`p-6 rounded-2xl text-center ${
+                    theme === 'dark'
+                      ? 'bg-dark-bg'
+                      : 'bg-gray-50'
+                  }`}
                 >
                   <h3 className={`text-xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                     {type.title}
@@ -337,7 +366,14 @@ const EventsPage = () => {
           >
             <Calendar className={`w-16 h-16 mx-auto mb-6 ${theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}`} />
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              Never Miss an Event
+              Never Miss{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                an Event
+              </span>
             </h2>
             <p className={`text-lg mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
               Subscribe to get notified about upcoming workshops, bootcamps, and webinars.
@@ -346,20 +382,29 @@ const EventsPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/academy/signup')}
-              className={`px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto ${
+              className={`relative group overflow-hidden px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto transition-all duration-300 ${
                 theme === 'dark'
                   ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                   : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
               }`}
             >
+              <span className="relative z-10 flex items-center gap-2">
               Subscribe to Events
               <ArrowRight className="w-5 h-5" />
+              </span>
+              <div
+                className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                    : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                }`}
+              />
             </motion.button>
           </motion.div>
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="elearning" />
     </div>
   );
 };

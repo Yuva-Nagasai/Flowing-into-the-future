@@ -1,11 +1,9 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-// @ts-expect-error - JSX module
 import { useAuth } from '../contexts/AuthContext';
 import { getTheme } from '../themes/theme';
-// @ts-expect-error - JSX module
-import { aiToolsAPI } from '../utils/api.js';
+import { aiToolsAPI } from '../utils/api';
 import {
   ArrowLeft,
   Search,
@@ -39,7 +37,8 @@ interface AITool {
 
 const AIToolsShowcase = () => {
   const { theme, toggleTheme } = useTheme();
-  const { user, logout, loading: authLoading } = useAuth();
+  const authContext = useAuth() as any;
+  const { user, logout, loading: authLoading } = authContext || { user: null, logout: () => {}, loading: false };
   const navigate = useNavigate();
   const currentTheme = getTheme(theme);
   const [tools, setTools] = useState<AITool[]>([]);
@@ -49,8 +48,10 @@ const AIToolsShowcase = () => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleLogout = () => {
-    logout();
-    navigate('/academy/platform-selection');
+    if (logout && typeof logout === 'function') {
+      logout();
+    }
+    navigate('/academy/dashboard');
   };
 
   useEffect(() => {
@@ -131,7 +132,7 @@ const AIToolsShowcase = () => {
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Back Button - Total Left */}
             <motion.button
-              onClick={() => navigate('/academy/platform-selection')}
+              onClick={() => navigate('/academy/dashboard')}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}

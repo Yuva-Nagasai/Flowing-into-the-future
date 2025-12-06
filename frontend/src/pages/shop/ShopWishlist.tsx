@@ -259,7 +259,7 @@ export default function ShopWishlist() {
         </div>
       </div>
 
-      <Footer />
+      <Footer variant="shop" />
     </div>
   );
 }

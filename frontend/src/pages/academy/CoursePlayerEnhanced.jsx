@@ -9,6 +9,7 @@ import {
   FiAward, FiVideo, FiUpload
 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+import SEO from '../../components/SEO';
 
 const CoursePlayerEnhanced = () => {
   const { id } = useParams();
@@ -413,8 +414,14 @@ const CoursePlayerEnhanced = () => {
   }
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
-      {/* Header */}
+    <>
+      <SEO
+        title={course ? `Learning: ${course.title} | NanoFlows Academy` : 'Course Player | NanoFlows Academy'}
+        description={course ? `Learn ${course.title} with interactive video lessons, quizzes, and assignments.` : 'Access your course content and continue learning.'}
+        keywords={course ? `${course.title}, course player, online learning, video lessons, interactive course` : 'course player, online learning, video lessons'}
+      />
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+        {/* Header */}
       <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${
         theme === 'dark' 
           ? 'border-gray-800/50 bg-dark-card/90' 
@@ -1119,7 +1126,8 @@ const CoursePlayerEnhanced = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

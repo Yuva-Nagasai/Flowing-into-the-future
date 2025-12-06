@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Target, Users, Rocket, TrendingUp, ExternalLink, Handshake, Building2, Briefcase, Globe, Cloud, Database, Zap, Cpu, Code, Brain, Shield, LucideIcon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-import { aboutAPI } from '../utils/api.js';
+import { aboutAPI } from '../utils/api';
 
 type CompanyLogoType = {
   name: string;
@@ -246,7 +246,7 @@ const About = () => {
         const Icon = iconMap[iconName] || Target;
         
         // Transform images
-        let images: SectionImage[] = [];
+        let images: SectionImage[] | CompanyLogoType[] = [];
         if (section.images && section.images.length > 0) {
           images = section.images.map((img) => ({
             url: img.image_url || img.url || '',
@@ -284,15 +284,15 @@ const About = () => {
           title: section.title || '',
           content: section.content || '',
           images: images,
-          type: section.section_type
+          type: section.section_type || ''
         };
       });
       
       // Ensure we have all 5 sections, use defaults if missing
       const sectionTypes = ['mission', 'team', 'vision', 'growth', 'clients'];
       const finalSections = sectionTypes.map(type => {
-        const found = transformedSections.find((s) => s.type === type);
-        return found || fallbackSections.find(s => s.type === type)!;
+        const found = transformedSections.find((s: TransformedSection) => s.type === type);
+        return found || fallbackSections.find((s: TransformedSection) => s.type === type)!;
       });
       
       setSections(finalSections);
@@ -511,7 +511,7 @@ const About = () => {
                 // Company logos scrolling - duplicated for seamless loop
                 <div className="overflow-x-auto pb-4 scrollbar-hide scroll-container w-full">
                 <div className="flex gap-3 sm:gap-4 md:gap-6 animate-scroll">
-                    {[...(tabs[activeTab]?.images || []), ...(tabs[activeTab]?.images || [])].map((company: CompanyLogoType, idx: number) => (
+                    {([...(tabs[activeTab]?.images || []), ...(tabs[activeTab]?.images || [])] as CompanyLogoType[]).map((company: CompanyLogoType, idx: number) => (
                       <div
                         key={idx}
                         className={`group relative w-56 sm:w-64 flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 ${
@@ -539,7 +539,7 @@ const About = () => {
                     // Team members with portfolio links - duplicated for seamless loop
                 <div className="overflow-x-auto pb-4 scrollbar-hide scroll-container w-full">
                   <div className="flex gap-3 sm:gap-4 md:gap-6 animate-scroll">
-                    {[...(tabs[activeTab]?.images || []), ...(tabs[activeTab]?.images || [])].map((member: SectionImage, idx: number) => (
+                    {([...(tabs[activeTab]?.images || []), ...(tabs[activeTab]?.images || [])] as SectionImage[]).map((member: SectionImage, idx: number) => (
                       <div
                         key={idx}
                         className={`relative group w-48 sm:w-56 rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 ${
@@ -578,7 +578,7 @@ const About = () => {
                     // Regular images with titles and descriptions - duplicated for seamless loop
                 <div className="overflow-x-auto pb-4 scrollbar-hide scroll-container w-full">
                   <div className="flex gap-3 sm:gap-4 md:gap-6 animate-scroll">
-                    {[...(tabs[activeTab]?.images || []), ...(tabs[activeTab]?.images || [])].map((img: SectionImage, idx: number) => (
+                    {([...(tabs[activeTab]?.images || []), ...(tabs[activeTab]?.images || [])] as SectionImage[]).map((img: SectionImage, idx: number) => (
                       <div
                         key={idx}
                         className={`relative group w-72 sm:w-80 flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 ${

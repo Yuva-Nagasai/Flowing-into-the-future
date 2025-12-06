@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Database, Shield, Server, Cpu } from 'lucide-react';
 import ProductCategoryTemplate from '../../components/products/ProductCategoryTemplate';
+import SEO from '../../components/SEO';
 
 const platformFeatures = [
   {
@@ -123,7 +124,16 @@ const UnifiedDataPlatform = () => {
     document.title = 'Unified Data Platform - Nano Flows Products';
   }, []);
 
-  return <ProductCategoryTemplate {...pageContent} />;
+  return (
+    <>
+      <SEO
+        title="Unified Data Platform - NanoFlows"
+        description="Connected data fabric, real-time activation, 360° access control, and cloud-native infrastructure for unified customer data management."
+        keywords="unified data platform, data fabric, customer data platform, CDP, data integration, data management"
+      />
+      <ProductCategoryTemplate {...pageContent} />
+    </>
+  );
 };
 
 export default UnifiedDataPlatform;

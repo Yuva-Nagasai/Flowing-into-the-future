@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import ELearningNav from '../../components/elearning/ELearningNav';
+import Footer from '../../components/Footer';
 import { coursesAPI } from '../../utils/api';
 
 interface Course {
@@ -204,7 +205,11 @@ const CoursesPage = () => {
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
               Explore Our{' '}
-              <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
                 Courses
               </span>
             </h1>
@@ -240,14 +245,23 @@ const CoursesPage = () => {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`px-8 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 ${
+                  className={`relative group overflow-hidden px-8 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
                     theme === 'dark'
                       ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                       : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
                   }`}
                 >
+                  <span className="relative z-10 flex items-center justify-center gap-2">
                   <Search className="w-5 h-5" />
                   Search
+                  </span>
+                  <div
+                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                        : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                    }`}
+                  />
                 </motion.button>
               </div>
             </div>
@@ -404,7 +418,14 @@ const CoursesPage = () => {
                 <h2 className={`text-2xl font-bold ${
                   theme === 'dark' ? 'text-white' : 'text-gray-900'
                 }`}>
-                  Available Courses
+                  Available{' '}
+                  <span className={`bg-gradient-to-r ${
+                    theme === 'dark'
+                      ? 'from-electric-green to-electric-blue'
+                      : 'from-accent-red to-accent-blue'
+                  } bg-clip-text text-transparent`}>
+                    Courses
+                  </span>
                 </h2>
                 <span className={`px-4 py-2 rounded-lg text-sm ${
                   theme === 'dark' ? 'bg-dark-card text-gray-400' : 'bg-white text-gray-600'
@@ -451,7 +472,7 @@ const CoursesPage = () => {
                       transition={{ delay: idx * 0.05 }}
                       whileHover={{ y: -5 }}
                       onClick={() => handleCourseClick(course.id)}
-                      className={`rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${
+                      className={`rounded-2xl overflow-hidden border-2 transition-all cursor-pointer flex flex-col h-full ${
                         theme === 'dark'
                           ? 'bg-dark-card border-gray-800 hover:border-electric-blue'
                           : 'bg-white border-gray-200 hover:border-accent-blue'
@@ -497,8 +518,8 @@ const CoursesPage = () => {
                       </div>
 
                       {/* Course Content */}
-                      <div className="p-6">
-                        <div className="flex items-center gap-2 mb-3">
+                      <div className="p-6 flex flex-col flex-1">
+                        <div className="flex items-center gap-2 mb-3 flex-shrink-0">
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                             theme === 'dark'
                               ? 'bg-dark-lighter text-gray-400'
@@ -508,19 +529,19 @@ const CoursesPage = () => {
                           </span>
                         </div>
                         
-                        <h3 className={`text-xl font-bold mb-2 line-clamp-2 ${
+                        <h3 className={`text-xl font-bold mb-2 line-clamp-2 min-h-[3.5rem] ${
                           theme === 'dark' ? 'text-white' : 'text-gray-900'
                         }`}>
                           {course.title}
                         </h3>
                         
-                        <p className={`text-sm mb-4 line-clamp-2 ${
+                        <p className={`text-sm mb-4 line-clamp-2 min-h-[2.5rem] flex-shrink-0 ${
                           theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                         }`}>
                           {course.short_description || course.description}
                         </p>
 
-                        <div className={`flex items-center gap-4 mb-4 text-sm ${
+                        <div className={`flex items-center gap-4 mb-4 text-sm flex-shrink-0 ${
                           theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                         }`}>
                           <span className="flex items-center gap-1">
@@ -541,7 +562,7 @@ const CoursesPage = () => {
                           )}
                         </div>
 
-                        <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700 mt-auto">
                           <div>
                             <p className={`text-xs ${
                               theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
@@ -617,7 +638,14 @@ const CoursesPage = () => {
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
-              Ready to Start Learning?
+              Ready to Start{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Learning?
+              </span>
             </h2>
             <p className={`text-lg mb-8 max-w-2xl mx-auto ${
               theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
@@ -629,31 +657,29 @@ const CoursesPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/academy/signup')}
-              className={`px-8 py-4 rounded-xl font-bold flex items-center gap-2 mx-auto ${
+              className={`relative group overflow-hidden px-8 py-4 rounded-xl font-bold flex items-center gap-2 mx-auto transition-all duration-300 ${
                 theme === 'dark'
                   ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                   : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
               }`}
             >
+              <span className="relative z-10 flex items-center gap-2">
               <Play className="w-5 h-5" />
               Start Learning Now
+              </span>
+              <div
+                className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                    : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                }`}
+              />
             </motion.button>
           </motion.div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className={`py-8 border-t ${
-        theme === 'dark' ? 'bg-dark-bg border-gray-800' : 'bg-gray-50 border-gray-200'
-      }`}>
-        <div className="container mx-auto px-4 lg:px-8">
-          <p className={`text-center text-sm ${
-            theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-          }`}>
-            © 2024 NanoFlows Academy. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer variant="elearning" />
     </div>
   );
 };

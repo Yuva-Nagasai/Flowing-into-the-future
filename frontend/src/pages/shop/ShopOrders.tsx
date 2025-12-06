@@ -271,20 +271,29 @@ export default function ShopOrders() {
               </p>
               <Link
                 to="/shop/products"
-                className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                className={`relative group overflow-hidden inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                   theme === 'dark'
                     ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg'
                     : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg'
                 }`}
               >
-                Browse Products
+                <span className="relative z-10">
+                  Browse Products
+                </span>
+                <div
+                  className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                      : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                  }`}
+                />
               </Link>
             </motion.div>
           )}
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="shop" />
     </div>
   );
 }

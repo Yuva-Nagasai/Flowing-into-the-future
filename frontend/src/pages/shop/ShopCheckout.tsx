@@ -84,26 +84,56 @@ export default function ShopCheckout() {
       <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-950' : 'bg-gray-50'}`}>
         <SEOHead title="Checkout" description="Complete your purchase" />
         <ShopNav />
-        <div className="container mx-auto px-4 lg:px-6 py-20 text-center">
-          <ShoppingBag className={`w-20 h-20 mx-auto mb-4 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'}`} />
-          <h1 className={`text-2xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-            Your Cart is Empty
-          </h1>
-          <p className={`mb-6 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-            Add some items to checkout
-          </p>
-          <Link
-            to="/shop/products"
-            className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+        <div className="container mx-auto px-4 lg:px-6 py-20">
+          <div
+            className={`max-w-md mx-auto text-center py-16 rounded-2xl ${
               theme === 'dark'
-                ? 'bg-electric-green text-slate-900 hover:bg-electric-green/90'
-                : 'bg-accent-blue text-white hover:bg-accent-blue/90'
+                ? 'bg-gradient-to-br from-electric-blue/15 to-electric-green/15 border border-electric-blue/30'
+                : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border border-accent-red/30'
             }`}
           >
-            Browse Products
-          </Link>
+            <ShoppingBag
+              className={`w-20 h-20 mx-auto mb-4 ${
+                theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+              }`}
+            />
+            <h1
+              className={`text-2xl font-bold mb-2 ${
+                theme === 'dark' ? 'text-white' : 'text-gray-900'
+              }`}
+            >
+              Your Cart is Empty
+            </h1>
+            <p
+              className={`mb-6 ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+              }`}
+            >
+              Add some items to checkout
+            </p>
+            <Link
+              to="/shop/products"
+              className={`relative group overflow-hidden inline-flex items-center gap-2 px-8 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 ${
+                theme === 'dark'
+                  ? 'bg-gradient-to-r from-electric-blue to-electric-green text-black'
+                  : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
+              }`}
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                <ShoppingBag className="w-5 h-5" />
+                Browse Products
+              </span>
+              <div
+                className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                    : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                }`}
+              />
+            </Link>
+          </div>
         </div>
-        <Footer />
+        <Footer variant="shop" />
       </div>
     );
   }
@@ -364,20 +394,29 @@ export default function ShopCheckout() {
                 <button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-semibold text-lg transition-all disabled:opacity-50 ${
+                  className={`relative group overflow-hidden w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-semibold text-lg transition-all duration-300 disabled:opacity-50 ${
                     theme === 'dark'
                       ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg'
                       : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg'
                   }`}
                 >
-                  {loading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <>
-                      <Lock className="w-5 h-5" />
-                      Place Order
-                    </>
-                  )}
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    {loading ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <>
+                        <Lock className="w-5 h-5" />
+                        Place Order
+                      </>
+                    )}
+                  </span>
+                  <div
+                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                        : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                    }`}
+                  />
                 </button>
 
                 <p className={`text-xs text-center mt-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
@@ -389,7 +428,7 @@ export default function ShopCheckout() {
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="shop" />
     </div>
   );
 }

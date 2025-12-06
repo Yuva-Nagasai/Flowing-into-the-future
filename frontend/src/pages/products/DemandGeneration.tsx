@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Megaphone, Target, BarChart2, Zap } from 'lucide-react';
 import ProductCategoryTemplate from '../../components/products/ProductCategoryTemplate';
+import SEO from '../../components/SEO';
 
 const demandFeatures = [
   {
@@ -123,7 +124,16 @@ const DemandGeneration = () => {
     document.title = 'Demand Generation - Nano Flows Products';
   }, []);
 
-  return <ProductCategoryTemplate {...pageContent} />;
+  return (
+    <>
+      <SEO
+        title="Demand Generation Platform - NanoFlows"
+        description="Full-funnel marketing campaigns, audience intelligence, and performance analytics to accelerate commerce and drive conversions."
+        keywords="demand generation, marketing automation, campaign management, audience intelligence, performance analytics"
+      />
+      <ProductCategoryTemplate {...pageContent} />
+    </>
+  );
 };
 
 export default DemandGeneration;

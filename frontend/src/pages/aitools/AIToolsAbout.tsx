@@ -2,7 +2,8 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import AIToolsNav from '../../components/aitools/AIToolsNav';
-import AIToolsFooter from '../../components/aitools/AIToolsFooter';
+import Footer from '../../components/Footer';
+import SEO from '../../components/SEO';
 import {
   Brain,
   Sparkles,
@@ -86,8 +87,14 @@ const AIToolsAbout = () => {
   ];
 
   return (
-    <div className={`min-h-screen w-full max-w-full overflow-x-hidden flex flex-col ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
-      <AIToolsNav />
+    <>
+      <SEO
+        title="About | NanoFlows AI Tools"
+        description="Learn about NanoFlows AI Tools platform - your gateway to powerful AI solutions for productivity and creativity."
+        keywords="AI tools about, artificial intelligence platform, AI solutions, productivity tools"
+      />
+      <div className={`min-h-screen w-full max-w-full overflow-x-hidden flex flex-col ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+        <AIToolsNav />
 
       <section className="relative overflow-hidden py-20 lg:py-28">
         <div className={`absolute inset-0 ${
@@ -129,11 +136,11 @@ const AIToolsAbout = () => {
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
                 Empowering You with{' '}
-                <span className={`${
+                <span className={`bg-gradient-to-r ${
                   theme === 'dark'
-                    ? 'text-electric-green'
-                    : 'bg-gradient-to-r from-accent-red to-accent-blue bg-clip-text text-transparent'
-                }`}>
+                    ? 'from-electric-green to-electric-blue'
+                    : 'from-accent-red to-accent-blue'
+                } bg-clip-text text-transparent`}>
                   AI Innovation
                 </span>
               </h1>
@@ -151,14 +158,23 @@ const AIToolsAbout = () => {
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => navigate('/ai-tools/explore')}
-                  className={`px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 ${
+                  className={`relative group overflow-hidden px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all duration-300 ${
                     theme === 'dark'
                       ? 'bg-gradient-to-r from-electric-blue to-electric-green text-black'
                       : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
-                  } shadow-lg`}
+                  }`}
                 >
+                  <span className="relative z-10 flex items-center justify-center gap-2">
                   <Zap className="w-5 h-5" />
                   Explore Tools
+                  </span>
+                  <div
+                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                        : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                    }`}
+                  />
                 </motion.button>
               </div>
             </motion.div>
@@ -225,7 +241,14 @@ const AIToolsAbout = () => {
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
-              Our Mission
+              Our{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Mission
+              </span>
             </h2>
             <p className={`text-lg max-w-3xl mx-auto ${
               theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
@@ -247,11 +270,11 @@ const AIToolsAbout = () => {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                   whileHover={{ y: -5 }}
-                  className={`p-6 rounded-2xl transition-all ${
+                  className={`p-6 rounded-2xl transition-all border ${
                     theme === 'dark'
-                      ? 'bg-dark-card border border-gray-800 hover:border-electric-blue'
-                      : 'bg-white border border-gray-200 hover:border-accent-red'
-                  } shadow-lg`}
+                      ? 'bg-slate-900/80 border-slate-700/70 backdrop-blur-sm hover:border-electric-blue'
+                      : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 backdrop-blur-sm hover:border-accent-blue/60 shadow-lg'
+                  }`}
                 >
                   <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4 ${
                     theme === 'dark'
@@ -284,7 +307,14 @@ const AIToolsAbout = () => {
               <h2 className={`text-3xl md:text-4xl font-bold mb-6 ${
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                Why Choose Us?
+                Why Choose{' '}
+                <span className={`bg-gradient-to-r ${
+                  theme === 'dark'
+                    ? 'from-electric-green to-electric-blue'
+                    : 'from-accent-red to-accent-blue'
+                } bg-clip-text text-transparent`}>
+                  Us?
+                </span>
               </h2>
               <p className={`text-lg mb-8 ${
                 theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
@@ -340,7 +370,14 @@ const AIToolsAbout = () => {
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
-              Our Journey
+              Our{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Journey
+              </span>
             </h2>
             <p className={`text-lg max-w-2xl mx-auto ${
               theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
@@ -371,9 +408,11 @@ const AIToolsAbout = () => {
                   }`}>
                     <Clock className="w-5 h-5" />
                   </div>
-                  <div className={`flex-1 p-6 rounded-2xl ${
-                    theme === 'dark' ? 'bg-dark-card' : 'bg-white'
-                  } shadow-lg`}>
+                  <div className={`flex-1 p-6 rounded-2xl border ${
+                    theme === 'dark'
+                      ? 'bg-slate-900/80 border-slate-700/70 backdrop-blur-sm'
+                      : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 backdrop-blur-sm shadow-lg'
+                  }`}>
                     <span className={`text-sm font-bold ${
                       theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
                     }`}>{item.year}</span>
@@ -410,7 +449,14 @@ const AIToolsAbout = () => {
               <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                Start Exploring Today
+                Start Exploring{' '}
+                <span className={`bg-gradient-to-r ${
+                  theme === 'dark'
+                    ? 'from-electric-green to-electric-blue'
+                    : 'from-accent-red to-accent-blue'
+                } bg-clip-text text-transparent`}>
+                  Today
+                </span>
               </h2>
               <p className={`text-lg mb-8 ${
                 theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
@@ -422,23 +468,33 @@ const AIToolsAbout = () => {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigate('/ai-tools/explore')}
-                className={`px-10 py-4 rounded-xl font-bold flex items-center gap-2 mx-auto ${
+                className={`relative group overflow-hidden px-10 py-4 rounded-xl font-bold flex items-center gap-2 mx-auto shadow-lg transition-all duration-300 ${
                   theme === 'dark'
                     ? 'bg-gradient-to-r from-electric-blue to-electric-green text-black'
                     : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
-                } shadow-lg`}
+                }`}
               >
+                <span className="relative z-10 flex items-center gap-2">
                 <Rocket className="w-5 h-5" />
                 Browse All Tools
                 <ArrowRight className="w-5 h-5" />
+                </span>
+                <div
+                  className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                      : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                  }`}
+                />
               </motion.button>
             </div>
           </motion.div>
         </div>
       </section>
 
-      <AIToolsFooter />
-    </div>
+      <Footer variant="ai-tools" />
+      </div>
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { FiArrowLeft, FiLock, FiCreditCard, FiCheckCircle } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import SEO from '../../components/SEO';
 
 // Load Razorpay script
 const loadRazorpayScript = () => {
@@ -148,9 +149,15 @@ const Checkout = () => {
   }
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
-      {/* Header */}
-      <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${
+    <>
+      <SEO
+        title={course ? `Checkout: ${course.title} | NanoFlows Academy` : 'Checkout | NanoFlows Academy'}
+        description="Complete your course purchase securely. Choose your payment method and start learning."
+        keywords="checkout, course purchase, payment, enroll, academy checkout"
+      />
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+        {/* Header */}
+        <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${
         theme === 'dark' 
           ? 'border-gray-800/50 bg-dark-card/90' 
           : 'border-gray-200/50 bg-white/90'
@@ -288,7 +295,8 @@ const Checkout = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

@@ -105,35 +105,48 @@ export default function FeaturedCarousel({ products, autoPlay = true, interval =
               )}
 
               <div className="flex items-center gap-4 mb-8">
-                <span className={`text-3xl font-bold ${
-                  theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
-                }`}>
-                  ${parseFloat(current.price).toFixed(2)}
+                <span
+                  className={`text-3xl font-bold ${
+                    theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
+                  }`}
+                >
+                  ₹{parseFloat(current.price).toFixed(2)}
                 </span>
                 {current.comparePrice && (
-                  <span className={`text-xl line-through ${
-                    theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                  }`}>
-                    ${parseFloat(current.comparePrice).toFixed(2)}
+                  <span
+                    className={`text-xl line-through ${
+                      theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                    }`}
+                  >
+                    ₹{parseFloat(current.comparePrice).toFixed(2)}
                   </span>
                 )}
                 {current.comparePrice && (
                   <span className="px-2 py-1 text-sm font-semibold rounded bg-red-500 text-white">
-                    Save ${(parseFloat(current.comparePrice) - parseFloat(current.price)).toFixed(2)}
+                    Save ₹{(parseFloat(current.comparePrice) - parseFloat(current.price)).toFixed(2)}
                   </span>
                 )}
               </div>
 
               <div className="flex flex-wrap gap-4">
                 <Link
-                  to={`/shop/product/${current.slug}`}
-                  className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                  to={`/shop/products/${current.slug}`}
+                  className={`relative group overflow-hidden inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                     theme === 'dark'
                       ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
                       : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
                   }`}
                 >
-                  View Details
+                  <span className="relative z-10">
+                    View Details
+                  </span>
+                  <div
+                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                        : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                    }`}
+                  />
                 </Link>
                 {isAuthenticated && current.stock > 0 && (
                   <button

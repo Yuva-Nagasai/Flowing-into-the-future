@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import ELearningNav from '../../components/elearning/ELearningNav';
+import Footer from '../../components/Footer';
 import { aiToolsAPI } from '../../utils/api';
 
 interface AITool {
@@ -541,18 +542,7 @@ const AIToolsPage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className={`py-8 border-t ${
-        theme === 'dark' ? 'bg-dark-bg border-gray-800' : 'bg-gray-50 border-gray-200'
-      }`}>
-        <div className="container mx-auto px-4 lg:px-8">
-          <p className={`text-center text-sm ${
-            theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-          }`}>
-            © 2024 NanoFlows Academy. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer variant="elearning" />
     </div>
   );
 };

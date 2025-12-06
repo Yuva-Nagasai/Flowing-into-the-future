@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ShoppingCart, Heart, Share2, Star, ChevronRight, Minus, Plus, Check, Zap, Shield, Download, Package } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ShoppingCart, Heart, Share2, Star, ArrowLeft, Minus, Plus, Check, Zap, Shield, Download, Package } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useShopAuth } from '../../contexts/ShopAuthContext';
 import ShopNav from '../../components/shop/ShopNav';
@@ -9,10 +10,12 @@ import SEOHead from '../../components/shop/SEOHead';
 import ProductGallery from '../../components/shop/ProductGallery';
 import ProductGrid from '../../components/shop/ProductGrid';
 import shopApi from '../../utils/shopApi';
+import shopSampleProducts from '../../data/shopSampleProducts';
 import type { Product } from '../../types/shop';
 
 export default function ShopProductDetail() {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const { theme } = useTheme();
   const { addToCart, addToWishlist, removeFromWishlist, isInWishlist, isAuthenticated } = useShopAuth();
   const [product, setProduct] = useState<Product | null>(null);
@@ -21,6 +24,14 @@ export default function ShopProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'description' | 'reviews' | 'license'>('description');
   const [addingToCart, setAddingToCart] = useState(false);
+
+  const elevatedCardClass = useMemo(
+    () =>
+      theme === 'dark'
+        ? 'bg-slate-900/80 border border-slate-700/70 backdrop-blur-sm'
+        : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border border-accent-red/30 backdrop-blur-sm shadow-lg',
+    [theme]
+  );
 
   useEffect(() => {
     if (slug) {
@@ -38,14 +49,32 @@ export default function ShopProductDetail() {
           const relatedRes = await shopApi.getProducts({ category: res.data.category?.slug, limit: 4 });
           if (relatedRes.success) {
             setRelatedProducts(relatedRes.data.filter(p => p.id !== res.data!.id).slice(0, 4));
+          } else {
+            const fallbackRelated = shopSampleProducts
+              .filter(p => p.id !== res.data!.id && p.category?.slug === res.data.category?.slug)
+              .slice(0, 4);
+            setRelatedProducts(fallbackRelated);
           }
         }
+        setLoading(false);
+        return;
       }
     } catch (error) {
       console.error('Failed to fetch product');
-    } finally {
-      setLoading(false);
     }
+
+    const fallbackProduct = shopSampleProducts.find(p => p.slug === slug);
+    if (fallbackProduct) {
+      setProduct(fallbackProduct);
+      const fallbackRelated = shopSampleProducts
+        .filter(p => p.slug !== fallbackProduct.slug && p.category?.slug === fallbackProduct.category?.slug)
+        .slice(0, 4);
+      setRelatedProducts(fallbackRelated);
+    } else {
+      setProduct(null);
+      setRelatedProducts([]);
+    }
+    setLoading(false);
   };
 
   const handleAddToCart = async () => {
@@ -90,7 +119,7 @@ export default function ShopProductDetail() {
             </div>
           </div>
         </div>
-        <Footer />
+        <Footer variant="shop" />
       </div>
     );
   }
@@ -118,7 +147,7 @@ export default function ShopProductDetail() {
             Browse Products
           </Link>
         </div>
-        <Footer />
+        <Footer variant="shop" />
       </div>
     );
   }
@@ -139,31 +168,37 @@ export default function ShopProductDetail() {
       <ShopNav />
 
       <div className="container mx-auto px-4 lg:px-6 py-4">
-        <nav className="flex items-center gap-2 text-sm">
-          <Link to="/shop" className={theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'}>
-            Shop
-          </Link>
-          <ChevronRight className="w-4 h-4 text-gray-400" />
-          {product.category && (
-            <>
-              <Link
-                to={`/shop/category/${product.category.slug}`}
-                className={theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'}
-              >
-                {product.category.name}
-              </Link>
-              <ChevronRight className="w-4 h-4 text-gray-400" />
-            </>
-          )}
-          <span className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>{product.name}</span>
-        </nav>
+        <motion.button
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => navigate('/shop/products')}
+          className={`relative group overflow-hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold shadow-lg transition-all duration-300 ${
+            theme === 'dark'
+              ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
+              : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
+          }`}
+        >
+          <span className="relative z-10 flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Products
+          </span>
+          <div
+            className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+              theme === 'dark'
+                ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                : 'bg-gradient-to-r from-accent-blue to-accent-red'
+            }`}
+          />
+        </motion.button>
       </div>
 
       <section className="container mx-auto px-4 lg:px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <ProductGallery images={product.images} productName={product.name} />
 
-          <div className="space-y-6">
+          <div className={`space-y-6 p-6 rounded-3xl ${elevatedCardClass}`}>
             <div>
               {product.category && (
                 <Link
@@ -202,17 +237,21 @@ export default function ShopProductDetail() {
               )}
 
               <div className="flex items-center gap-4">
-                <span className={`text-4xl font-bold ${
-                  theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
-                }`}>
-                  ${parseFloat(product.price).toFixed(2)}
+                <span
+                  className={`text-4xl font-bold ${
+                    theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
+                  }`}
+                >
+                  ₹{parseFloat(product.price).toFixed(2)}
                 </span>
                 {product.comparePrice && (
                   <>
-                    <span className={`text-xl line-through ${
-                      theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                    }`}>
-                      ${parseFloat(product.comparePrice).toFixed(2)}
+                    <span
+                      className={`text-xl line-through ${
+                        theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                      }`}
+                    >
+                      ₹{parseFloat(product.comparePrice).toFixed(2)}
                     </span>
                     <span className="px-3 py-1 text-sm font-semibold rounded-full bg-red-500 text-white">
                       -{discount}% OFF
@@ -226,9 +265,7 @@ export default function ShopProductDetail() {
               {product.shortDescription || product.description}
             </p>
 
-            <div className={`flex items-center gap-4 py-4 border-y ${
-              theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
-            }`}>
+            <div className={`flex flex-wrap items-center gap-4 p-4 rounded-2xl ${elevatedCardClass}`}>
               <span className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                 Licenses:
               </span>
@@ -237,8 +274,10 @@ export default function ShopProductDetail() {
               }`}>
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className={`p-2 transition-colors ${
-                    theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100'
+                  className={`p-2 rounded-l-lg transition-colors ${
+                    theme === 'dark'
+                      ? 'bg-slate-800 text-gray-200 hover:bg-slate-700'
+                      : 'bg-white text-gray-700 hover:bg-gray-100'
                   }`}
                 >
                   <Minus className="w-4 h-4" />
@@ -248,8 +287,10 @@ export default function ShopProductDetail() {
                 </span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className={`p-2 transition-colors ${
-                    theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100'
+                  className={`p-2 rounded-r-lg transition-colors ${
+                    theme === 'dark'
+                      ? 'bg-slate-800 text-gray-200 hover:bg-slate-700'
+                      : 'bg-white text-gray-700 hover:bg-gray-100'
                   }`}
                 >
                   <Plus className="w-4 h-4" />
@@ -268,30 +309,48 @@ export default function ShopProductDetail() {
                 <button
                   onClick={handleAddToCart}
                   disabled={addingToCart}
-                  className={`flex-1 flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all disabled:opacity-50 ${
+                  className={`relative group overflow-hidden flex-1 flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 disabled:opacity-50 ${
                     theme === 'dark'
                       ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
                       : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
                   }`}
                 >
-                  {addingToCart ? (
-                    <Check className="w-5 h-5" />
-                  ) : (
-                    <ShoppingCart className="w-5 h-5" />
-                  )}
-                  {addingToCart ? 'Added!' : 'Add to Cart'}
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    {addingToCart ? (
+                      <Check className="w-5 h-5" />
+                    ) : (
+                      <ShoppingCart className="w-5 h-5" />
+                    )}
+                    {addingToCart ? 'Added!' : 'Add to Cart'}
+                  </span>
+                  <div
+                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                        : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                    }`}
+                  />
                 </button>
               ) : (
                 <Link
                   to="/shop/login"
-                  className={`flex-1 flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all ${
+                  className={`relative group overflow-hidden flex-1 flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 ${
                     theme === 'dark'
                       ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
                       : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
                   }`}
                 >
-                  <ShoppingCart className="w-5 h-5" />
-                  Login to Buy
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    <ShoppingCart className="w-5 h-5" />
+                    Login to Buy
+                  </span>
+                  <div
+                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                        : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                    }`}
+                  />
                 </Link>
               )}
 
@@ -322,10 +381,8 @@ export default function ShopProductDetail() {
               </button>
             </div>
 
-            <div className={`grid grid-cols-3 gap-4 p-4 rounded-xl ${
-              theme === 'dark' ? 'bg-slate-800/50' : 'bg-gray-100'
-            }`}>
-              <div className="text-center">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className={`text-center p-4 rounded-2xl ${elevatedCardClass}`}>
                 <Zap className={`w-6 h-6 mx-auto mb-2 ${
                   theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
                 }`} />
@@ -336,7 +393,7 @@ export default function ShopProductDetail() {
                   Download Now
                 </p>
               </div>
-              <div className="text-center">
+              <div className={`text-center p-4 rounded-2xl ${elevatedCardClass}`}>
                 <Shield className={`w-6 h-6 mx-auto mb-2 ${
                   theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
                 }`} />
@@ -347,7 +404,7 @@ export default function ShopProductDetail() {
                   100% Safe
                 </p>
               </div>
-              <div className="text-center">
+              <div className={`text-center p-4 rounded-2xl ${elevatedCardClass}`}>
                 <Download className={`w-6 h-6 mx-auto mb-2 ${
                   theme === 'dark' ? 'text-electric-green' : 'text-accent-blue'
                 }`} />
@@ -491,7 +548,7 @@ export default function ShopProductDetail() {
 
           {activeTab === 'license' && (
             <div className="space-y-4">
-              <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white border border-gray-200'}`}>
+              <div className={`p-4 rounded-2xl ${elevatedCardClass}`}>
                 <h4 className={`font-medium mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                   Instant Access
                 </h4>
@@ -502,7 +559,7 @@ export default function ShopProductDetail() {
                   <li>• Download on unlimited devices for personal use</li>
                 </ul>
               </div>
-              <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white border border-gray-200'}`}>
+              <div className={`p-4 rounded-2xl ${elevatedCardClass}`}>
                 <h4 className={`font-medium mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                   License Terms
                 </h4>
@@ -513,7 +570,7 @@ export default function ShopProductDetail() {
                   <li>• Contact support for extended licensing options</li>
                 </ul>
               </div>
-              <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-slate-800' : 'bg-white border border-gray-200'}`}>
+              <div className={`p-4 rounded-2xl ${elevatedCardClass}`}>
                 <h4 className={`font-medium mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                   Refund Policy
                 </h4>
@@ -531,15 +588,28 @@ export default function ShopProductDetail() {
       {relatedProducts.length > 0 && (
         <section className={`py-16 ${theme === 'dark' ? 'bg-slate-900/50' : 'bg-white'}`}>
           <div className="container mx-auto px-4 lg:px-6">
-            <h2 className={`text-2xl font-bold mb-8 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              Related Products
+            <h2
+              className={`text-2xl font-bold mb-8 ${
+                theme === 'dark' ? 'text-white' : 'text-gray-900'
+              }`}
+            >
+              Related{' '}
+              <span
+                className={`bg-gradient-to-r ${
+                  theme === 'dark'
+                    ? 'from-electric-green to-electric-blue'
+                    : 'from-accent-red to-accent-blue'
+                } bg-clip-text text-transparent`}
+              >
+                Products
+              </span>
             </h2>
             <ProductGrid products={relatedProducts} columns={4} />
           </div>
         </section>
       )}
 
-      <Footer />
+      <Footer variant="shop" />
     </div>
   );
 }

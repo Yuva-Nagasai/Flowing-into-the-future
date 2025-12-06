@@ -24,7 +24,7 @@ export default function ShopChatbot() {
     {
       id: '1',
       role: 'assistant',
-      content: 'Hello! Welcome to NanoFlows Shop. How can I help you today?',
+      content: 'Hello! Welcome to NanoFlows Digital Hub. How can I help you today?',
       timestamp: new Date(),
     },
   ]);
@@ -50,7 +50,7 @@ export default function ShopChatbot() {
       const responses: Record<string, string> = {
         'track my order': 'To track your order, go to your Account Dashboard and click on "Orders". You can see the status and tracking information for all your orders there.',
         'return policy': 'We offer a 30-day return policy for all unused items in original packaging. To initiate a return, visit your order history and click "Return" next to the item.',
-        'shipping info': 'We offer free shipping on orders over $50. Standard shipping takes 3-5 business days. Express shipping (1-2 days) is available for an additional fee.',
+        'shipping info': 'We offer free shipping on orders over ₹4,000. Standard shipping takes 3-5 business days. Express shipping (1-2 days) is available for an additional fee.',
         'contact support': 'You can reach our support team at support@nanoflows.shop or call us at 1-800-NANO-SHOP. Our team is available Mon-Fri, 9AM-6PM EST.',
       };
 

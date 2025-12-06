@@ -38,9 +38,14 @@ const ContactSection = () => {
 
             <div className="space-y-6">
               {[
-                { icon: Mail, label: 'Email', value: 'academy@nanoflows.com' },
-                { icon: Phone, label: 'Phone', value: '+91 98765 43210' },
-                { icon: MapPin, label: 'Location', value: 'Visakhapatnam, India' }
+                { icon: Mail, label: 'Email', value: 'nanoflowsvizag@gmail.com' },
+                { icon: Phone, label: 'Phone', value: '+91 8019358855' },
+                {
+                  icon: MapPin,
+                  label: 'Location',
+                  value:
+                    'TF-301, 1-152, Sapthagiri Nagar, Revenue Ward-70, Near Chinamushidiwada, Visakhapatnam - 530051'
+                }
               ].map((item, index) => (
                 <motion.div
                   key={index}
@@ -147,14 +152,23 @@ const ContactSection = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
-                className={`w-full px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${
+                className={`relative group overflow-hidden w-full px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
                   theme === 'dark'
                     ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg hover:shadow-lg hover:shadow-electric-green/30'
                     : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/30'
                 }`}
               >
+                <span className="relative z-10 flex items-center justify-center gap-2">
                 <Send className="w-5 h-5" />
                 Send Message
+                </span>
+                <div
+                  className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                      : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                  }`}
+                />
               </motion.button>
             </form>
           </motion.div>

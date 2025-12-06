@@ -17,35 +17,56 @@ export default function ShopCart() {
         <ShopNav />
         
         <div className="container mx-auto px-4 lg:px-6 py-16">
-          <div className={`max-w-md mx-auto text-center py-16 rounded-2xl ${
-            theme === 'dark' ? 'bg-slate-800/50' : 'bg-white border border-gray-200'
-          }`}>
-            <ShoppingCart className={`w-20 h-20 mx-auto mb-6 ${
-              theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
-            }`} />
-            <h2 className={`text-2xl font-bold mb-2 ${
-              theme === 'dark' ? 'text-white' : 'text-gray-900'
-            }`}>
+          <div
+            className={`max-w-md mx-auto text-center py-16 rounded-2xl ${
+              theme === 'dark'
+                ? 'bg-gradient-to-br from-electric-blue/15 to-electric-green/15 border border-electric-blue/30'
+                : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border border-accent-red/30'
+            }`}
+          >
+            <ShoppingCart
+              className={`w-20 h-20 mx-auto mb-6 ${
+                theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+              }`}
+            />
+            <h2
+              className={`text-2xl font-bold mb-2 ${
+                theme === 'dark' ? 'text-white' : 'text-gray-900'
+              }`}
+            >
               Your Cart is Empty
             </h2>
-            <p className={`mb-8 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+            <p
+              className={`mb-8 ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+              }`}
+            >
               Looks like you haven't added anything to your cart yet.
             </p>
             <Link
               to="/shop/products"
-              className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+              className={`relative group overflow-hidden inline-flex items-center gap-2 px-8 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 ${
                 theme === 'dark'
-                  ? 'bg-electric-green text-slate-900 hover:bg-electric-green/90'
-                  : 'bg-accent-blue text-white hover:bg-accent-blue/90'
+                  ? 'bg-gradient-to-r from-electric-blue to-electric-green text-black'
+                  : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
               }`}
             >
-              <ShoppingBag className="w-5 h-5" />
-              Start Shopping
+              <span className="relative z-10 flex items-center gap-2">
+                <ShoppingBag className="w-5 h-5" />
+                Start Shopping
+              </span>
+              <div
+                className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                    : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                }`}
+              />
             </Link>
           </div>
         </div>
 
-        <Footer />
+        <Footer variant="shop" />
       </div>
     );
   }
@@ -261,7 +282,7 @@ export default function ShopCart() {
         </div>
       </div>
 
-      <Footer />
+      <Footer variant="shop" />
     </div>
   );
 }

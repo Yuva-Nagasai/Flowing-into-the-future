@@ -9,10 +9,12 @@ import {
   Clock,
   Globe,
   CheckCircle,
-  ArrowRight
+  ArrowRight,
+  ChevronDown
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import ELearningNav from '../../components/elearning/ELearningNav';
+import Footer from '../../components/Footer';
 
 const ContactPage = () => {
   const { theme } = useTheme();
@@ -24,31 +26,36 @@ const ContactPage = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   const contactInfo = [
     {
       icon: Mail,
       title: 'Email Us',
       value: 'support@nanoflows.academy',
-      description: 'We reply within 24 hours'
+      description: 'We reply within 24 hours',
+      color: 'from-blue-500 to-cyan-500'
     },
     {
       icon: Phone,
       title: 'Call Us',
       value: '+1 (555) 123-4567',
-      description: 'Mon-Fri, 9am-6pm EST'
+      description: 'Mon-Fri, 9am-6pm EST',
+      color: 'from-pink-500 to-rose-500'
     },
     {
       icon: MapPin,
       title: 'Visit Us',
       value: '123 Tech Street, Suite 100',
-      description: 'San Francisco, CA 94102'
+      description: 'San Francisco, CA 94102',
+      color: 'from-green-500 to-emerald-500'
     },
     {
       icon: Globe,
       title: 'Social Media',
       value: '@nanoflowsacademy',
-      description: 'Follow us for updates'
+      description: 'Follow us for updates',
+      color: 'from-purple-500 to-violet-500'
     }
   ];
 
@@ -92,9 +99,15 @@ const ContactPage = () => {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${
-      theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'
-    }`}>
+    <>
+      <SEO
+        title="Contact | NanoFlows Academy"
+        description="Get in touch with NanoFlows Academy. Contact us for support, inquiries, or partnership opportunities."
+        keywords="academy contact, support, inquiry, help, get in touch"
+      />
+      <div className={`min-h-screen transition-colors duration-300 ${
+        theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'
+      }`}>
       <ELearningNav />
 
       {/* Hero Section */}
@@ -126,7 +139,11 @@ const ContactPage = () => {
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
               We'd Love to{' '}
-              <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
                 Hear from You
               </span>
             </h1>
@@ -156,15 +173,11 @@ const ContactPage = () => {
                 className={`p-6 rounded-2xl border-2 text-center transition-all ${
                   theme === 'dark'
                     ? 'bg-dark-lighter border-gray-800 hover:border-electric-blue'
-                    : 'bg-gray-50 border-gray-200 hover:border-accent-blue'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 hover:border-accent-blue'
                 }`}
               >
-                <div className={`w-14 h-14 mx-auto rounded-xl flex items-center justify-center mb-4 ${
-                  theme === 'dark'
-                    ? 'bg-electric-blue/20 text-electric-blue'
-                    : 'bg-accent-blue/10 text-accent-blue'
-                }`}>
-                  <info.icon className="w-7 h-7" />
+                <div className={`w-14 h-14 mx-auto rounded-xl flex items-center justify-center mb-4 bg-gradient-to-br ${info.color}`}>
+                  <info.icon className="w-7 h-7 text-white" />
                 </div>
                 <h3 className={`text-lg font-bold mb-1 ${
                   theme === 'dark' ? 'text-white' : 'text-gray-900'
@@ -201,7 +214,11 @@ const ContactPage = () => {
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>
                 Send us a{' '}
-                <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>
+                <span className={`bg-gradient-to-r ${
+                  theme === 'dark'
+                    ? 'from-electric-green to-electric-blue'
+                    : 'from-accent-red to-accent-blue'
+                } bg-clip-text text-transparent`}>
                   Message
                 </span>
               </h2>
@@ -302,7 +319,7 @@ const ContactPage = () => {
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
+                  className={`relative group overflow-hidden w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 ${
                     isSubmitting
                       ? 'opacity-70 cursor-not-allowed'
                       : ''
@@ -312,6 +329,7 @@ const ContactPage = () => {
                       : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
                   }`}
                 >
+                  <span className="relative z-10 flex items-center justify-center gap-2">
                   {isSubmitting ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -328,6 +346,14 @@ const ContactPage = () => {
                       Send Message
                     </>
                   )}
+                  </span>
+                  <div
+                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                        : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                    }`}
+                  />
                 </motion.button>
               </form>
             </motion.div>
@@ -342,7 +368,11 @@ const ContactPage = () => {
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>
                 Frequently Asked{' '}
-                <span className={theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'}>
+                <span className={`bg-gradient-to-r ${
+                  theme === 'dark'
+                    ? 'from-electric-green to-electric-blue'
+                    : 'from-accent-red to-accent-blue'
+                } bg-clip-text text-transparent`}>
                   Questions
                 </span>
               </h2>
@@ -355,22 +385,51 @@ const ContactPage = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.1 }}
-                    className={`p-6 rounded-2xl border-2 ${
+                    className={`rounded-2xl border-2 overflow-hidden ${
                       theme === 'dark'
                         ? 'bg-dark-card border-gray-800'
-                        : 'bg-white border-gray-200'
+                        : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30'
                     }`}
                   >
-                    <h3 className={`text-lg font-bold mb-2 ${
-                      theme === 'dark' ? 'text-white' : 'text-gray-900'
-                    }`}>
-                      {faq.question}
-                    </h3>
-                    <p className={`text-sm ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
-                      {faq.answer}
-                    </p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setOpenFaqIndex(openFaqIndex === idx ? null : idx)
+                      }
+                      className="w-full flex items-center justify-between gap-4 px-6 py-4 text-left"
+                    >
+                      <h3
+                        className={`text-base md:text-lg font-semibold ${
+                          theme === 'dark' ? 'text-white' : 'text-gray-900'
+                        }`}
+                      >
+                        {faq.question}
+                      </h3>
+                      <span
+                        className={`flex-shrink-0 rounded-full border p-1.5 transition-all ${
+                          theme === 'dark'
+                            ? openFaqIndex === idx
+                              ? 'bg-electric-blue/20 border-electric-blue text-electric-blue rotate-180'
+                              : 'bg-dark-bg border-gray-700 text-gray-400'
+                            : openFaqIndex === idx
+                              ? 'bg-accent-blue/10 border-accent-blue text-accent-blue rotate-180'
+                              : 'bg-white border-gray-300 text-gray-500'
+                        }`}
+                      >
+                        <ChevronDown className="w-4 h-4" />
+                      </span>
+                    </button>
+                    {openFaqIndex === idx && (
+                      <div className="px-6 pb-5">
+                        <p
+                          className={`text-sm ${
+                            theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                          }`}
+                        >
+                          {faq.answer}
+                        </p>
+                      </div>
+                    )}
                   </motion.div>
                 ))}
               </div>
@@ -424,7 +483,14 @@ const ContactPage = () => {
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
-              Ready to Start Learning?
+              Ready to Start{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Learning?
+              </span>
             </h2>
             <p className={`text-lg mb-8 max-w-2xl mx-auto ${
               theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
@@ -435,32 +501,31 @@ const ContactPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => window.location.href = '/academy/signup'}
-              className={`px-8 py-4 rounded-xl font-bold flex items-center gap-2 mx-auto ${
+              className={`relative group overflow-hidden px-8 py-4 rounded-xl font-bold flex items-center gap-2 mx-auto transition-all duration-300 ${
                 theme === 'dark'
                   ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                   : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
               }`}
             >
+              <span className="relative z-10 flex items-center gap-2">
               Get Started Free
               <ArrowRight className="w-5 h-5" />
+              </span>
+              <div
+                className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                    : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                }`}
+              />
             </motion.button>
           </motion.div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className={`py-8 border-t ${
-        theme === 'dark' ? 'bg-dark-bg border-gray-800' : 'bg-gray-50 border-gray-200'
-      }`}>
-        <div className="container mx-auto px-4 lg:px-8">
-          <p className={`text-center text-sm ${
-            theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-          }`}>
-            © 2024 NanoFlows Academy. All rights reserved.
-          </p>
-        </div>
-      </footer>
-    </div>
+      <Footer variant="elearning" />
+      </div>
+    </>
   );
 };
 

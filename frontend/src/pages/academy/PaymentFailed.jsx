@@ -2,6 +2,7 @@ import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { FiXCircle, FiArrowLeft, FiRefreshCw } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import SEO from '../../components/SEO';
 
 const PaymentFailed = () => {
   const [searchParams] = useSearchParams();
@@ -12,7 +13,13 @@ const PaymentFailed = () => {
   const error = searchParams.get('error') || 'Payment failed. Please try again.';
 
   return (
-    <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+    <>
+      <SEO
+        title="Payment Failed | NanoFlows Academy"
+        description="Payment was not successful. Please try again or contact support for assistance."
+        keywords="payment failed, payment error, checkout issue, academy payment"
+      />
+      <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
       <div className="container mx-auto px-4 max-w-2xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -72,7 +79,8 @@ const PaymentFailed = () => {
           </div>
         </motion.div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

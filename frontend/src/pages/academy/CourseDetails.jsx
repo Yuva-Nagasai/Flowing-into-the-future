@@ -10,6 +10,7 @@ import {
   FiLayers, FiGlobe, FiMail, FiLinkedin
 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+import SEO from '../../components/SEO';
 
 const CourseDetails = () => {
   const { id } = useParams();
@@ -275,10 +276,16 @@ const CourseDetails = () => {
   const [expandedFAQ, setExpandedFAQ] = useState(null);
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${
-      theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'
-    }`}>
-      {/* Header */}
+    <>
+      <SEO
+        title={course ? `${course.title} | NanoFlows Academy` : 'Course Details | NanoFlows Academy'}
+        description={course ? course.description || `Learn ${course.title} with comprehensive course content and expert instruction.` : 'Explore course details and enroll in comprehensive learning programs.'}
+        keywords={course ? `${course.title}, course, online course, ${course.category || ''}, e-learning` : 'course details, online courses, e-learning'}
+      />
+      <div className={`min-h-screen transition-colors duration-300 ${
+        theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'
+      }`}>
+        {/* Header */}
       <header className={`sticky top-0 z-50 border-b backdrop-blur-xl ${
         theme === 'dark' ? 'border-gray-800 bg-dark-card/80' : 'border-gray-200 bg-white/80'
       }`}>
@@ -1100,7 +1107,8 @@ const CourseDetails = () => {
           })}
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 };
 

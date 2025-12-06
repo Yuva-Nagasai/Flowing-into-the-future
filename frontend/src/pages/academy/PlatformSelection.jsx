@@ -14,7 +14,7 @@ const PlatformSelection = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/academy/platform-selection');
+    navigate('/academy/dashboard');
   };
 
   // Disable scrolling on mount

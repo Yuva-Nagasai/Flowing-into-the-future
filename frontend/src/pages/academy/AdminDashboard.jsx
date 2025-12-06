@@ -204,7 +204,7 @@ const AdminDashboard = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/academy/platform-selection');
+    navigate('/academy/dashboard');
   };
 
   const filteredCourses = courses.filter((course) => {

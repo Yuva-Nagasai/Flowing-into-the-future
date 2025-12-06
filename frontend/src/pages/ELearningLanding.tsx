@@ -31,6 +31,7 @@ import CourseCard from '../components/elearning/CourseCard';
 import TestimonialsSlider from '../components/elearning/TestimonialsSlider';
 import ELearningFeatures from '../components/elearning/ELearningFeatures';
 import InstructorsSection from '../components/elearning/InstructorsSection';
+import Footer from '../components/Footer';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
@@ -186,13 +187,22 @@ const ELearningLanding = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/academy/signup')}
-                className={`px-8 py-4 rounded-xl font-semibold text-lg shadow-lg transition-all ${
+                className={`relative group overflow-hidden px-8 py-4 rounded-xl font-semibold text-lg shadow-lg transition-all duration-300 ${
                   theme === 'dark'
                     ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg hover:shadow-electric-green/50'
                     : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-accent-red/50'
                 }`}
               >
+                <span className="relative z-10">
                 Start Learning Today
+                </span>
+                <div
+                  className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                      : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                  }`}
+                />
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -408,7 +418,7 @@ const ELearningLanding = () => {
                 <h2 className={`text-3xl font-bold ${
                   theme === 'dark' ? 'text-white' : 'text-gray-900'
                 }`}>
-                  Trending Courses
+                  Featured Courses
                 </h2>
                 <div className={`px-4 py-2 rounded-lg ${
                   theme === 'dark' ? 'bg-dark-card' : 'bg-gray-100'
@@ -421,7 +431,7 @@ const ELearningLanding = () => {
                   <span className={`ml-2 ${
                     theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                   }`}>
-                    courses found
+                    courses available
                   </span>
                 </div>
               </div>
@@ -518,207 +528,7 @@ const ELearningLanding = () => {
       {/* Testimonials Section */}
       <TestimonialsSlider />
 
-      {/* Footer */}
-      <footer className={`py-16 border-t ${
-        theme === 'dark' ? 'bg-dark-card border-gray-800' : 'bg-white border-gray-200'
-      }`}>
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            {/* About Section */}
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${
-                  theme === 'dark'
-                    ? 'from-electric-blue to-electric-green'
-                    : 'from-accent-red to-accent-blue'
-                } shadow-lg`}>
-                  <GraduationCap className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h3 className={`font-bold text-lg ${
-                    theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  }`}>
-                    NanoFlows
-                  </h3>
-                  <p className={`text-xs ${
-                    theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
-                  }`}>
-                    Academy
-                  </p>
-                </div>
-              </div>
-              <p className={`text-sm mb-4 ${
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-              }`}>
-                Empowering learners worldwide with cutting-edge technology courses and expert instructors.
-              </p>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h4 className={`font-bold text-lg mb-6 ${
-                theme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}>
-                Quick Links
-              </h4>
-              <ul className="space-y-3">
-                {['About Us', 'Courses', 'Instructors', 'Pricing', 'Blog'].map((link) => (
-                  <li key={link}>
-                    <a
-                      href={`#${link.toLowerCase().replace(' ', '-')}`}
-                      className={`text-sm transition-colors ${
-                        theme === 'dark'
-                          ? 'text-gray-400 hover:text-electric-green'
-                          : 'text-gray-600 hover:text-accent-red'
-                      }`}
-                    >
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Support */}
-            <div>
-              <h4 className={`font-bold text-lg mb-6 ${
-                theme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}>
-                Support
-              </h4>
-              <ul className="space-y-3">
-                {[
-                  { name: 'Help Center', href: '/help' },
-                  { name: 'FAQs', href: '/faqs' },
-                  { name: 'Privacy Policy', href: '/legal/privacy-policy' },
-                  { name: 'Terms of Service', href: '/legal/terms-of-service' },
-                  { name: 'Contact Us', href: '#contact' }
-                ].map((link) => (
-                  <li key={link.name}>
-                    <a
-                      href={link.href}
-                      className={`text-sm transition-colors ${
-                        theme === 'dark'
-                          ? 'text-gray-400 hover:text-electric-green'
-                          : 'text-gray-600 hover:text-accent-red'
-                      }`}
-                    >
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Contact Info */}
-            <div>
-              <h4 className={`font-bold text-lg mb-6 ${
-                theme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}>
-                Contact
-              </h4>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <Mail className={`w-5 h-5 mt-0.5 ${
-                    theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'
-                  }`} />
-                  <div>
-                    <p className={`text-sm ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
-                      info@nanoflows.academy
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Phone className={`w-5 h-5 mt-0.5 ${
-                    theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'
-                  }`} />
-                  <div>
-                    <p className={`text-sm ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
-                      +1 (555) 123-4567
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <MapPin className={`w-5 h-5 mt-0.5 ${
-                    theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'
-                  }`} />
-                  <div>
-                    <p className={`text-sm ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
-                      123 Tech Street, Silicon Valley, CA 94025
-                    </p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom Bar */}
-          <div className={`pt-8 border-t ${
-            theme === 'dark' ? 'border-gray-800' : 'border-gray-200'
-          }`}>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <p className={`text-sm ${
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-              }`}>
-                © 2025 NanoFlows Academy. All rights reserved.
-              </p>
-              <div className="flex items-center gap-6">
-                <a
-                  href="https://facebook.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`transition-colors ${
-                    theme === 'dark'
-                      ? 'text-gray-400 hover:text-electric-blue'
-                      : 'text-gray-600 hover:text-accent-blue'
-                  }`}
-                >
-                  <span className="sr-only">Facebook</span>
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
-                  </svg>
-                </a>
-                <a
-                  href="https://twitter.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`transition-colors ${
-                    theme === 'dark'
-                      ? 'text-gray-400 hover:text-electric-blue'
-                      : 'text-gray-600 hover:text-accent-blue'
-                  }`}
-                >
-                  <span className="sr-only">Twitter</span>
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                  </svg>
-                </a>
-                <a
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`transition-colors ${
-                    theme === 'dark'
-                      ? 'text-gray-400 hover:text-electric-blue'
-                      : 'text-gray-600 hover:text-accent-blue'
-                  }`}
-                >
-                  <span className="sr-only">LinkedIn</span>
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer variant="elearning" />
     </div>
   );
 };

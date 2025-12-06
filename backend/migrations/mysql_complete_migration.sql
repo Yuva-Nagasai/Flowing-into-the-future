@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS users (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX idx_users_email ON users(email);
 
 -- ============================================================================
 -- 2. COURSES TABLE
@@ -54,9 +54,9 @@ CREATE TABLE IF NOT EXISTS courses (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_courses_published ON courses(published);
-CREATE INDEX IF NOT EXISTS idx_courses_free ON courses(free);
-CREATE INDEX IF NOT EXISTS idx_courses_category ON courses(category);
+CREATE INDEX idx_courses_published ON courses(published);
+CREATE INDEX idx_courses_free ON courses(free);
+CREATE INDEX idx_courses_category ON courses(category);
 
 -- ============================================================================
 -- 3. PURCHASES TABLE
@@ -75,9 +75,9 @@ CREATE TABLE IF NOT EXISTS purchases (
   FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_purchases_user ON purchases(user_id);
-CREATE INDEX IF NOT EXISTS idx_purchases_course ON purchases(course_id);
-CREATE INDEX IF NOT EXISTS idx_purchases_status ON purchases(status);
+CREATE INDEX idx_purchases_user ON purchases(user_id);
+CREATE INDEX idx_purchases_course ON purchases(course_id);
+CREATE INDEX idx_purchases_status ON purchases(status);
 
 -- ============================================================================
 -- 4. VIDEOS TABLE (Legacy Support)
@@ -95,8 +95,8 @@ CREATE TABLE IF NOT EXISTS videos (
   FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_videos_course ON videos(course_id);
-CREATE INDEX IF NOT EXISTS idx_videos_order ON videos(course_id, order_index);
+CREATE INDEX idx_videos_course ON videos(course_id);
+CREATE INDEX idx_videos_order ON videos(course_id, order_index);
 
 -- ============================================================================
 -- 5. MODULES TABLE (Created before resources to allow foreign key)
@@ -111,8 +111,8 @@ CREATE TABLE IF NOT EXISTS modules (
   FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_modules_course ON modules(course_id);
-CREATE INDEX IF NOT EXISTS idx_modules_order ON modules(course_id, order_index);
+CREATE INDEX idx_modules_course ON modules(course_id);
+CREATE INDEX idx_modules_order ON modules(course_id, order_index);
 
 -- ============================================================================
 -- 6. RESOURCES TABLE
@@ -129,8 +129,8 @@ CREATE TABLE IF NOT EXISTS resources (
   FOREIGN KEY (module_id) REFERENCES modules(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_resources_course ON resources(course_id);
-CREATE INDEX IF NOT EXISTS idx_resources_module ON resources(module_id);
+CREATE INDEX idx_resources_course ON resources(course_id);
+CREATE INDEX idx_resources_module ON resources(module_id);
 
 -- ============================================================================
 -- 7. LESSONS TABLE
@@ -150,9 +150,9 @@ CREATE TABLE IF NOT EXISTS lessons (
   FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_lessons_module ON lessons(module_id);
-CREATE INDEX IF NOT EXISTS idx_lessons_course ON lessons(course_id);
-CREATE INDEX IF NOT EXISTS idx_lessons_order ON lessons(module_id, order_index);
+CREATE INDEX idx_lessons_module ON lessons(module_id);
+CREATE INDEX idx_lessons_course ON lessons(course_id);
+CREATE INDEX idx_lessons_order ON lessons(module_id, order_index);
 
 -- ============================================================================
 -- 8. USER PROGRESS TABLE
@@ -173,9 +173,9 @@ CREATE TABLE IF NOT EXISTS user_progress (
   FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_user_progress_user ON user_progress(user_id);
-CREATE INDEX IF NOT EXISTS idx_user_progress_course ON user_progress(course_id);
-CREATE INDEX IF NOT EXISTS idx_user_progress_lesson ON user_progress(lesson_id);
+CREATE INDEX idx_user_progress_user ON user_progress(user_id);
+CREATE INDEX idx_user_progress_course ON user_progress(course_id);
+CREATE INDEX idx_user_progress_lesson ON user_progress(lesson_id);
 
 -- ============================================================================
 -- 9. CERTIFICATES TABLE
@@ -193,9 +193,9 @@ CREATE TABLE IF NOT EXISTS certificates (
   FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_certificates_user ON certificates(user_id);
-CREATE INDEX IF NOT EXISTS idx_certificates_course ON certificates(course_id);
-CREATE INDEX IF NOT EXISTS idx_certificates_cert_id ON certificates(certificate_id);
+CREATE INDEX idx_certificates_user ON certificates(user_id);
+CREATE INDEX idx_certificates_course ON certificates(course_id);
+CREATE INDEX idx_certificates_cert_id ON certificates(certificate_id);
 
 -- ============================================================================
 -- 10. NOTES TABLE
@@ -214,9 +214,9 @@ CREATE TABLE IF NOT EXISTS notes (
   FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_notes_user ON notes(user_id);
-CREATE INDEX IF NOT EXISTS idx_notes_lesson ON notes(lesson_id);
-CREATE INDEX IF NOT EXISTS idx_notes_course ON notes(course_id);
+CREATE INDEX idx_notes_user ON notes(user_id);
+CREATE INDEX idx_notes_lesson ON notes(lesson_id);
+CREATE INDEX idx_notes_course ON notes(course_id);
 
 -- ============================================================================
 -- 11. DISCUSSIONS TABLE
@@ -235,9 +235,9 @@ CREATE TABLE IF NOT EXISTS discussions (
   FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_discussions_course ON discussions(course_id);
-CREATE INDEX IF NOT EXISTS idx_discussions_lesson ON discussions(lesson_id);
-CREATE INDEX IF NOT EXISTS idx_discussions_user ON discussions(user_id);
+CREATE INDEX idx_discussions_course ON discussions(course_id);
+CREATE INDEX idx_discussions_lesson ON discussions(lesson_id);
+CREATE INDEX idx_discussions_user ON discussions(user_id);
 
 -- ============================================================================
 -- 12. DISCUSSION REPLIES TABLE
@@ -253,8 +253,8 @@ CREATE TABLE IF NOT EXISTS discussion_replies (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_discussion_replies_discussion ON discussion_replies(discussion_id);
-CREATE INDEX IF NOT EXISTS idx_discussion_replies_user ON discussion_replies(user_id);
+CREATE INDEX idx_discussion_replies_discussion ON discussion_replies(discussion_id);
+CREATE INDEX idx_discussion_replies_user ON discussion_replies(user_id);
 
 -- ============================================================================
 -- 13. QUIZZES TABLE
@@ -275,9 +275,9 @@ CREATE TABLE IF NOT EXISTS quizzes (
   FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_quizzes_lesson ON quizzes(lesson_id);
-CREATE INDEX IF NOT EXISTS idx_quizzes_module ON quizzes(module_id);
-CREATE INDEX IF NOT EXISTS idx_quizzes_course ON quizzes(course_id);
+CREATE INDEX idx_quizzes_lesson ON quizzes(lesson_id);
+CREATE INDEX idx_quizzes_module ON quizzes(module_id);
+CREATE INDEX idx_quizzes_course ON quizzes(course_id);
 
 -- ============================================================================
 -- 14. QUIZ ATTEMPTS TABLE
@@ -298,9 +298,9 @@ CREATE TABLE IF NOT EXISTS quiz_attempts (
   FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_quiz_attempts_user ON quiz_attempts(user_id);
-CREATE INDEX IF NOT EXISTS idx_quiz_attempts_quiz ON quiz_attempts(quiz_id);
-CREATE INDEX IF NOT EXISTS idx_quiz_attempts_course ON quiz_attempts(course_id);
+CREATE INDEX idx_quiz_attempts_user ON quiz_attempts(user_id);
+CREATE INDEX idx_quiz_attempts_quiz ON quiz_attempts(quiz_id);
+CREATE INDEX idx_quiz_attempts_course ON quiz_attempts(course_id);
 
 -- ============================================================================
 -- 15. ASSIGNMENTS TABLE
@@ -320,9 +320,9 @@ CREATE TABLE IF NOT EXISTS assignments (
   FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_assignments_lesson ON assignments(lesson_id);
-CREATE INDEX IF NOT EXISTS idx_assignments_module ON assignments(module_id);
-CREATE INDEX IF NOT EXISTS idx_assignments_course ON assignments(course_id);
+CREATE INDEX idx_assignments_lesson ON assignments(lesson_id);
+CREATE INDEX idx_assignments_module ON assignments(module_id);
+CREATE INDEX idx_assignments_course ON assignments(course_id);
 
 -- ============================================================================
 -- 16. ASSIGNMENT SUBMISSIONS TABLE
@@ -345,9 +345,9 @@ CREATE TABLE IF NOT EXISTS assignment_submissions (
   FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_assignment_submissions_user ON assignment_submissions(user_id);
-CREATE INDEX IF NOT EXISTS idx_assignment_submissions_assignment ON assignment_submissions(assignment_id);
-CREATE INDEX IF NOT EXISTS idx_assignment_submissions_course ON assignment_submissions(course_id);
+CREATE INDEX idx_assignment_submissions_user ON assignment_submissions(user_id);
+CREATE INDEX idx_assignment_submissions_assignment ON assignment_submissions(assignment_id);
+CREATE INDEX idx_assignment_submissions_course ON assignment_submissions(course_id);
 
 -- ============================================================================
 -- 17. PAYMENT ORDERS TABLE
@@ -367,9 +367,9 @@ CREATE TABLE IF NOT EXISTS payment_orders (
   FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_payment_orders_user ON payment_orders(user_id);
-CREATE INDEX IF NOT EXISTS idx_payment_orders_status ON payment_orders(status);
-CREATE INDEX IF NOT EXISTS idx_payment_orders_razorpay_id ON payment_orders(razorpay_order_id);
+CREATE INDEX idx_payment_orders_user ON payment_orders(user_id);
+CREATE INDEX idx_payment_orders_status ON payment_orders(status);
+CREATE INDEX idx_payment_orders_razorpay_id ON payment_orders(razorpay_order_id);
 
 -- ============================================================================
 -- 18. NOTIFICATIONS TABLE
@@ -385,9 +385,9 @@ CREATE TABLE IF NOT EXISTS notifications (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id);
-CREATE INDEX IF NOT EXISTS idx_notifications_read ON notifications(user_id, read);
-CREATE INDEX IF NOT EXISTS idx_notifications_type ON notifications(type);
+CREATE INDEX idx_notifications_user ON notifications(user_id);
+CREATE INDEX idx_notifications_read ON notifications(user_id, `read`);
+CREATE INDEX idx_notifications_type ON notifications(type);
 
 -- ============================================================================
 -- 19. JOBS TABLE
@@ -405,9 +405,9 @@ CREATE TABLE IF NOT EXISTS jobs (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_jobs_active ON jobs(active);
-CREATE INDEX IF NOT EXISTS idx_jobs_department ON jobs(department);
-CREATE INDEX IF NOT EXISTS idx_jobs_created_at ON jobs(created_at);
+CREATE INDEX idx_jobs_active ON jobs(active);
+CREATE INDEX idx_jobs_department ON jobs(department);
+CREATE INDEX idx_jobs_created_at ON jobs(created_at);
 
 -- ============================================================================
 -- 20. AI TOOLS TABLE
@@ -426,10 +426,37 @@ CREATE TABLE IF NOT EXISTS ai_tools (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_ai_tools_active ON ai_tools(active);
-CREATE INDEX IF NOT EXISTS idx_ai_tools_category ON ai_tools(category);
-CREATE INDEX IF NOT EXISTS idx_ai_tools_pricing_type ON ai_tools(pricing_type);
-CREATE INDEX IF NOT EXISTS idx_ai_tools_created_at ON ai_tools(created_at);
+CREATE INDEX idx_ai_tools_active ON ai_tools(active);
+CREATE INDEX idx_ai_tools_category ON ai_tools(category);
+CREATE INDEX idx_ai_tools_pricing_type ON ai_tools(pricing_type);
+CREATE INDEX idx_ai_tools_created_at ON ai_tools(created_at);
+
+-- ============================================================================
+-- 21b. HERO SLIDES TABLE (Homepage hero slider)
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS hero_slides (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  variant ENUM('default', 'showcase', 'services') NOT NULL DEFAULT 'default',
+  title VARCHAR(255),
+  highlight VARCHAR(255),
+  subtitle TEXT,
+  button_text VARCHAR(255),
+  pre_heading VARCHAR(255),
+  heading VARCHAR(255),
+  description TEXT,
+  categories JSON,
+  primary_cta_label VARCHAR(255),
+  primary_cta_route VARCHAR(255),
+  secondary_cta_label VARCHAR(255),
+  secondary_cta_route VARCHAR(255),
+  trust_badges JSON,
+  background_image VARCHAR(512) NULL,
+  background_overlay VARCHAR(128) NULL,
+  services JSON NULL,
+  order_index INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
 -- ============================================================================
 -- 21. ABOUT SECTIONS TABLE
@@ -448,8 +475,8 @@ CREATE TABLE IF NOT EXISTS about_sections (
   UNIQUE KEY unique_section_type (section_type)
 );
 
-CREATE INDEX IF NOT EXISTS idx_about_sections_type ON about_sections(section_type);
-CREATE INDEX IF NOT EXISTS idx_about_sections_active ON about_sections(active);
+CREATE INDEX idx_about_sections_type ON about_sections(section_type);
+CREATE INDEX idx_about_sections_active ON about_sections(active);
 
 -- ============================================================================
 -- 22. ABOUT SECTION IMAGES TABLE
@@ -466,7 +493,7 @@ CREATE TABLE IF NOT EXISTS about_section_images (
   FOREIGN KEY (section_id) REFERENCES about_sections(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_about_section_images_section ON about_section_images(section_id);
+CREATE INDEX idx_about_section_images_section ON about_section_images(section_id);
 
 -- ============================================================================
 -- 23. ABOUT TEAM MEMBERS TABLE
@@ -483,7 +510,7 @@ CREATE TABLE IF NOT EXISTS about_team_members (
   FOREIGN KEY (section_id) REFERENCES about_sections(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_about_team_members_section ON about_team_members(section_id);
+CREATE INDEX idx_about_team_members_section ON about_team_members(section_id);
 
 -- ============================================================================
 -- 24. ABOUT COMPANY LOGOS TABLE
@@ -500,7 +527,7 @@ CREATE TABLE IF NOT EXISTS about_company_logos (
   FOREIGN KEY (section_id) REFERENCES about_sections(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_about_company_logos_section ON about_company_logos(section_id);
+CREATE INDEX idx_about_company_logos_section ON about_company_logos(section_id);
 
 -- ============================================================================
 -- MIGRATION COMPLETE

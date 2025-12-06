@@ -5,6 +5,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { productCategories, productItemDetails } from '../../data/productCatalog';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import SEO from '../../components/SEO';
 import {
   sectionContainerVariants,
   staggeredVariants,
@@ -29,8 +30,14 @@ const ProductItemDetail = () => {
   const shouldAnimate = !shouldReduceMotion;
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
-      <Header />
+    <>
+      <SEO
+        title={detail.title ? `${detail.title} - NanoFlows` : 'Product Details - NanoFlows'}
+        description={detail.description || 'Explore our comprehensive product solutions and services.'}
+        keywords={detail.title ? `${detail.title}, product solutions, ${category}` : 'product details, solutions, services'}
+      />
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+        <Header />
       <main className="pt-24 lg:pt-32">
         <motion.section
           className={`relative py-16 sm:py-20 md:py-24 overflow-hidden ${
@@ -406,7 +413,8 @@ const ProductItemDetail = () => {
         </motion.section>
       </main>
       <Footer />
-    </div>
+      </div>
+    </>
   );
 };
 

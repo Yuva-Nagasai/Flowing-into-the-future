@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { FiCheckCircle, FiArrowRight, FiDownload } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import SEO from '../../components/SEO';
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -13,7 +14,13 @@ const PaymentSuccess = () => {
   const orderId = searchParams.get('order_id');
 
   return (
-    <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+    <>
+      <SEO
+        title="Payment Successful | NanoFlows Academy"
+        description="Your payment was successful. Access your course and start learning immediately."
+        keywords="payment success, course enrollment, payment confirmed, academy payment"
+      />
+      <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
       <div className="container mx-auto px-4 max-w-2xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -74,7 +81,8 @@ const PaymentSuccess = () => {
           </div>
         </motion.div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

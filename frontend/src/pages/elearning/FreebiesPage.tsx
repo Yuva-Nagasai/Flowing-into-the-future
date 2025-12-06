@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import ELearningNav from '../../components/elearning/ELearningNav';
 import Footer from '../../components/Footer';
+import SEO from '../../components/SEO';
 
 const FreebiesPage = () => {
   const { theme } = useTheme();
@@ -43,42 +44,48 @@ const FreebiesPage = () => {
       title: "n8n Quick Start Guide",
       description: "A comprehensive PDF guide to get you from zero to your first working automation in under an hour.",
       format: "PDF",
-      pages: "25 pages"
+      pages: "25 pages",
+      color: 'from-blue-500 to-cyan-500'
     },
     {
       icon: FileText,
       title: "Automation Ideas Checklist",
       description: "100+ automation ideas organized by category to inspire your next project.",
       format: "PDF",
-      pages: "15 pages"
+      pages: "15 pages",
+      color: 'from-pink-500 to-rose-500'
     },
     {
       icon: BookOpen,
       title: "n8n Node Reference Card",
       description: "A handy reference sheet with all essential nodes and their use cases.",
       format: "PDF",
-      pages: "2 pages"
+      pages: "2 pages",
+      color: 'from-purple-500 to-violet-500'
     },
     {
       icon: Zap,
       title: "Troubleshooting Flowchart",
       description: "Visual guide to debugging common n8n issues and errors.",
       format: "PDF",
-      pages: "1 page"
+      pages: "1 page",
+      color: 'from-amber-500 to-orange-500'
     },
     {
       icon: Star,
       title: "Best Practices Handbook",
       description: "Pro tips and patterns for building maintainable, efficient workflows.",
       format: "PDF",
-      pages: "20 pages"
+      pages: "20 pages",
+      color: 'from-green-500 to-emerald-500'
     },
     {
       icon: Database,
       title: "API Integration Cheatsheet",
       description: "Common API patterns and authentication methods explained simply.",
       format: "PDF",
-      pages: "10 pages"
+      pages: "10 pages",
+      color: 'from-indigo-500 to-blue-500'
     }
   ];
 
@@ -87,37 +94,43 @@ const FreebiesPage = () => {
       icon: Mail,
       title: "Email Automation Starter",
       description: "Send automated welcome emails when someone fills out a form. Includes Gmail and SMTP versions.",
-      difficulty: "Beginner"
+      difficulty: "Beginner",
+      color: 'from-blue-500 to-cyan-500'
     },
     {
       icon: Calendar,
       title: "Calendar Sync Workflow",
       description: "Sync events between Google Calendar and Notion automatically.",
-      difficulty: "Beginner"
+      difficulty: "Beginner",
+      color: 'from-pink-500 to-rose-500'
     },
     {
       icon: MessageSquare,
       title: "Slack Notification Bot",
       description: "Get Slack alerts when important events happen in your apps.",
-      difficulty: "Beginner"
+      difficulty: "Beginner",
+      color: 'from-purple-500 to-violet-500'
     },
     {
       icon: Database,
       title: "Google Sheets Data Sync",
       description: "Automatically update Google Sheets with data from various sources.",
-      difficulty: "Beginner"
+      difficulty: "Beginner",
+      color: 'from-green-500 to-emerald-500'
     },
     {
       icon: Share2,
       title: "Social Media Scheduler",
       description: "Basic social media post scheduler template to get you started.",
-      difficulty: "Intermediate"
+      difficulty: "Intermediate",
+      color: 'from-amber-500 to-orange-500'
     },
     {
       icon: FileText,
       title: "Form to CRM",
       description: "Capture form submissions and add them as leads in your CRM.",
-      difficulty: "Beginner"
+      difficulty: "Beginner",
+      color: 'from-indigo-500 to-blue-500'
     }
   ];
 
@@ -148,22 +161,26 @@ const FreebiesPage = () => {
     {
       icon: Zap,
       title: "Start Building Immediately",
-      description: "No lengthy learning curve. Our templates and guides get you building real automations from day one."
+      description: "No lengthy learning curve. Our templates and guides get you building real automations from day one.",
+      color: 'from-blue-500 to-cyan-500'
     },
     {
       icon: BookOpen,
       title: "Learn by Example",
-      description: "Study working workflow templates to understand how automation logic works in practice."
+      description: "Study working workflow templates to understand how automation logic works in practice.",
+      color: 'from-pink-500 to-rose-500'
     },
     {
       icon: Users,
       title: "Join a Growing Community",
-      description: "Connect with other beginners and get help when you need it through our free community."
+      description: "Connect with other beginners and get help when you need it through our free community.",
+      color: 'from-purple-500 to-violet-500'
     },
     {
       icon: Star,
       title: "Professional Quality Resources",
-      description: "All materials are created by experienced automation professionals, not recycled generic content."
+      description: "All materials are created by experienced automation professionals, not recycled generic content.",
+      color: 'from-amber-500 to-orange-500'
     }
   ];
 
@@ -177,8 +194,14 @@ const FreebiesPage = () => {
   ];
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
-      <ELearningNav />
+    <>
+      <SEO
+        title="Freebies | NanoFlows Academy"
+        description="Get free n8n resources, templates, and starter kits to kickstart your automation journey."
+        keywords="free resources, n8n templates, free automation tools, starter kit, freebies"
+      />
+      <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+        <ELearningNav />
       
       <section className={`pt-32 pb-20 ${theme === 'dark' ? 'bg-gradient-to-b from-dark-card to-dark-bg' : 'bg-gradient-to-b from-white to-gray-50'}`}>
         <div className="container mx-auto px-4 lg:px-8">
@@ -197,7 +220,14 @@ const FreebiesPage = () => {
             </span>
             
             <h1 className={`text-4xl md:text-6xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              {overview.title}
+              FREEBIES —{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                n8n Starter Kit
+              </span>
             </h1>
             
             <p className={`text-xl mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -222,14 +252,23 @@ const FreebiesPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/academy/signup')}
-              className={`px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto ${
+              className={`relative group overflow-hidden px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto transition-all duration-300 ${
                 theme === 'dark'
                   ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                   : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
               }`}
             >
+              <span className="relative z-10 flex items-center gap-2">
               <Download className="w-5 h-5" />
               Get Free Access
+              </span>
+              <div
+                className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                    : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                }`}
+              />
             </motion.button>
           </motion.div>
         </div>
@@ -244,7 +283,14 @@ const FreebiesPage = () => {
             className="text-center mb-12"
           >
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              Downloadable Freebies
+              Downloadable{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Freebies
+              </span>
             </h2>
             <p className={`text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
               Essential resources to kickstart your automation journey
@@ -259,19 +305,15 @@ const FreebiesPage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className={`p-6 rounded-2xl border ${
+                className={`p-6 rounded-2xl border flex flex-col h-full ${
                   theme === 'dark'
                     ? 'bg-dark-card border-gray-800'
-                    : 'bg-white border-gray-200'
+                    : 'bg-white border-gray-200 shadow-md'
                 }`}
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                    theme === 'dark'
-                      ? 'bg-electric-blue/20 text-electric-blue'
-                      : 'bg-accent-blue/10 text-accent-blue'
-                  }`}>
-                    <freebie.icon className="w-6 h-6" />
+                <div className="flex items-start justify-between mb-4 flex-shrink-0">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${freebie.color}`}>
+                    <freebie.icon className="w-6 h-6 text-white" />
                   </div>
                   <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
                     theme === 'dark'
@@ -281,10 +323,10 @@ const FreebiesPage = () => {
                     {freebie.format} - {freebie.pages}
                   </span>
                 </div>
-                <h3 className={`text-xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                <h3 className={`text-xl font-bold mb-2 min-h-[3rem] line-clamp-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                   {freebie.title}
                 </h3>
-                <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
+                <p className={`flex-grow ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                   {freebie.description}
                 </p>
               </motion.div>
@@ -302,7 +344,14 @@ const FreebiesPage = () => {
             className="text-center mb-12"
           >
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              Workflow Templates Included
+              Workflow Templates{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Included
+              </span>
             </h2>
             <p className={`text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
               Ready-to-import templates to start automating instantly
@@ -320,16 +369,12 @@ const FreebiesPage = () => {
                 className={`p-6 rounded-2xl border ${
                   theme === 'dark'
                     ? 'bg-dark-bg border-gray-800'
-                    : 'bg-gray-50 border-gray-200'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30'
                 }`}
               >
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                    theme === 'dark'
-                      ? 'bg-electric-green/20 text-electric-green'
-                      : 'bg-accent-red/10 text-accent-red'
-                  }`}>
-                    <template.icon className="w-6 h-6" />
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${template.color}`}>
+                    <template.icon className="w-6 h-6 text-white" />
                   </div>
                   <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
                     template.difficulty === 'Beginner'
@@ -364,7 +409,14 @@ const FreebiesPage = () => {
             className="text-center mb-12"
           >
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              Guides Included
+              Guides{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Included
+              </span>
             </h2>
             <p className={`text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
               Step-by-step guides to master automation fundamentals
@@ -382,7 +434,7 @@ const FreebiesPage = () => {
                 className={`p-6 rounded-2xl border ${
                   theme === 'dark'
                     ? 'bg-dark-card border-gray-800'
-                    : 'bg-white border-gray-200'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30'
                 }`}
               >
                 <div className="flex items-start gap-4">
@@ -431,7 +483,13 @@ const FreebiesPage = () => {
             className="text-center mb-12"
           >
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              Benefits
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Benefits
+              </span>
             </h2>
             <p className={`text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
               Why our free starter kit is worth your time
@@ -449,15 +507,11 @@ const FreebiesPage = () => {
                 className={`p-6 rounded-2xl border text-center ${
                   theme === 'dark'
                     ? 'bg-dark-bg border-gray-800'
-                    : 'bg-gray-50 border-gray-200'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30'
                 }`}
               >
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 ${
-                  theme === 'dark'
-                    ? 'bg-electric-blue/20 text-electric-blue'
-                    : 'bg-accent-blue/10 text-accent-blue'
-                }`}>
-                  <benefit.icon className="w-7 h-7" />
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-gradient-to-br ${benefit.color}`}>
+                  <benefit.icon className="w-7 h-7 text-white" />
                 </div>
                 <h3 className={`text-lg font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                   {benefit.title}
@@ -481,7 +535,14 @@ const FreebiesPage = () => {
           >
             <div className="text-center mb-12">
               <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                Perfect for Beginners
+                Perfect for{' '}
+                <span className={`bg-gradient-to-r ${
+                  theme === 'dark'
+                    ? 'from-electric-green to-electric-blue'
+                    : 'from-accent-red to-accent-blue'
+                } bg-clip-text text-transparent`}>
+                  Beginners
+                </span>
               </h2>
               <p className={`text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                 This starter kit is made especially for you if...
@@ -491,7 +552,7 @@ const FreebiesPage = () => {
             <div className={`p-8 rounded-3xl border ${
               theme === 'dark'
                 ? 'bg-dark-card border-gray-800'
-                : 'bg-white border-gray-200'
+                : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30'
             }`}>
               <div className="space-y-4">
                 {perfectForBeginners.map((item, idx) => (
@@ -531,7 +592,14 @@ const FreebiesPage = () => {
           >
             <Gift className={`w-16 h-16 mx-auto mb-6 ${theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}`} />
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              Get Your Free Starter Kit Now
+              Get Your Free{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Starter Kit Now
+              </span>
             </h2>
             <p className={`text-lg mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
               Sign up for free and instantly access all resources. No credit card required.
@@ -540,21 +608,31 @@ const FreebiesPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/academy/signup')}
-              className={`px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto ${
+              className={`relative group overflow-hidden px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto transition-all duration-300 ${
                 theme === 'dark'
                   ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                   : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
               }`}
             >
+              <span className="relative z-10 flex items-center gap-2">
               <Download className="w-5 h-5" />
               Download Free Starter Kit
+              </span>
+              <div
+                className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                    : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                }`}
+              />
             </motion.button>
           </motion.div>
         </div>
       </section>
 
-      <Footer />
-    </div>
+      <Footer variant="elearning" />
+      </div>
+    </>
   );
 };
 

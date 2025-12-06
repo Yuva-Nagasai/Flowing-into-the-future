@@ -1,41 +1,46 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
+import { useAIToolsAuth } from '../../contexts/AIToolsAuthContext';
 import {
   Menu,
   X,
   Sun,
   Moon,
-  Search
+  User,
+  LogOut,
+  Settings
 } from 'lucide-react';
 import TopFeatureNav from '../TopFeatureNav';
 
-interface AIToolsNavProps {
-  onSearch?: (term: string) => void;
-  searchTerm?: string;
-}
-
-const AIToolsNav = ({ onSearch, searchTerm = '' }: AIToolsNavProps) => {
+const AIToolsNav = () => {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user, logout } = useAIToolsAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
   const [showTopBar, setShowTopBar] = useState(true);
-
-  const handleSearchChange = (value: string) => {
-    setLocalSearchTerm(value);
-    if (onSearch) {
-      onSearch(value);
-    }
-  };
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const navItems = [
     { path: '/ai-tools', label: 'Home' },
     { path: '/ai-tools/explore', label: 'Explore Tools' },
     { path: '/ai-tools/about', label: 'About' },
+    { path: '/ai-tools/blog', label: 'Blog' },
     { path: '/ai-tools/contact', label: 'Contact' }
   ];
+
+  const isActivePath = (path: string) => {
+    if (!path) return false;
+    if (path === '/ai-tools') {
+      return false;
+    }
+    return (
+      location.pathname === path ||
+      location.pathname.startsWith(`${path}/`)
+    );
+  };
 
   const topBarHeight = 68;
 
@@ -49,6 +54,12 @@ const AIToolsNav = ({ onSearch, searchTerm = '' }: AIToolsNavProps) => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const avatarLabel = useMemo(() => {
+    if (!user?.name && !user?.email) return 'U';
+    const source = user?.name || user?.email || '';
+    return (source.charAt(0) || 'U').toUpperCase();
+  }, [user]);
 
   return (
     <>
@@ -97,76 +108,163 @@ const AIToolsNav = ({ onSearch, searchTerm = '' }: AIToolsNavProps) => {
                     key={item.path}
                     to={item.path}
                     className={`font-exo font-medium transition-all duration-300 ${
-                      theme === 'dark'
-                        ? 'text-white hover:text-electric-green'
-                        : 'text-black hover:text-accent-red'
+                      isActivePath(item.path)
+                        ? theme === 'dark'
+                          ? 'text-electric-green'
+                          : 'text-accent-red'
+                        : theme === 'dark'
+                          ? 'text-white hover:text-electric-green'
+                          : 'text-black hover:text-accent-red'
                     }`}
                   >
                     {item.label}
                   </Link>
                 ))}
               </div>
-              
-              {/* Search Bar */}
-              <div className="relative">
-                <div className={`flex items-center px-3 py-1.5 rounded-lg border ${
-                  theme === 'dark'
-                    ? 'bg-dark-lighter border-gray-700'
-                    : 'bg-gray-100 border-gray-200'
-                }`}>
-                  <Search className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    value={localSearchTerm}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className={`ml-2 bg-transparent border-none outline-none text-sm w-32 ${
-                      theme === 'dark' ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'
-                    }`}
-                  />
-                </div>
-              </div>
             </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 relative">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={toggleTheme}
-                className={`p-2 rounded-lg transition-all ${
+                aria-label="Toggle theme"
+                className={`p-2 rounded-full transition-all duration-300 ${
                   theme === 'dark'
-                    ? 'bg-dark-lighter text-yellow-400 hover:bg-gray-700'
-                    : 'bg-gray-100 text-blue-600 hover:bg-gray-200'
+                    ? 'bg-dark-card hover:bg-dark-lighter text-electric-blue hover:glow-blue'
+                    : 'bg-gray-100 hover:bg-gray-200 text-accent-red hover:glow-red'
                 }`}
               >
-                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
               </motion.button>
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => navigate('/academy/login')}
-                className={`hidden lg:block px-4 py-2 rounded-md font-exo font-medium transition-all duration-300 border ${
-                  theme === 'dark'
-                    ? 'border-electric-blue text-electric-blue hover:bg-electric-blue/10'
-                    : 'border-accent-blue text-accent-blue hover:bg-accent-blue/10'
-                }`}
-              >
-                Login
-              </motion.button>
+              {!user && (
+                <>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate('/ai-tools/login')}
+                    className={`hidden lg:block px-4 py-2 rounded-md font-exo font-medium transition-all duration-300 border ${
+                      theme === 'dark'
+                        ? 'border-electric-blue text-electric-blue hover:bg-electric-blue/10'
+                        : 'border-accent-blue text-accent-blue hover:bg-accent-blue/10'
+                    }`}
+                  >
+                    Login
+                  </motion.button>
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => navigate('/academy/signup')}
-                className={`hidden lg:block px-4 py-2 rounded-md font-exo font-medium transition-all duration-300 ${
-                  theme === 'dark'
-                    ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg hover:shadow-lg hover:shadow-electric-green/30'
-                    : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/30'
-                }`}
-              >
-                Sign Up
-              </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate('/ai-tools/signup')}
+                    className={`hidden lg:block relative group overflow-hidden px-4 py-2 rounded-md font-exo font-medium shadow-lg transition-all duration-300 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
+                        : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
+                    }`}
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                      Sign Up
+                    </span>
+                    <div
+                      className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                        theme === 'dark'
+                          ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                          : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                      }`}
+                    />
+                  </motion.button>
+                </>
+              )}
+
+              {user && (
+                <div className="relative">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => setShowUserMenu((prev) => !prev)}
+                    className={`hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all ${
+                      theme === 'dark'
+                        ? 'border-gray-700 bg-dark-lighter hover:border-electric-blue'
+                        : 'border-gray-200 bg-gray-50 hover:border-accent-red'
+                    }`}
+                  >
+                    <div
+                      className={`h-8 w-8 rounded-full flex items-center justify-center font-semibold ${
+                        theme === 'dark'
+                          ? 'bg-electric-blue/20 text-electric-blue'
+                          : 'bg-accent-red/10 text-accent-red'
+                      }`}
+                    >
+                      {avatarLabel}
+                    </div>
+                    <div className="text-left leading-tight">
+                      <p className={`text-xs font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                        {user.name || 'AI Tools User'}
+                      </p>
+                      <p className={`text-[11px] ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                        {user.email}
+                      </p>
+                    </div>
+                    <User size={16} className={theme === 'dark' ? 'text-electric-blue' : 'text-accent-red'} />
+                  </motion.button>
+
+                  <AnimatePresence>
+                    {showUserMenu && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        className={`absolute right-0 mt-2 w-56 rounded-2xl shadow-lg border backdrop-blur-sm ${
+                          theme === 'dark'
+                            ? 'bg-slate-900/80 border-slate-700/70'
+                            : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30'
+                        }`}
+                      >
+                        <div className="px-4 py-3 border-b border-gray-700/20">
+                          <p className={`text-sm font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                            {user.name || 'AI Tools User'}
+                          </p>
+                          <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                            {user.email}
+                          </p>
+                        </div>
+                        <div className="py-2">
+                          <button
+                            onClick={() => {
+                              setShowUserMenu(false);
+                              navigate('/ai-tools/explore');
+                            }}
+                            className={`w-full flex items-center gap-2 px-4 py-2 text-sm font-medium transition ${
+                              theme === 'dark'
+                                ? 'text-slate-900 bg-gradient-to-r from-electric-blue to-electric-green hover:opacity-95'
+                                : 'text-white bg-gradient-to-r from-accent-red/80 to-accent-blue/80 hover:opacity-95'
+                            }`}
+                          >
+                            <Settings size={16} />
+                            Manage Tools
+                          </button>
+                          <button
+                            onClick={() => {
+                              setShowUserMenu(false);
+                              logout();
+                              navigate('/ai-tools');
+                            }}
+                            className={`w-full flex items-center gap-2 px-4 py-2 text-sm transition ${
+                              theme === 'dark'
+                                ? 'text-red-300 hover:bg-red-500/10'
+                                : 'text-red-600 hover:bg-red-50'
+                            }`}
+                          >
+                            <LogOut size={16} />
+                            Sign out
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
 
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -196,24 +294,6 @@ const AIToolsNav = ({ onSearch, searchTerm = '' }: AIToolsNavProps) => {
               }`}
             >
               <div className="container mx-auto px-4 py-4">
-                {/* Mobile Search Bar */}
-                <div className={`flex items-center px-3 py-2 rounded-lg border mb-4 ${
-                  theme === 'dark'
-                    ? 'bg-dark-lighter border-gray-700'
-                    : 'bg-gray-100 border-gray-200'
-                }`}>
-                  <Search className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    value={localSearchTerm}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className={`ml-2 bg-transparent border-none outline-none text-sm flex-1 ${
-                      theme === 'dark' ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'
-                    }`}
-                  />
-                </div>
-
                 <div className="space-y-2">
                   {navItems.map((item) => (
                     <Link
@@ -221,9 +301,13 @@ const AIToolsNav = ({ onSearch, searchTerm = '' }: AIToolsNavProps) => {
                       to={item.path}
                       onClick={() => setMobileMenuOpen(false)}
                       className={`block px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
-                        theme === 'dark'
-                          ? 'text-white hover:bg-dark-lighter hover:text-electric-green'
-                          : 'text-black hover:bg-gray-100 hover:text-accent-red'
+                        isActivePath(item.path)
+                          ? theme === 'dark'
+                            ? 'text-electric-green bg-dark-lighter/70'
+                            : 'text-accent-red bg-gray-100'
+                          : theme === 'dark'
+                            ? 'text-white hover:bg-dark-lighter hover:text-electric-green'
+                            : 'text-black hover:bg-gray-100 hover:text-accent-red'
                       }`}
                     >
                       {item.label}
@@ -233,32 +317,98 @@ const AIToolsNav = ({ onSearch, searchTerm = '' }: AIToolsNavProps) => {
                   <div className={`pt-2 mt-2 border-t space-y-2 ${
                     theme === 'dark' ? 'border-gray-800' : 'border-gray-200'
                   }`}>
-                    <button
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        navigate('/academy/login');
-                      }}
-                      className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-exo font-medium transition-all duration-300 border ${
-                        theme === 'dark'
-                          ? 'border-electric-blue text-electric-blue hover:bg-electric-blue/10'
-                          : 'border-accent-blue text-accent-blue hover:bg-accent-blue/10'
-                      }`}
-                    >
-                      Login
-                    </button>
-                    <button
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        navigate('/academy/signup');
-                      }}
-                      className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-exo font-medium transition-all duration-300 ${
-                        theme === 'dark'
-                          ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
-                          : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
-                      }`}
-                    >
-                      Sign Up
-                    </button>
+                    {!user && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate('/ai-tools/login');
+                          }}
+                          className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-exo font-medium transition-all duration-300 border ${
+                            theme === 'dark'
+                              ? 'border-electric-blue text-electric-blue hover:bg-electric-blue/10'
+                              : 'border-accent-blue text-accent-blue hover:bg-accent-blue/10'
+                          }`}
+                        >
+                          Login
+                        </button>
+                        <button
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate('/ai-tools/signup');
+                          }}
+                          className={`relative group overflow-hidden w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-exo font-medium transition-all duration-300 ${
+                            theme === 'dark'
+                              ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
+                              : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
+                          }`}
+                        >
+                          <span className="relative z-10">
+                          Sign Up
+                          </span>
+                          <div
+                            className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                              theme === 'dark'
+                                ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                                : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                            }`}
+                          />
+                        </button>
+                      </>
+                    )}
+
+                    {user && (
+                      <>
+                        <div className="flex items-center gap-3 px-4 py-2 rounded-xl">
+                          <div
+                            className={`h-10 w-10 rounded-full flex items-center justify-center font-semibold ${
+                              theme === 'dark'
+                                ? 'bg-electric-blue/20 text-electric-blue'
+                                : 'bg-accent-red/10 text-accent-red'
+                            }`}
+                          >
+                            {avatarLabel}
+                          </div>
+                          <div className="text-left">
+                            <p className={`text-sm font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                              {user.name || 'AI Tools User'}
+                            </p>
+                            <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                              {user.email}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            navigate('/ai-tools/explore');
+                          }}
+                          className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-exo font-medium transition-all duration-300 border ${
+                            theme === 'dark'
+                              ? 'border-transparent text-slate-900 bg-gradient-to-r from-electric-blue to-electric-green hover:opacity-95'
+                              : 'border-gray-200 text-white bg-gradient-to-r from-accent-red/80 to-accent-blue/80 hover:opacity-95'
+                          }`}
+                        >
+                          <Settings size={16} />
+                          Manage Tools
+                        </button>
+                        <button
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            logout();
+                            navigate('/ai-tools');
+                          }}
+                          className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-exo font-medium transition-all duration-300 ${
+                            theme === 'dark'
+                              ? 'text-red-300 hover:bg-red-500/10'
+                              : 'text-red-600 hover:bg-red-50'
+                          }`}
+                        >
+                          <LogOut size={16} />
+                          Sign out
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

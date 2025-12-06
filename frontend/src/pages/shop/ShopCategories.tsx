@@ -69,7 +69,7 @@ export default function ShopCategories() {
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="shop" />
     </div>
   );
 }

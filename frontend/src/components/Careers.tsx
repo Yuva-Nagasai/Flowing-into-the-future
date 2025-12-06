@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
-import { jobsAPI } from '../utils/api.js';
+import { jobsAPI } from '../utils/api';
 import { Briefcase, MapPin, Clock, ArrowRight, X, Send } from 'lucide-react';
 
 interface Job {

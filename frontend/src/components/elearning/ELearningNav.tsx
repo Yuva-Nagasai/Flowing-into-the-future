@@ -1,15 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sun, Moon, ChevronDown, BookOpen, Briefcase, Award, Calendar } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import TopFeatureNav from '../TopFeatureNav';
 
 const othersDropdownItems = [
-  { name: 'Blog', path: '/elearning/blog', icon: BookOpen, description: 'Expert articles on n8n automation' },
-  { name: 'Internship', path: '/elearning/internship', icon: Briefcase, description: 'Hands-on automation experience' },
-  { name: 'Certificate', path: '/elearning/certificate', icon: Award, description: 'Industry-standard credentials' },
-  { name: 'Events', path: '/elearning/events', icon: Calendar, description: 'Live workshops & bootcamps' },
+  { name: 'Blog', path: '/elearning/blog', icon: BookOpen, description: 'Expert articles on n8n automation', color: 'from-blue-500 to-cyan-500' },
+  { name: 'Internship', path: '/elearning/internship', icon: Briefcase, description: 'Hands-on automation experience', color: 'from-pink-500 to-rose-500' },
+  { name: 'Certificate', path: '/elearning/certificate', icon: Award, description: 'Industry-standard credentials', color: 'from-amber-500 to-orange-500' },
+  { name: 'Events', path: '/elearning/events', icon: Calendar, description: 'Live workshops & bootcamps', color: 'from-green-500 to-emerald-500' },
 ];
 
 const ELearningNav = () => {
@@ -18,6 +18,7 @@ const ELearningNav = () => {
   const [isMobileOthersOpen, setIsMobileOthersOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
   const othersRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -37,11 +38,26 @@ const ELearningNav = () => {
     { name: 'Home', path: '/elearning' },
     { name: 'Courses', path: '/elearning/courses' },
     { name: 'Masterclass', path: '/elearning/masterclass' },
-    { name: 'Mahakumbh', path: '/elearning/mahakumbh' },
+    { name: 'Summit', path: '/elearning/mahakumbh' },
     { name: 'Freebies', path: '/elearning/freebies' },
     { name: 'About', path: '/elearning/about' },
     { name: 'Contact', path: '/elearning/contact' },
   ];
+
+  const isActivePath = (path: string) => {
+    if (!path) return false;
+    if (path === '/elearning') {
+      return false;
+    }
+    return (
+      location.pathname === path ||
+      location.pathname.startsWith(`${path}/`)
+    );
+  };
+
+  const isOthersActive = othersDropdownItems.some((item) =>
+    isActivePath(item.path)
+  );
 
   const handleNavClick = (path: string) => {
     if (path.startsWith('#')) {
@@ -116,27 +132,59 @@ const ELearningNav = () => {
 
               <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
                 <div className="flex items-center gap-6 lg:gap-8">
-                  {navLinks.map((link) => (
-                    <button
-                      key={link.name}
-                      onClick={() => handleNavClick(link.path)}
-                      className={`font-exo font-medium transition-all duration-300 ${
-                        theme === 'dark'
-                          ? 'text-white hover:text-electric-green'
-                          : 'text-black hover:text-accent-red'
-                      }`}
-                    >
-                      {link.name}
-                    </button>
-                  ))}
+                  {navLinks.map((link) => {
+                    const isSummit = link.name === 'Summit';
+                    const baseClasses =
+                      'font-exo font-medium transition-all duration-300 relative pb-1';
+                    const regularColorClasses = isActivePath(link.path)
+                      ? theme === 'dark'
+                        ? 'text-electric-green'
+                        : 'text-accent-red'
+                      : theme === 'dark'
+                        ? 'text-white hover:text-electric-green'
+                        : 'text-black hover:text-accent-red';
+                    const automationSummitClasses =
+                      'bg-clip-text text-transparent underline decoration-2 underline-offset-4 text-lg font-bold ' +
+                      (theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-green via-electric-blue to-electric-green'
+                        : 'bg-gradient-to-r from-accent-red via-accent-blue to-accent-red');
+
+                    if (isSummit) {
+                      return (
+                        <motion.button
+                          key={link.name}
+                          onClick={() => handleNavClick(link.path)}
+                          className={`${baseClasses} ${automationSummitClasses}`}
+                          animate={{ y: [0, -10, 0] }}
+                          transition={{ duration: 2.4, ease: 'easeInOut', repeat: Infinity, repeatType: 'loop' }}
+                        >
+                          {link.name}
+                        </motion.button>
+                      );
+                    }
+
+                    return (
+                      <button
+                        key={link.name}
+                        onClick={() => handleNavClick(link.path)}
+                        className={`${baseClasses} ${regularColorClasses}`}
+                      >
+                        {link.name}
+                      </button>
+                    );
+                  })}
                   
                   <div className="relative" ref={othersRef}>
                     <button
                       onClick={() => setIsOthersOpen(!isOthersOpen)}
                       className={`flex items-center gap-1 font-exo font-medium transition-all duration-300 ${
-                        theme === 'dark'
-                          ? 'text-white hover:text-electric-green'
-                          : 'text-black hover:text-accent-red'
+                        isOthersActive
+                          ? theme === 'dark'
+                            ? 'text-electric-green'
+                            : 'text-accent-red'
+                          : theme === 'dark'
+                            ? 'text-white hover:text-electric-green'
+                            : 'text-black hover:text-accent-red'
                       }`}
                     >
                       Others
@@ -157,21 +205,21 @@ const ELearningNav = () => {
                           }`}
                         >
                           {othersDropdownItems.map((item) => (
-                            <button
-                              key={item.name}
-                              onClick={() => handleNavClick(item.path)}
-                              className={`w-full flex items-start gap-3 p-4 transition-all duration-200 ${
-                                theme === 'dark'
-                                  ? 'hover:bg-dark-lighter'
+                          <button
+                            key={item.name}
+                            onClick={() => handleNavClick(item.path)}
+                            className={`w-full flex items-start gap-3 p-4 transition-all duration-200 ${
+                              theme === 'dark'
+                                ? isActivePath(item.path)
+                                  ? 'bg-dark-lighter/70 border-l-2 border-electric-green text-electric-green'
+                                  : 'hover:bg-dark-lighter'
+                                : isActivePath(item.path)
+                                  ? 'bg-gray-100/80 border-l-2 border-accent-red text-accent-red'
                                   : 'hover:bg-gray-50'
-                              }`}
-                            >
-                              <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
-                                theme === 'dark'
-                                  ? 'bg-electric-blue/20 text-electric-blue'
-                                  : 'bg-accent-blue/10 text-accent-blue'
-                              }`}>
-                                <item.icon className="w-5 h-5" />
+                            }`}
+                          >
+                              <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br ${item.color}`}>
+                                <item.icon className="w-5 h-5 text-white" />
                               </div>
                               <div className="text-left">
                                 <p className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
@@ -195,13 +243,14 @@ const ELearningNav = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={toggleTheme}
-                  className={`p-2 rounded-lg transition-all ${
+                  aria-label="Toggle theme"
+                  className={`p-2 rounded-full transition-all duration-300 ${
                     theme === 'dark'
-                      ? 'bg-dark-lighter text-yellow-400 hover:bg-gray-700'
-                      : 'bg-gray-100 text-blue-600 hover:bg-gray-200'
+                      ? 'bg-dark-card hover:bg-dark-lighter text-electric-blue hover:glow-blue'
+                      : 'bg-gray-100 hover:bg-gray-200 text-accent-red hover:glow-red'
                   }`}
                 >
-                  {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                  {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                 </motion.button>
 
                 <motion.button
@@ -221,13 +270,22 @@ const ELearningNav = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate('/academy/signup')}
-                  className={`hidden lg:block px-4 py-2 rounded-md font-exo font-medium transition-all duration-300 ${
+                  className={`hidden lg:block relative group overflow-hidden px-4 py-2 rounded-md font-exo font-medium shadow-lg transition-all duration-300 ${
                     theme === 'dark'
-                      ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg hover:shadow-lg hover:shadow-electric-green/30'
-                      : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/30'
+                      ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
+                      : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
                   }`}
                 >
-                  Sign Up
+                  <span className="relative z-10 flex items-center gap-2">
+                    Sign Up
+                  </span>
+                  <div
+                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                        : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                    }`}
+                  />
                 </motion.button>
 
                 <motion.button
@@ -263,9 +321,13 @@ const ELearningNav = () => {
                     key={link.name}
                     onClick={() => handleNavClick(link.path)}
                     className={`w-full text-left px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
-                      theme === 'dark'
-                        ? 'text-white hover:bg-dark-lighter hover:text-electric-green'
-                        : 'text-black hover:bg-gray-100 hover:text-accent-red'
+                      isActivePath(link.path)
+                        ? theme === 'dark'
+                          ? 'text-electric-green bg-dark-lighter/70'
+                          : 'text-accent-red bg-gray-100'
+                        : theme === 'dark'
+                          ? 'text-white hover:bg-dark-lighter hover:text-electric-green'
+                          : 'text-black hover:bg-gray-100 hover:text-accent-red'
                     }`}
                   >
                     {link.name}
@@ -276,9 +338,13 @@ const ELearningNav = () => {
                   <button
                     onClick={() => setIsMobileOthersOpen(!isMobileOthersOpen)}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
-                      theme === 'dark'
-                        ? 'text-white hover:bg-dark-lighter'
-                        : 'text-black hover:bg-gray-100'
+                      isOthersActive
+                        ? theme === 'dark'
+                          ? 'text-electric-green bg-dark-lighter/70'
+                          : 'text-accent-red bg-gray-100'
+                        : theme === 'dark'
+                          ? 'text-white hover:bg-dark-lighter'
+                          : 'text-black hover:bg-gray-100'
                     }`}
                   >
                     Others
@@ -299,11 +365,17 @@ const ELearningNav = () => {
                             onClick={() => handleNavClick(item.path)}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
                               theme === 'dark'
-                                ? 'text-gray-300 hover:bg-dark-lighter hover:text-electric-green'
-                                : 'text-gray-700 hover:bg-gray-100 hover:text-accent-red'
+                                ? isActivePath(item.path)
+                                  ? 'text-electric-green bg-dark-lighter/70'
+                                  : 'text-gray-300 hover:bg-dark-lighter hover:text-electric-green'
+                                : isActivePath(item.path)
+                                  ? 'text-accent-red bg-gray-100'
+                                  : 'text-gray-700 hover:bg-gray-100 hover:text-accent-red'
                             }`}
                           >
-                            <item.icon className="w-5 h-5" />
+                            <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br ${item.color}`}>
+                              <item.icon className="w-4 h-4 text-white" />
+                            </div>
                             <span className="font-exo font-medium">{item.name}</span>
                           </button>
                         ))}
@@ -335,13 +407,22 @@ const ELearningNav = () => {
                     navigate('/academy/signup');
                     setIsMenuOpen(false);
                   }}
-                  className={`w-full px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
+                  className={`relative group overflow-hidden w-full px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
                     theme === 'dark'
                       ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                       : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
                   }`}
                 >
-                  Sign Up
+                  <span className="relative z-10">
+                    Sign Up
+                  </span>
+                  <div
+                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                        : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                    }`}
+                  />
                 </motion.button>
               </div>
             </motion.div>

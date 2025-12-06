@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Sun, Moon, ShoppingCart, User, LogOut, Search, Settings, Heart } from 'lucide-react';
+import { Menu, X, Sun, Moon, ShoppingCart, User, LogOut, Settings, Heart } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useShopAuth } from '../../contexts/ShopAuthContext';
 import TopFeatureNav from '../TopFeatureNav';
@@ -12,7 +12,6 @@ const ShopNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [showTopBar, setShowTopBar] = useState(true);
 
   const cartCount = cart.reduce((total, item) => total + (item.quantity || 1), 0);
@@ -20,21 +19,17 @@ const ShopNav = () => {
   const navLinks = [
     { name: 'Home', path: '/shop' },
     { name: 'Products', path: '/shop/products' },
-    { name: 'Categories', path: '/shop/categories' },
     { name: 'Deals', path: '/shop/deals' },
     { name: 'About', path: '/shop/about' },
+    { name: 'Blog', path: '/shop/blog' },
     { name: 'Contact', path: '/shop/contact' },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/shop/products?search=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery('');
-      setMobileMenuOpen(false);
+  const isActive = (path: string) => {
+    if (path === '/shop') {
+      return false;
     }
+    return location.pathname === path || location.pathname.startsWith(`${path}/`);
   };
 
   const handleLogout = () => {
@@ -102,7 +97,9 @@ const ShopNav = () => {
                       to={link.path}
                       className={`font-exo font-medium transition-all duration-300 ${
                         isActive(link.path)
-                          ? theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+                          ? theme === 'dark'
+                            ? 'text-electric-green'
+                            : 'text-accent-red'
                           : theme === 'dark'
                             ? 'text-white hover:text-electric-green'
                             : 'text-black hover:text-accent-red'
@@ -113,40 +110,9 @@ const ShopNav = () => {
                   ))}
                 </div>
                 
-                <form onSubmit={handleSearch} className="relative">
-                  <div className={`flex items-center px-3 py-1.5 rounded-lg border ${
-                    theme === 'dark'
-                      ? 'bg-dark-lighter border-gray-700'
-                      : 'bg-gray-100 border-gray-200'
-                  }`}>
-                    <Search className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className={`ml-2 bg-transparent border-none outline-none text-sm w-32 ${
-                        theme === 'dark' ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'
-                      }`}
-                    />
-                  </div>
-                </form>
               </div>
 
               <div className="flex items-center gap-2">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={toggleTheme}
-                  className={`p-2 rounded-lg transition-all ${
-                    theme === 'dark'
-                      ? 'bg-dark-lighter text-yellow-400 hover:bg-gray-700'
-                      : 'bg-gray-100 text-blue-600 hover:bg-gray-200'
-                  }`}
-                >
-                  {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                </motion.button>
-
                 {user && (
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                     <Link
@@ -182,6 +148,20 @@ const ShopNav = () => {
                   </Link>
                 </motion.div>
 
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={toggleTheme}
+                  aria-label="Toggle theme"
+                  className={`p-2 rounded-full transition-all duration-300 ${
+                    theme === 'dark'
+                      ? 'bg-dark-card hover:bg-dark-lighter text-electric-blue hover:glow-blue'
+                      : 'bg-gray-100 hover:bg-gray-200 text-accent-red hover:glow-red'
+                  }`}
+                >
+                  {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                </motion.button>
+
                 {user ? (
                   <>
                     {isAdmin && (
@@ -216,14 +196,23 @@ const ShopNav = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={handleLogout}
-                      className={`hidden lg:flex items-center gap-2 px-4 py-2 rounded-md font-exo font-medium transition-all duration-300 ${
+                      className={`relative group overflow-hidden hidden lg:flex items-center gap-2 px-4 py-2 rounded-md font-exo font-medium transition-all duration-300 ${
                         theme === 'dark'
                           ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg hover:shadow-lg hover:shadow-electric-green/30'
                           : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/30'
                       }`}
                     >
-                      <LogOut className="w-4 h-4" />
-                      Logout
+                      <span className="relative z-10 flex items-center gap-2">
+                        <LogOut className="w-4 h-4" />
+                        Logout
+                      </span>
+                      <div
+                        className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                          theme === 'dark'
+                            ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                            : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                        }`}
+                      />
                     </motion.button>
                   </>
                 ) : (
@@ -245,13 +234,22 @@ const ShopNav = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => navigate('/shop/register')}
-                      className={`hidden lg:block px-4 py-2 rounded-md font-exo font-medium transition-all duration-300 ${
+                      className={`hidden lg:block relative group overflow-hidden px-4 py-2 rounded-md font-exo font-medium shadow-lg transition-all duration-300 ${
                         theme === 'dark'
-                          ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg hover:shadow-lg hover:shadow-electric-green/30'
-                          : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/30'
+                          ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
+                          : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
                       }`}
                     >
-                      Sign Up
+                      <span className="relative z-10 flex items-center gap-2">
+                        Sign Up
+                      </span>
+                      <div
+                        className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                          theme === 'dark'
+                            ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                            : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                        }`}
+                      />
                     </motion.button>
                   </>
                 )}
@@ -284,23 +282,6 @@ const ShopNav = () => {
               }`}
             >
               <div className="container mx-auto px-4 py-4">
-                <form onSubmit={handleSearch} className={`flex items-center px-3 py-2 rounded-lg border mb-4 ${
-                  theme === 'dark'
-                    ? 'bg-dark-lighter border-gray-700'
-                    : 'bg-gray-100 border-gray-200'
-                }`}>
-                  <Search className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className={`ml-2 bg-transparent border-none outline-none text-sm flex-1 ${
-                      theme === 'dark' ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'
-                    }`}
-                  />
-                </form>
-
                 <div className="space-y-2">
                   {navLinks.map((link) => (
                     <Link
@@ -309,7 +290,9 @@ const ShopNav = () => {
                       onClick={() => setMobileMenuOpen(false)}
                       className={`block px-4 py-3 rounded-xl font-exo font-medium transition-all duration-300 ${
                         isActive(link.path)
-                          ? theme === 'dark' ? 'text-electric-green bg-dark-lighter' : 'text-accent-red bg-gray-100'
+                          ? theme === 'dark'
+                            ? 'text-electric-green bg-dark-lighter'
+                            : 'text-accent-red bg-gray-100'
                           : theme === 'dark'
                             ? 'text-white hover:bg-dark-lighter hover:text-electric-green'
                             : 'text-black hover:bg-gray-100 hover:text-accent-red'
@@ -376,14 +359,23 @@ const ShopNav = () => {
                         </Link>
                         <button
                           onClick={handleLogout}
-                          className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-exo font-medium transition-all duration-300 ${
+                          className={`relative group overflow-hidden w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-exo font-medium transition-all duration-300 ${
                             theme === 'dark'
                               ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                               : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
                           }`}
                         >
-                          <LogOut className="w-4 h-4" />
-                          Logout
+                          <span className="relative z-10 flex items-center justify-center gap-2">
+                            <LogOut className="w-4 h-4" />
+                            Logout
+                          </span>
+                          <div
+                            className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                              theme === 'dark'
+                                ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                                : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                            }`}
+                          />
                         </button>
                       </>
                     ) : (
@@ -406,13 +398,22 @@ const ShopNav = () => {
                             setMobileMenuOpen(false);
                             navigate('/shop/register');
                           }}
-                          className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-exo font-medium transition-all duration-300 ${
+                          className={`relative group overflow-hidden w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-exo font-medium transition-all duration-300 ${
                             theme === 'dark'
                               ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                               : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
                           }`}
                         >
-                          Sign Up
+                          <span className="relative z-10">
+                            Sign Up
+                          </span>
+                          <div
+                            className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                              theme === 'dark'
+                                ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                                : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                            }`}
+                          />
                         </button>
                       </>
                     )}

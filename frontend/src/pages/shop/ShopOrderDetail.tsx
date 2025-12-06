@@ -89,7 +89,7 @@ export default function ShopOrderDetail() {
             <div className={`h-64 rounded-2xl animate-pulse ${theme === 'dark' ? 'bg-slate-800' : 'bg-gray-200'}`} />
           </div>
         </div>
-        <Footer />
+        <Footer variant="shop" />
       </div>
     );
   }
@@ -117,7 +117,7 @@ export default function ShopOrderDetail() {
             View All Purchases
           </Link>
         </div>
-        <Footer />
+        <Footer variant="shop" />
       </div>
     );
   }
@@ -366,13 +366,22 @@ export default function ShopOrderDetail() {
                 <div className="space-y-3 mt-4">
                   <Link
                     to="/shop/products"
-                    className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                    className={`relative group overflow-hidden w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                       theme === 'dark'
                         ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg'
                         : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg'
                     }`}
                   >
-                    Continue Shopping
+                    <span className="relative z-10">
+                      Continue Shopping
+                    </span>
+                    <div
+                      className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                        theme === 'dark'
+                          ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                          : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                      }`}
+                    />
                   </Link>
                   <Link
                     to="/shop/contact"
@@ -391,7 +400,7 @@ export default function ShopOrderDetail() {
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="shop" />
     </div>
   );
 }

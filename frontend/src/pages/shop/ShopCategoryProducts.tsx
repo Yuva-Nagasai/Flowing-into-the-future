@@ -172,7 +172,7 @@ export default function ShopCategoryProducts() {
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="shop" />
     </div>
   );
 }

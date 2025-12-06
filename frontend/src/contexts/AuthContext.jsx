@@ -15,14 +15,28 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const TOKEN_KEY = 'academy_token';
+  const USER_KEY = 'academy_user';
+
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
+    // Backward compatibility: read old keys if present
+    const legacyToken = localStorage.getItem('token');
+    const legacyUser = localStorage.getItem('user');
+    const token = localStorage.getItem(TOKEN_KEY) || legacyToken;
+    const storedUser = localStorage.getItem(USER_KEY) || legacyUser;
     
     if (token && storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        // migrate to new keys
+        localStorage.setItem(TOKEN_KEY, token);
+        localStorage.setItem(USER_KEY, storedUser);
+        if (legacyToken) localStorage.removeItem('token');
+        if (legacyUser) localStorage.removeItem('user');
       } catch (error) {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(USER_KEY);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
       }
@@ -35,8 +49,8 @@ export const AuthProvider = ({ children }) => {
       const response = await authAPI.login(email, password);
       const { token, user: userData } = response.data;
       
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem(TOKEN_KEY, token);
+      localStorage.setItem(USER_KEY, JSON.stringify(userData));
       setUser(userData);
       
       return { success: true, user: userData };
@@ -50,8 +64,8 @@ export const AuthProvider = ({ children }) => {
       const response = await authAPI.signup(name, email, password, role);
       const { token, user: userData } = response.data;
       
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem(TOKEN_KEY, token);
+      localStorage.setItem(USER_KEY, JSON.stringify(userData));
       setUser(userData);
       
       return { success: true, user: userData };
@@ -61,8 +75,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem('token'); // legacy clean-up
+    localStorage.removeItem('user');  // legacy clean-up
     setUser(null);
   };
 

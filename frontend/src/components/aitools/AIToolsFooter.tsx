@@ -45,7 +45,7 @@ const AIToolsFooter = () => {
         { label: 'Documentation', path: '#' },
         { label: 'API Reference', path: '#' },
         { label: 'Tutorials', path: '/academy' },
-        { label: 'Blog', path: '#' },
+        { label: 'Blog', path: '/ai-tools/blog' },
         { label: 'Support', path: '/contact' }
       ]
     },
@@ -225,7 +225,7 @@ const AIToolsFooter = () => {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className={`fixed bottom-6 right-6 w-12 h-12 rounded-full flex items-center justify-center z-40 transition-all duration-300 hover:scale-110 shadow-lg ${
+          className={`fixed bottom-24 right-6 sm:bottom-28 sm:right-8 w-12 h-12 rounded-full flex items-center justify-center z-40 transition-all duration-300 hover:scale-110 shadow-lg ${
             theme === 'dark'
               ? 'bg-electric-blue text-black hover:bg-electric-green'
               : 'bg-accent-red text-white hover:bg-accent-blue'

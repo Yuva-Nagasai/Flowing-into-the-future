@@ -83,14 +83,23 @@ export default function CTABlock({
           {primaryAction && (
             <Link
               to={primaryAction.href}
-              className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all ${
+              className={`relative group overflow-hidden inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 ${
                 theme === 'dark'
                   ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
                   : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
               }`}
             >
-              {primaryAction.label}
-              <ArrowRight className="w-5 h-5" />
+              <span className="relative z-10 flex items-center gap-2">
+                {primaryAction.label}
+                <ArrowRight className="w-5 h-5" />
+              </span>
+              <div
+                className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                    : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                }`}
+              />
             </Link>
           )}
 

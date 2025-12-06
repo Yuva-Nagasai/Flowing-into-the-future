@@ -5,21 +5,20 @@ import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import SEO from '../../components/SEO';
 
 const MobileApps = () => {
   const { theme } = useTheme();
 
-  useEffect(() => {
-    document.title = 'Mobile Apps Development - Nano Flows | iOS & Android Apps';
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Nano Flows creates exceptional mobile applications for iOS and Android. Native and cross-platform app development with beautiful design, robust functionality, and optimal performance.');
-    }
-  }, []);
-
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
-      <Header />
+    <>
+      <SEO
+        title="Mobile Apps Development - NanoFlows | iOS & Android Apps"
+        description="NanoFlows creates exceptional mobile applications for iOS and Android. Native and cross-platform app development with beautiful design, robust functionality, and optimal performance."
+        keywords="mobile apps, iOS apps, Android apps, mobile development, native apps, cross-platform apps"
+      />
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+        <Header />
       <main className="pt-24 lg:pt-32">
         {/* Hero Section */}
         <section className={`relative py-12 sm:py-16 md:py-20 overflow-hidden ${
@@ -223,7 +222,8 @@ const MobileApps = () => {
         </section>
       </main>
       <Footer />
-    </div>
+      </div>
+    </>
   );
 };
 

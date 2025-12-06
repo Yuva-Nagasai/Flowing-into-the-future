@@ -36,6 +36,11 @@ export default {
     errorBg: "bg-red-500/15",
     errorText: "text-red-200",
     
+    // Success States
+    successBorder: "border-2 border-green-500/40",
+    successBg: "bg-green-500/15",
+    successText: "text-green-200",
+    
     // Borders
     border: "border-electric-blue/20",
     borderHover: "hover:border-electric-blue",

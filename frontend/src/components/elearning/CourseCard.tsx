@@ -40,7 +40,7 @@ const CourseCard = ({
       viewport={{ once: true }}
       whileHover={{ y: -8 }}
       onClick={() => onClick(id)}
-      className={`group cursor-pointer rounded-2xl border-2 overflow-hidden transition-all ${
+      className={`group cursor-pointer rounded-2xl border-2 overflow-hidden transition-all flex flex-col h-full ${
         theme === 'dark'
           ? 'bg-dark-card border-gray-800 hover:border-electric-blue/50 hover:shadow-2xl hover:shadow-electric-blue/10'
           : 'bg-white border-gray-200 hover:border-accent-blue/50 hover:shadow-2xl hover:shadow-accent-blue/10'
@@ -71,7 +71,7 @@ const CourseCard = ({
       </div>
 
       {/* Content */}
-      <div className="p-5">
+      <div className="p-5 flex flex-col flex-1">
         <div className="mb-2">
           <span className={`text-sm font-semibold ${
             theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'
@@ -80,26 +80,26 @@ const CourseCard = ({
           </span>
         </div>
 
-        <h3 className={`text-xl font-bold mb-2 line-clamp-2 ${
+        <h3 className={`text-xl font-bold mb-2 line-clamp-2 min-h-[3.5rem] ${
           theme === 'dark' ? 'text-white' : 'text-gray-900'
         }`}>
           {title}
         </h3>
 
-        <p className={`text-sm mb-3 line-clamp-2 ${
+        <p className={`text-sm mb-3 line-clamp-2 min-h-[2.5rem] flex-shrink-0 ${
           theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
         }`}>
           {description}
         </p>
 
-        <div className={`flex items-center gap-2 mb-4 text-sm ${
+        <div className={`flex items-center gap-2 mb-4 text-sm flex-shrink-0 ${
           theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
         }`}>
           <span className="font-medium">{instructor}</span>
         </div>
 
         {/* Rating */}
-        <div className="flex items-center gap-1 mb-4">
+        <div className="flex items-center gap-1 mb-4 flex-shrink-0">
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
@@ -120,7 +120,7 @@ const CourseCard = ({
         </div>
 
         {/* Meta Info */}
-        <div className={`flex items-center justify-between pt-4 border-t ${
+        <div className={`flex items-center justify-between pt-4 border-t mt-auto ${
           theme === 'dark' ? 'border-gray-800' : 'border-gray-200'
         }`}>
           <div className="flex items-center gap-3">

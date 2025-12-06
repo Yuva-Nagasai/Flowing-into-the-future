@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Send, Check, Loader2 } from 'lucide-react';
+import { Mail, Send, Check, Loader2, ArrowRight } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import shopApi from '../../utils/shopApi';
 
@@ -69,7 +69,7 @@ export default function NewsletterForm({
         <button
           type="submit"
           disabled={loading || success}
-          className={`px-6 py-3 rounded-xl font-semibold transition-all disabled:opacity-50 ${
+          className={`relative group overflow-hidden px-6 py-3 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 ${
             success
               ? 'bg-green-500 text-white'
               : theme === 'dark'
@@ -77,12 +77,23 @@ export default function NewsletterForm({
                 : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg'
           }`}
         >
-          {loading ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
-          ) : success ? (
-            <Check className="w-5 h-5" />
-          ) : (
-            <Send className="w-5 h-5" />
+          <span className="relative z-10">
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : success ? (
+              <Check className="w-5 h-5" />
+            ) : (
+              <Send className="w-5 h-5" />
+            )}
+          </span>
+          {!success && (
+            <div
+              className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                theme === 'dark'
+                  ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                  : 'bg-gradient-to-r from-accent-blue to-accent-red'
+              }`}
+            />
           )}
         </button>
       </form>
@@ -109,7 +120,16 @@ export default function NewsletterForm({
               <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>
-                {title}
+                Subscribe to Our{' '}
+                <span
+                  className={`bg-gradient-to-r ${
+                    theme === 'dark'
+                      ? 'from-electric-blue to-electric-green'
+                      : 'from-accent-red to-accent-blue'
+                  } bg-clip-text text-transparent`}
+                >
+                  Newsletter
+                </span>
               </h2>
               <p className={`text-lg mb-8 ${
                 theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
@@ -134,12 +154,12 @@ export default function NewsletterForm({
                   <button
                     type="submit"
                     disabled={loading || success}
-                    className={`px-8 py-3 rounded-xl font-semibold transition-all disabled:opacity-50 ${
+                    className={`relative group overflow-hidden inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 disabled:opacity-50 ${
                       success
                         ? 'bg-green-500 text-white'
                         : theme === 'dark'
-                          ? 'bg-white text-slate-900 hover:bg-gray-100'
-                          : 'bg-gray-900 text-white hover:bg-gray-800'
+                          ? 'bg-gradient-to-r from-electric-green to-electric-blue text-slate-900'
+                          : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
                     }`}
                   >
                     {loading ? (
@@ -150,7 +170,19 @@ export default function NewsletterForm({
                         Subscribed!
                       </span>
                     ) : (
-                      'Subscribe'
+                      <>
+                        Subscribe
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                    {!success && (
+                      <div
+                        className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                          theme === 'dark'
+                            ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                            : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                        }`}
+                      />
                     )}
                   </button>
                 </div>
@@ -180,7 +212,16 @@ export default function NewsletterForm({
       <h3 className={`text-xl font-bold mb-2 ${
         theme === 'dark' ? 'text-white' : 'text-gray-900'
       }`}>
-        {title}
+        Subscribe to Our{' '}
+        <span
+          className={`bg-gradient-to-r ${
+            theme === 'dark'
+              ? 'from-electric-blue to-electric-green'
+              : 'from-accent-red to-accent-blue'
+          } bg-clip-text text-transparent`}
+        >
+          Newsletter
+        </span>
       </h3>
       <p className={`text-sm mb-4 ${
         theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
@@ -215,7 +256,7 @@ export default function NewsletterForm({
         <button
           type="submit"
           disabled={loading || success}
-          className={`w-full py-2 rounded-lg font-semibold transition-all disabled:opacity-50 ${
+          className={`relative group overflow-hidden w-full py-2 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 ${
             success
               ? 'bg-green-500 text-white'
               : theme === 'dark'
@@ -223,15 +264,26 @@ export default function NewsletterForm({
                 : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg'
           }`}
         >
-          {loading ? (
-            <Loader2 className="w-5 h-5 animate-spin mx-auto" />
-          ) : success ? (
-            <span className="flex items-center justify-center gap-2">
-              <Check className="w-5 h-5" />
-              Subscribed!
-            </span>
-          ) : (
-            'Subscribe'
+          <span className="relative z-10">
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin mx-auto" />
+            ) : success ? (
+              <span className="flex items-center justify-center gap-2">
+                <Check className="w-5 h-5" />
+                Subscribed!
+              </span>
+            ) : (
+              'Subscribe'
+            )}
+          </span>
+          {!success && (
+            <div
+              className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                theme === 'dark'
+                  ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                  : 'bg-gradient-to-r from-accent-blue to-accent-red'
+              }`}
+            />
           )}
         </button>
 

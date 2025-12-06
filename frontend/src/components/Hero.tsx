@@ -2,8 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate, useLocation } from 'react-router-dom';
-// @ts-expect-error - legacy JS module
-import { heroSlidesAPI } from '../utils/api.js';
+import { heroSlidesAPI } from '../utils/api';
 
 const slideOneImageUrl = '/nanoflows-image.png';
 
@@ -135,30 +134,6 @@ const fallbackServicesSlide: ServicesSlide = {
 const fallbackShowcaseSlides: ShowcaseSlide[] = [
   {
     variant: 'showcase',
-    preHeading: 'Welcome to NanoFlows',
-    heading: 'Innovating Smarter Solutions with',
-    highlight: 'Trusted Intelligence',
-    description:
-      'Engineering interactive and secure digital products across AI, automation, cloud, and data. Our pods blend strategy, design, and delivery to accelerate real business outcomes.',
-    categories: ['AI', 'IoT', 'Digital Engineering', 'Data Analytics', 'Travel Tech', 'Web & Cloud'],
-    primaryCta: { label: 'Consult our expert', route: '/contact' },
-    secondaryCta: { label: 'Explore services', route: '/services' },
-    trustBadges: [],
-  },
-  {
-    variant: 'showcase',
-    preHeading: 'NanoFlows Academy',
-    heading: 'Master In-Demand Skills with',
-    highlight: 'E-Learning',
-    description:
-      'Transform your career with expert-led courses. Learn at your own pace with lifetime access, earn industry-recognized certificates, and join thousands of successful learners.',
-    categories: ['Web Development', 'AI & Machine Learning', 'Cloud Computing', 'Data Science', 'DevOps', 'Cybersecurity'],
-    primaryCta: { label: 'Start Learning', route: '/elearning' },
-    secondaryCta: { label: 'View All Courses', route: '/elearning#courses' },
-    trustBadges: ['Industry Experts', 'Certificates', 'Lifetime Access'],
-  },
-  {
-    variant: 'showcase',
     preHeading: 'AI-Powered Productivity',
     heading: 'Supercharge Your Workflow with',
     highlight: 'AI Tools',
@@ -177,9 +152,10 @@ const fallbackShowcaseSlides: ShowcaseSlide[] = [
     description:
       'Shop our exclusive collection of digital products, templates, and solutions. Built with cutting-edge technology to accelerate your business growth and digital transformation.',
     categories: ['Templates', 'UI Kits', 'Plugins', 'Source Code', 'Digital Assets', 'Business Tools'],
-    primaryCta: { label: 'Visit Shop', route: '/shop' },
+    primaryCta: { label: 'Visit Digital Hub', route: '/shop' },
     secondaryCta: { label: 'View Best Sellers', route: '/shop#featured' },
-    trustBadges: ['Secure Checkout', 'Instant Download', 'Premium Support'],
+    // Remove trust badges/buttons from this slide per design request
+    trustBadges: [],
   },
   {
     variant: 'showcase',
@@ -234,10 +210,13 @@ const Hero = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const activeSlide = slides[currentSlide];
   const isServicesSlide = activeSlide?.variant === 'services';
-  const hasCustomBackground = Boolean(activeSlide?.backgroundImage);
+  // Disable custom background image specifically for the first slide
+  const hasCustomBackground = Boolean(
+    activeSlide?.backgroundImage && currentSlide !== 0
+  );
   const backgroundOverlayColor =
     activeSlide?.backgroundOverlay ||
-    (theme === 'dark' ? 'rgba(0, 0, 0, 0.78)' : 'rgba(255, 255, 255, 0.82)');
+    (theme === 'dark' ? 'rgba(0, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.82)');
   const gradientMeshClass = theme === 'dark' ? 'gradient-mesh' : 'gradient-mesh-light';
   const defaultSlide = useMemo<DefaultSlide>(() => {
     const firstDefault = slides.find(isDefaultSlide);
@@ -329,13 +308,20 @@ const Hero = () => {
           })
           .filter(Boolean) as HeroSlide[];
 
-        const hasDefault = mappedSlides.some(isDefaultSlide);
+        // Remove the NanoFlows Academy showcase slide (3rd slide on the website)
+        const filteredSlides = mappedSlides.filter((slide) => {
+          if (slide.variant !== 'showcase') return true;
+          const showcase = slide as ShowcaseSlide;
+          return showcase.primaryCta.route !== '/elearning';
+        });
+
+        const hasDefault = filteredSlides.some(isDefaultSlide);
         if (!hasDefault) {
-          mappedSlides.unshift(fallbackDefaultSlide);
+          filteredSlides.unshift(fallbackDefaultSlide);
         }
 
-        if (mappedSlides.length) {
-          setSlides(mappedSlides);
+        if (filteredSlides.length) {
+          setSlides(filteredSlides);
           setCurrentSlide(0);
         }
       } catch (error) {
@@ -394,8 +380,8 @@ const Hero = () => {
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         ctx.fillStyle =
           theme === 'dark'
-            ? `rgba(10, 186, 181, ${0.3 + Math.random() * 0.3})`
-            : `rgba(0, 123, 255, ${0.2 + Math.random() * 0.2})`;
+            ? `rgba(0, 255, 127, ${0.5 + Math.random() * 0.3})`
+            : `rgba(220, 38, 38, ${0.5 + Math.random() * 0.3})`;
         ctx.fill();
 
         for (let j = i + 1; j < particles.length; j++) {
@@ -409,9 +395,9 @@ const Hero = () => {
             ctx.lineTo(particles[j].x, particles[j].y);
             ctx.strokeStyle =
               theme === 'dark'
-                ? `rgba(0, 255, 127, ${0.2 - distance / 500})`
-                : `rgba(255, 0, 0, ${0.15 - distance / 700})`;
-            ctx.lineWidth = 0.5;
+                ? `rgba(0, 255, 127, ${0.4 - distance / 400})`
+                : `rgba(220, 38, 38, ${0.4 - distance / 400})`;
+            ctx.lineWidth = 1;
             ctx.stroke();
           }
         }
@@ -630,24 +616,7 @@ const Hero = () => {
           </button>
         )}
       </div>
-      <div
-        className={`flex flex-wrap items-center justify-center md:justify-start gap-4 pt-4 ${
-          theme === 'dark' ? 'text-gray-200' : 'text-gray-600'
-        }`}
-      >
-        {slide.trustBadges.map((badge) => (
-          <div
-            key={badge}
-            className={`px-5 py-2 rounded-xl text-sm font-semibold ${
-              theme === 'dark'
-                ? 'bg-dark-card border border-electric-blue/30'
-                : 'bg-white border border-gray-200 shadow-sm'
-            }`}
-          >
-            {badge}
-          </div>
-        ))}
-      </div>
+      {/* Trust badges are intentionally not rendered on showcase slides as per latest design */}
     </div>
   );
   };
@@ -1017,3 +986,4 @@ const Hero = () => {
 };
 
 export default Hero;
+

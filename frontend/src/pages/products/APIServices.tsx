@@ -5,21 +5,20 @@ import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import SEO from '../../components/SEO';
 
 const APIServices = () => {
   const { theme } = useTheme();
 
-  useEffect(() => {
-    document.title = 'API Services - Nano Flows | RESTful & GraphQL API Development';
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Nano Flows provides robust API development and integration services. RESTful and GraphQL APIs with security, scalability, and comprehensive documentation for seamless system integration.');
-    }
-  }, []);
-
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
-      <Header />
+    <>
+      <SEO
+        title="API Services - NanoFlows | RESTful & GraphQL API Development"
+        description="NanoFlows provides robust API development and integration services. RESTful and GraphQL APIs with security, scalability, and comprehensive documentation for seamless system integration."
+        keywords="API services, RESTful API, GraphQL API, API development, API integration, web services"
+      />
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+        <Header />
       <main className="pt-24 lg:pt-32">
         {/* Hero Section */}
         <section className={`relative py-12 sm:py-16 md:py-20 overflow-hidden ${
@@ -223,7 +222,8 @@ const APIServices = () => {
         </section>
       </main>
       <Footer />
-    </div>
+      </div>
+    </>
   );
 };
 

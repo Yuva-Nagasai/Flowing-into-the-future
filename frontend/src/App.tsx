@@ -1,8 +1,10 @@
 import { useEffect, useMemo } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
+import { WebsiteAuthProvider } from './contexts/WebsiteAuthContext';
+import { AIToolsAuthProvider } from './contexts/AIToolsAuthContext';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -13,20 +15,19 @@ import Careers from './components/Careers';
 import Footer from './components/Footer';
 import AIChat from './components/AIChat';
 import SocialMediaBar from './components/SocialMediaBar';
-import ContactBar from './components/ContactBar';
 import FloatingContactWidget from './components/FloatingContactWidget';
 import EducationDashboard from './components/EducationDashboard';
 import { PageTransition } from './components/animations';
+import SEO from './components/SEO';
 import CareersPage from './pages/CareersPage';
 import ContactPage from './pages/ContactPage';
 
 import Login from './pages/academy/Login';
 import Signup from './pages/academy/Signup';
-import PlatformSelection from './pages/academy/PlatformSelection';
-import ExploreCourses from './pages/academy/ExploreCourses';
+import WebsiteLogin from './pages/WebsiteLogin';
+import WebsiteSignup from './pages/WebsiteSignup';
 import CourseDetails from './pages/academy/CourseDetails';
 import UserDashboard from './pages/academy/UserDashboard';
-import CoursePlayer from './pages/academy/CoursePlayer';
 import CoursePlayerEnhanced from './pages/academy/CoursePlayerEnhanced';
 import Profile from './pages/academy/Profile';
 import Checkout from './pages/academy/Checkout';
@@ -63,7 +64,6 @@ import Compliance from './pages/legal/Compliance';
 import ServicesPage from './pages/ServicesPage';
 import HowItWorks from './pages/HowItWorks';
 import IndustryDetail from './pages/industries/IndustryDetail';
-import ELearningLanding from './pages/ELearningLanding';
 import CourseListing from './pages/CourseListing';
 import ELearningHome from './pages/elearning/ELearningHome';
 import ELearningAboutPage from './pages/elearning/AboutPage';
@@ -80,6 +80,10 @@ import AIToolsHome from './pages/aitools/AIToolsHome';
 import AIToolsExplore from './pages/aitools/AIToolsExplore';
 import AIToolDetail from './pages/aitools/AIToolDetail';
 import AIToolsAbout from './pages/aitools/AIToolsAbout';
+import AIToolsBlog from './pages/aitools/AIToolsBlog';
+import AIToolsContact from './pages/aitools/AIToolsContact';
+import AIToolsLogin from './pages/aitools/AIToolsLogin';
+import AIToolsSignup from './pages/aitools/AIToolsSignup';
 import ShopLayout from './components/shop/ShopLayout';
 import ShopProtectedRoute from './components/shop/ShopProtectedRoute';
 import ShopHome from './pages/shop/ShopHome';
@@ -112,7 +116,7 @@ import ShopAdminTestimonials from './pages/shop/admin/ShopAdminTestimonials';
 import ShopAdminNewsletter from './pages/shop/admin/ShopAdminNewsletter';
 import ShopAdminProductRequests from './pages/shop/admin/ShopAdminProductRequests';
 import ShopWishlist from './pages/shop/ShopWishlist';
-import { Navigate } from 'react-router-dom';
+import ShopBlog from './pages/shop/ShopBlog';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -129,8 +133,20 @@ function AnimatedRoutes() {
     const hiddenExactPaths = ['/', '/contact', '/elearning/contact'];
     if (hiddenExactPaths.includes(location.pathname)) return false;
 
-    const hiddenPrefixes = ['/academy', '/elearning', '/aitools', '/shop'];
-    return !hiddenPrefixes.some((prefix) => location.pathname.startsWith(prefix));
+    const hiddenPrefixes = ['/academy', '/elearning', '/aitools', '/ai-tools', '/shop'];
+    if (hiddenPrefixes.some((prefix) => location.pathname.startsWith(prefix))) return false;
+
+    // Hide on all login and signup pages
+    const loginSignupPaths = ['/login', '/signup', '/academy/login', '/academy/signup', '/ai-tools/login', '/ai-tools/signup', '/shop/login', '/shop/register'];
+    if (loginSignupPaths.includes(location.pathname)) return false;
+
+    return true;
+  }, [location.pathname]);
+
+  const showAIChat = useMemo(() => {
+    // Hide AI Chat on all login and signup pages
+    const loginSignupPaths = ['/login', '/signup', '/academy/login', '/academy/signup', '/ai-tools/login', '/ai-tools/signup', '/shop/login', '/shop/register'];
+    return !loginSignupPaths.includes(location.pathname);
   }, [location.pathname]);
 
   return (
@@ -142,20 +158,58 @@ function AnimatedRoutes() {
             path="/"
             element={
               <PageTransition>
-                <div className="relative min-h-screen flex flex-col bg-white dark:bg-dark-bg transition-colors duration-300 w-full max-w-full overflow-x-hidden">
-                  <Header />
-                  <div className="pt-24 lg:pt-32">
-                    <SocialMediaBar />
-                    <ContactBar />
-                    <Hero />
-                    <About />
-                    <WebsiteComparison />
-                    <Features />
-                    <CaseStudy />
-                    <Careers />
-                    <Footer />
+                <>
+                  <SEO
+                    title="Home | NanoFlows - Futuristic AI Solutions & Digital Hub"
+                    description="Transform your business with cutting-edge AI solutions, automation tools, and digital services. Explore Academy courses, AI Tools platform, and digital products."
+                    keywords="AI solutions, automation, digital transformation, machine learning, business automation, AI tools, e-learning, digital products"
+                  />
+                  <div className="relative min-h-screen flex flex-col bg-white dark:bg-dark-bg transition-colors duration-300 w-full max-w-full overflow-x-hidden">
+                    <Header />
+                    <div className="pt-24 lg:pt-32">
+                      <SocialMediaBar />
+                      <Hero />
+                      <About />
+                      <WebsiteComparison />
+                      <Features />
+                      <CaseStudy />
+                      <Careers />
+                      <Footer />
+                    </div>
                   </div>
-                </div>
+                </>
+              </PageTransition>
+            }
+          />
+
+          {/* Website Auth - separate from Academy */}
+          <Route
+            path="/login"
+            element={
+              <PageTransition>
+                <>
+                  <SEO
+                    title="Sign In | NanoFlows"
+                    description="Sign in to your NanoFlows account to access Academy courses, AI Tools platform, and digital products."
+                    keywords="login, sign in, account, authentication"
+                  />
+                  <WebsiteLogin />
+                </>
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <PageTransition>
+                <>
+                  <SEO
+                    title="Sign Up | NanoFlows"
+                    description="Create your NanoFlows account to access Academy courses, AI Tools platform, and digital products."
+                    keywords="sign up, register, create account, signup"
+                  />
+                  <WebsiteSignup />
+                </>
               </PageTransition>
             }
           />
@@ -165,7 +219,14 @@ function AnimatedRoutes() {
             path="/services"
             element={
               <PageTransition>
-                <ServicesPage />
+                <>
+                  <SEO
+                    title="Services | NanoFlows"
+                    description="Comprehensive AI solutions, automation services, and digital transformation consulting for your business."
+                    keywords="AI services, automation, consulting, digital transformation, business solutions"
+                  />
+                  <ServicesPage />
+                </>
               </PageTransition>
             }
           />
@@ -175,7 +236,14 @@ function AnimatedRoutes() {
             path="/how-it-works"
             element={
               <PageTransition>
-                <HowItWorks />
+                <>
+                  <SEO
+                    title="How It Works | NanoFlows"
+                    description="Learn how NanoFlows helps businesses transform with AI solutions and automation tools."
+                    keywords="how it works, process, methodology, business transformation"
+                  />
+                  <HowItWorks />
+                </>
               </PageTransition>
             }
           />
@@ -184,7 +252,14 @@ function AnimatedRoutes() {
             path="/careers"
             element={
               <PageTransition>
-                <CareersPage />
+                <>
+                  <SEO
+                    title="Careers | NanoFlows"
+                    description="Join the NanoFlows team and build the future of AI and automation. Explore career opportunities."
+                    keywords="careers, jobs, employment, hiring, opportunities"
+                  />
+                  <CareersPage />
+                </>
               </PageTransition>
             }
           />
@@ -192,7 +267,14 @@ function AnimatedRoutes() {
             path="/contact"
             element={
               <PageTransition>
-                <ContactPage />
+                <>
+                  <SEO
+                    title="Contact Us | NanoFlows"
+                    description="Get in touch with NanoFlows. Contact our team for inquiries, support, or partnership opportunities."
+                    keywords="contact, support, inquiry, help, get in touch"
+                  />
+                  <ContactPage />
+                </>
               </PageTransition>
             }
           />
@@ -201,7 +283,14 @@ function AnimatedRoutes() {
             path="/industries/:slug"
             element={
               <PageTransition>
-                <IndustryDetail />
+                <>
+                  <SEO
+                    title="Industry Solutions | NanoFlows"
+                    description="Industry-specific AI solutions and automation tools tailored to your business needs."
+                    keywords="industry solutions, sector-specific, business automation"
+                  />
+                  <IndustryDetail />
+                </>
               </PageTransition>
             }
           />
@@ -212,9 +301,16 @@ function AnimatedRoutes() {
             path="/educationdashboard"
             element={
               <PageTransition>
-                <div className="relative min-h-screen flex flex-col bg-white dark:bg-dark-bg transition-colors duration-300 w-full max-w-full overflow-x-hidden">
-                  <EducationDashboard />
-                </div>
+                <>
+                  <SEO
+                    title="Education Dashboard | NanoFlows"
+                    description="Access your learning dashboard and track your progress across courses and certifications."
+                    keywords="education dashboard, learning, courses, progress"
+                  />
+                  <div className="relative min-h-screen flex flex-col bg-white dark:bg-dark-bg transition-colors duration-300 w-full max-w-full overflow-x-hidden">
+                    <EducationDashboard />
+                  </div>
+                </>
               </PageTransition>
             }
           />
@@ -224,9 +320,22 @@ function AnimatedRoutes() {
             path="/elearning"
             element={
               <PageTransition>
-                <ELearningHome />
+                <>
+                  <SEO
+                    title="E-Learning Platform | NanoFlows Academy"
+                    description="Explore comprehensive e-learning courses, certifications, and training programs on NanoFlows Academy."
+                    keywords="e-learning, online courses, training, education, learning platform"
+                  />
+                  <ELearningHome />
+                </>
               </PageTransition>
             }
+          />
+
+          {/* E-Learning Login Redirect */}
+          <Route
+            path="/elearning/login"
+            element={<Navigate to="/academy/login" replace />}
           />
 
           {/* E-Learning About Page */}
@@ -234,7 +343,14 @@ function AnimatedRoutes() {
             path="/elearning/about"
             element={
               <PageTransition>
-                <ELearningAboutPage />
+                <>
+                  <SEO
+                    title="About | NanoFlows Academy"
+                    description="Learn about NanoFlows Academy - your gateway to professional development and skill enhancement."
+                    keywords="about academy, e-learning, education platform"
+                  />
+                  <ELearningAboutPage />
+                </>
               </PageTransition>
             }
           />
@@ -244,7 +360,14 @@ function AnimatedRoutes() {
             path="/elearning/courses"
             element={
               <PageTransition>
-                <JobsPage />
+                <>
+                  <SEO
+                    title="Courses | NanoFlows Academy"
+                    description="Browse our comprehensive catalog of online courses and training programs."
+                    keywords="courses, online courses, training programs, education"
+                  />
+                  <JobsPage />
+                </>
               </PageTransition>
             }
           />
@@ -254,7 +377,14 @@ function AnimatedRoutes() {
             path="/elearning/contact"
             element={
               <PageTransition>
-                <ELearningContactPage />
+                <>
+                  <SEO
+                    title="Contact | NanoFlows Academy"
+                    description="Get in touch with NanoFlows Academy for course inquiries and support."
+                    keywords="contact academy, support, inquiry"
+                  />
+                  <ELearningContactPage />
+                </>
               </PageTransition>
             }
           />
@@ -264,7 +394,14 @@ function AnimatedRoutes() {
             path="/elearning/masterclass"
             element={
               <PageTransition>
-                <MasterclassPage />
+                <>
+                  <SEO
+                    title="Masterclass | NanoFlows Academy"
+                    description="Join expert-led masterclasses and advanced training sessions."
+                    keywords="masterclass, advanced training, expert courses"
+                  />
+                  <MasterclassPage />
+                </>
               </PageTransition>
             }
           />
@@ -274,7 +411,14 @@ function AnimatedRoutes() {
             path="/elearning/mahakumbh"
             element={
               <PageTransition>
-                <MahakumbhPage />
+                <>
+                  <SEO
+                    title="Mahakumbh | NanoFlows Academy"
+                    description="Explore Mahakumbh learning programs and special training initiatives."
+                    keywords="mahakumbh, special programs, training initiatives"
+                  />
+                  <MahakumbhPage />
+                </>
               </PageTransition>
             }
           />
@@ -284,7 +428,14 @@ function AnimatedRoutes() {
             path="/elearning/freebies"
             element={
               <PageTransition>
-                <FreebiesPage />
+                <>
+                  <SEO
+                    title="Free Resources | NanoFlows Academy"
+                    description="Access free learning resources, templates, and educational materials."
+                    keywords="free resources, free courses, learning materials"
+                  />
+                  <FreebiesPage />
+                </>
               </PageTransition>
             }
           />
@@ -294,7 +445,14 @@ function AnimatedRoutes() {
             path="/elearning/blog"
             element={
               <PageTransition>
-                <BlogPage />
+                <>
+                  <SEO
+                    title="Blog | NanoFlows Academy"
+                    description="Read articles, tips, and insights about learning, technology, and professional development."
+                    keywords="blog, articles, learning tips, education blog"
+                  />
+                  <BlogPage />
+                </>
               </PageTransition>
             }
           />
@@ -304,7 +462,14 @@ function AnimatedRoutes() {
             path="/elearning/internship"
             element={
               <PageTransition>
-                <InternshipPage />
+                <>
+                  <SEO
+                    title="Internship Programs | NanoFlows Academy"
+                    description="Apply for internship opportunities and gain hands-on experience."
+                    keywords="internship, internships, career opportunities, work experience"
+                  />
+                  <InternshipPage />
+                </>
               </PageTransition>
             }
           />
@@ -314,7 +479,14 @@ function AnimatedRoutes() {
             path="/elearning/certificate"
             element={
               <PageTransition>
-                <CertificatePage />
+                <>
+                  <SEO
+                    title="Certificates | NanoFlows Academy"
+                    description="Earn industry-recognized certificates and validate your skills."
+                    keywords="certificates, certifications, credentials, skill validation"
+                  />
+                  <CertificatePage />
+                </>
               </PageTransition>
             }
           />
@@ -324,7 +496,14 @@ function AnimatedRoutes() {
             path="/elearning/events"
             element={
               <PageTransition>
-                <EventsPage />
+                <>
+                  <SEO
+                    title="Events | NanoFlows Academy"
+                    description="Join webinars, workshops, and educational events."
+                    keywords="events, webinars, workshops, educational events"
+                  />
+                  <EventsPage />
+                </>
               </PageTransition>
             }
           />
@@ -334,7 +513,14 @@ function AnimatedRoutes() {
             path="/courses"
             element={
               <PageTransition>
-                <CourseListing />
+                <>
+                  <SEO
+                    title="Courses | NanoFlows"
+                    description="Browse all available courses and training programs on NanoFlows Academy."
+                    keywords="courses, course listing, training programs, online courses"
+                  />
+                  <CourseListing />
+                </>
               </PageTransition>
             }
           />
@@ -344,9 +530,16 @@ function AnimatedRoutes() {
             path="/ai-tools"
             element={
               <PageTransition>
-                <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
-                  <AIToolsHome />
-                </div>
+                <>
+                  <SEO
+                    title="AI Tools Platform | NanoFlows"
+                    description="Discover powerful AI tools and automation solutions to enhance your workflow and productivity."
+                    keywords="AI tools, automation tools, productivity tools, AI platform"
+                  />
+                  <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
+                    <AIToolsHome />
+                  </div>
+                </>
               </PageTransition>
             }
           />
@@ -354,9 +547,16 @@ function AnimatedRoutes() {
             path="/ai-tools/explore"
             element={
               <PageTransition>
-                <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
-                  <AIToolsExplore />
-                </div>
+                <>
+                  <SEO
+                    title="Explore AI Tools | NanoFlows"
+                    description="Browse our comprehensive collection of AI tools and automation solutions."
+                    keywords="explore AI tools, AI tools catalog, automation solutions"
+                  />
+                  <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
+                    <AIToolsExplore />
+                  </div>
+                </>
               </PageTransition>
             }
           />
@@ -364,9 +564,16 @@ function AnimatedRoutes() {
             path="/ai-tools/tool/:id"
             element={
               <PageTransition>
-                <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
-                  <AIToolDetail />
-                </div>
+                <>
+                  <SEO
+                    title="AI Tool Details | NanoFlows"
+                    description="Learn more about this AI tool and how it can help improve your workflow."
+                    keywords="AI tool, tool details, automation tool"
+                  />
+                  <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
+                    <AIToolDetail />
+                  </div>
+                </>
               </PageTransition>
             }
           />
@@ -374,31 +581,110 @@ function AnimatedRoutes() {
             path="/ai-tools/about"
             element={
               <PageTransition>
-                <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
-                  <AIToolsAbout />
-                </div>
+                <>
+                  <SEO
+                    title="About AI Tools | NanoFlows"
+                    description="Learn about NanoFlows AI Tools platform and our mission to democratize AI."
+                    keywords="about AI tools, AI platform, automation platform"
+                  />
+                  <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
+                    <AIToolsAbout />
+                  </div>
+                </>
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/ai-tools/blog"
+            element={
+              <PageTransition>
+                <>
+                  <SEO
+                    title="AI Tools Blog | NanoFlows"
+                    description="Read articles, tutorials, and insights about AI tools and automation."
+                    keywords="AI tools blog, automation blog, AI articles"
+                  />
+                  <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
+                    <AIToolsBlog />
+                  </div>
+                </>
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/ai-tools/contact"
+            element={
+              <PageTransition>
+                <>
+                  <SEO
+                    title="Contact AI Tools | NanoFlows"
+                    description="Get in touch with the AI Tools team for support and inquiries."
+                    keywords="contact AI tools, AI tools support"
+                  />
+                  <div className="relative min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
+                    <AIToolsContact />
+                  </div>
+                </>
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/ai-tools/login"
+            element={
+              <PageTransition>
+                <>
+                  <SEO
+                    title="Sign In | NanoFlows AI Tools"
+                    description="Sign in to NanoFlows AI Tools to access powerful AI automation solutions and tools."
+                    keywords="AI tools login, sign in, e-learning login"
+                  />
+                  <AIToolsLogin />
+                </>
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/ai-tools/signup"
+            element={
+              <PageTransition>
+                <>
+                  <SEO
+                    title="Sign Up | NanoFlows AI Tools"
+                    description="Create your NanoFlows AI Tools account to start learning and earning certificates."
+                    keywords="AI tools signup, register, create account"
+                  />
+                  <AIToolsSignup />
+                </>
               </PageTransition>
             }
           />
 
           {/* ✅ Academy Routes */}
-          <Route path="/academy/login" element={<Login />} />
-          <Route path="/academy/signup" element={<Signup />} />
-          <Route
-            path="/academy/platform-selection"
+          <Route 
+            path="/academy/login" 
             element={
-              <ProtectedRoute>
-                <PlatformSelection />
-              </ProtectedRoute>
-            }
+              <>
+                <SEO
+                  title="Sign In | NanoFlows Academy"
+                  description="Sign in to NanoFlows Academy to access courses, certificates, and learning resources."
+                  keywords="academy login, sign in, e-learning login"
+                />
+                <Login />
+              </>
+            } 
           />
-          <Route
-            path="/academy/courses"
+          <Route 
+            path="/academy/signup" 
             element={
-              <ProtectedRoute>
-                <ExploreCourses />
-              </ProtectedRoute>
-            }
+              <>
+                <SEO
+                  title="Sign Up | NanoFlows Academy"
+                  description="Create your NanoFlows Academy account to start learning and earning certificates."
+                  keywords="academy signup, register, create account"
+                />
+                <Signup />
+              </>
+            } 
           />
           <Route
             path="/academy/course/:id/learn"
@@ -598,7 +884,14 @@ function AnimatedRoutes() {
             path="/products/ai-solutions"
             element={
               <PageTransition>
-                <AISolutions />
+                <>
+                  <SEO
+                    title="AI Solutions | NanoFlows Products"
+                    description="Comprehensive AI solutions for businesses - machine learning, automation, and intelligent systems."
+                    keywords="AI solutions, machine learning, AI products, business AI"
+                  />
+                  <AISolutions />
+                </>
               </PageTransition>
             }
           />
@@ -606,7 +899,14 @@ function AnimatedRoutes() {
             path="/products/cloud-platform"
             element={
               <PageTransition>
-                <CloudPlatform />
+                <>
+                  <SEO
+                    title="Cloud Platform | NanoFlows Products"
+                    description="Scalable cloud infrastructure and platform solutions for modern businesses."
+                    keywords="cloud platform, cloud infrastructure, cloud solutions"
+                  />
+                  <CloudPlatform />
+                </>
               </PageTransition>
             }
           />
@@ -614,7 +914,14 @@ function AnimatedRoutes() {
             path="/products/analytics-tools"
             element={
               <PageTransition>
-                <AnalyticsTools />
+                <>
+                  <SEO
+                    title="Analytics Tools | NanoFlows Products"
+                    description="Advanced analytics and data visualization tools to drive data-driven decisions."
+                    keywords="analytics tools, data analytics, business intelligence, data visualization"
+                  />
+                  <AnalyticsTools />
+                </>
               </PageTransition>
             }
           />
@@ -622,7 +929,14 @@ function AnimatedRoutes() {
             path="/products/mobile-apps"
             element={
               <PageTransition>
-                <MobileApps />
+                <>
+                  <SEO
+                    title="Mobile Apps | NanoFlows Products"
+                    description="Custom mobile application development and mobile solutions for iOS and Android."
+                    keywords="mobile apps, mobile development, iOS, Android, app development"
+                  />
+                  <MobileApps />
+                </>
               </PageTransition>
             }
           />
@@ -630,7 +944,14 @@ function AnimatedRoutes() {
             path="/products/api-services"
             element={
               <PageTransition>
-                <APIServices />
+                <>
+                  <SEO
+                    title="API Services | NanoFlows Products"
+                    description="Robust API development and integration services for seamless system connectivity."
+                    keywords="API services, API development, API integration, REST APIs"
+                  />
+                  <APIServices />
+                </>
               </PageTransition>
             }
           />
@@ -638,7 +959,14 @@ function AnimatedRoutes() {
             path="/products/get-discovery"
             element={
               <PageTransition>
-                <GetDiscovery />
+                <>
+                  <SEO
+                    title="Get Discovery | NanoFlows Products"
+                    description="Discovery and exploration tools to help businesses find the right solutions."
+                    keywords="discovery tools, business discovery, solution finder"
+                  />
+                  <GetDiscovery />
+                </>
               </PageTransition>
             }
           />
@@ -646,7 +974,14 @@ function AnimatedRoutes() {
             path="/products/unified-data-platform"
             element={
               <PageTransition>
-                <UnifiedDataPlatform />
+                <>
+                  <SEO
+                    title="Unified Data Platform | NanoFlows Products"
+                    description="Integrated data platform for unified data management and analytics across your organization."
+                    keywords="data platform, unified data, data management, data integration"
+                  />
+                  <UnifiedDataPlatform />
+                </>
               </PageTransition>
             }
           />
@@ -654,7 +989,14 @@ function AnimatedRoutes() {
             path="/products/demand-generation"
             element={
               <PageTransition>
-                <DemandGeneration />
+                <>
+                  <SEO
+                    title="Demand Generation | NanoFlows Products"
+                    description="AI-powered demand generation and lead generation solutions to grow your business."
+                    keywords="demand generation, lead generation, marketing automation, sales enablement"
+                  />
+                  <DemandGeneration />
+                </>
               </PageTransition>
             }
           />
@@ -662,7 +1004,14 @@ function AnimatedRoutes() {
             path="/products/:category/:item"
             element={
               <PageTransition>
-                <ProductItemDetail />
+                <>
+                  <SEO
+                    title="Product Details | NanoFlows"
+                    description="Learn more about this NanoFlows product and how it can benefit your business."
+                    keywords="product details, product information, solutions"
+                  />
+                  <ProductItemDetail />
+                </>
               </PageTransition>
             }
           />
@@ -677,6 +1026,7 @@ function AnimatedRoutes() {
             <Route path="categories/:slug" element={<ShopCategoryProducts />} />
             <Route path="deals" element={<ShopDeals />} />
             <Route path="about" element={<ShopAbout />} />
+            <Route path="blog" element={<ShopBlog />} />
             <Route path="contact" element={<ShopContact />} />
             <Route path="login" element={<ShopLogin />} />
             <Route path="register" element={<ShopRegister />} />
@@ -707,7 +1057,14 @@ function AnimatedRoutes() {
             path="/legal/privacy-policy"
             element={
               <PageTransition>
-                <PrivacyPolicy />
+                <>
+                  <SEO
+                    title="Privacy Policy | NanoFlows"
+                    description="NanoFlows privacy policy - how we collect, use, and protect your personal information."
+                    keywords="privacy policy, data protection, privacy"
+                  />
+                  <PrivacyPolicy />
+                </>
               </PageTransition>
             }
           />
@@ -715,7 +1072,14 @@ function AnimatedRoutes() {
             path="/legal/terms-of-service"
             element={
               <PageTransition>
-                <TermsOfService />
+                <>
+                  <SEO
+                    title="Terms of Service | NanoFlows"
+                    description="NanoFlows terms of service and user agreement."
+                    keywords="terms of service, terms and conditions, user agreement"
+                  />
+                  <TermsOfService />
+                </>
               </PageTransition>
             }
           />
@@ -723,7 +1087,14 @@ function AnimatedRoutes() {
             path="/legal/cookie-policy"
             element={
               <PageTransition>
-                <CookiePolicy />
+                <>
+                  <SEO
+                    title="Cookie Policy | NanoFlows"
+                    description="NanoFlows cookie policy - how we use cookies and tracking technologies."
+                    keywords="cookie policy, cookies, tracking"
+                  />
+                  <CookiePolicy />
+                </>
               </PageTransition>
             }
           />
@@ -731,7 +1102,14 @@ function AnimatedRoutes() {
             path="/legal/security"
             element={
               <PageTransition>
-                <Security />
+                <>
+                  <SEO
+                    title="Security | NanoFlows"
+                    description="Learn about NanoFlows security measures and data protection practices."
+                    keywords="security, data security, cybersecurity, protection"
+                  />
+                  <Security />
+                </>
               </PageTransition>
             }
           />
@@ -739,13 +1117,20 @@ function AnimatedRoutes() {
             path="/legal/compliance"
             element={
               <PageTransition>
-                <Compliance />
+                <>
+                  <SEO
+                    title="Compliance | NanoFlows"
+                    description="NanoFlows compliance with industry standards and regulations."
+                    keywords="compliance, regulations, standards, certifications"
+                  />
+                  <Compliance />
+                </>
               </PageTransition>
             }
           />
         </Routes>
       </AnimatePresence>
-      <AIChat />
+      {showAIChat && <AIChat />}
       {showFloatingContact && <FloatingContactWidget />}
     </>
   );
@@ -754,11 +1139,15 @@ function AnimatedRoutes() {
 function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <Router>
-          <AnimatedRoutes />
-        </Router>
-      </AuthProvider>
+      <WebsiteAuthProvider>
+        <AuthProvider>
+          <AIToolsAuthProvider>
+            <Router>
+              <AnimatedRoutes />
+            </Router>
+          </AIToolsAuthProvider>
+        </AuthProvider>
+      </WebsiteAuthProvider>
     </ThemeProvider>
   );
 }

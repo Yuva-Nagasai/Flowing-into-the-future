@@ -11,14 +11,14 @@ interface SEOHeadProps {
 
 export default function SEOHead({
   title,
-  description = 'NanoFlows Shop - Discover amazing products with fast delivery and secure checkout.',
+  description = 'NanoFlows Digital Hub - Discover amazing products with fast delivery and secure checkout.',
   keywords = 'shop, ecommerce, products, electronics, fashion, deals',
   ogImage = '/og-shop.jpg',
   ogType = 'website',
   canonical,
 }: SEOHeadProps) {
   useEffect(() => {
-    document.title = `${title} | NanoFlows Shop`;
+    document.title = `${title} | NanoFlows Digital Hub`;
 
     const updateMeta = (name: string, content: string, isProperty = false) => {
       const attr = isProperty ? 'property' : 'name';
@@ -33,12 +33,12 @@ export default function SEOHead({
 
     updateMeta('description', description);
     updateMeta('keywords', keywords);
-    updateMeta('og:title', `${title} | NanoFlows Shop`, true);
+    updateMeta('og:title', `${title} | NanoFlows Digital Hub`, true);
     updateMeta('og:description', description, true);
     updateMeta('og:image', ogImage, true);
     updateMeta('og:type', ogType, true);
     updateMeta('twitter:card', 'summary_large_image');
-    updateMeta('twitter:title', `${title} | NanoFlows Shop`);
+    updateMeta('twitter:title', `${title} | NanoFlows Digital Hub`);
     updateMeta('twitter:description', description);
 
     if (canonical) {

@@ -3,8 +3,9 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { getTheme } from '../../themes/theme';
-import { Sparkles, Brain, Zap, Sun, Moon } from 'lucide-react';
+import { Sparkles, Brain, Zap, Sun, Moon, GraduationCap } from 'lucide-react';
 import { motion } from 'framer-motion';
+import SEO from '../../components/SEO';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -71,10 +72,14 @@ const Login = () => {
         setError('');
 
         setTimeout(() => {
+          const fromPath = location?.state?.from?.pathname;
           if (result.user?.role === 'admin') {
             navigate('/academy/admin');
+          } else if (fromPath) {
+            navigate(fromPath, { replace: true });
           } else {
-            navigate('/academy/platform-selection');
+            // If coming from the main website (no fromPath), stay on the site home
+            navigate('/', { replace: true });
           }
         }, 1200);
 
@@ -116,9 +121,15 @@ const Login = () => {
   };
 
   return (
-    <div className={`relative flex min-h-screen overflow-hidden ${currentTheme.classes.containerBg}`}>
-      {/* Background Gradient Mesh */}
-      <div className={`absolute inset-0 ${currentTheme.classes.mesh}`} />
+    <>
+      <SEO
+        title="Sign In | NanoFlows Academy"
+        description="Sign in to NanoFlows Academy to access courses, certificates, and learning resources."
+        keywords="academy login, sign in, e-learning login"
+      />
+      <div className={`relative flex h-screen overflow-hidden ${currentTheme.classes.containerBg}`}>
+        {/* Background Gradient Mesh */}
+        <div className={`absolute inset-0 ${currentTheme.classes.mesh}`} />
 
       {/* Gradient Blurs */}
       <div className={`absolute right-0 top-0 h-[600px] w-[600px] rounded-full blur-3xl ${currentTheme.classes.blurPrimary}`} />
@@ -161,15 +172,15 @@ const Login = () => {
 
             <p className={`text-lg mb-8 leading-relaxed ${currentTheme.classes.text}`}>
               Join thousands of students mastering cutting-edge technologies with expert-led courses. 
-              Transform your career with practical, industry-relevant skills.
+              Access comprehensive Academy courses, earn industry-recognized certificates, and transform your career with practical, industry-relevant skills.
             </p>
 
             {/* Features List */}
             <div className="space-y-4">
               {[
-                { icon: Brain, text: 'AI-Powered Learning Paths' },
-                { icon: Zap, text: 'Hands-On Projects' },
-                { icon: Sparkles, text: 'Industry-Recognized Certificates' }
+                { icon: GraduationCap, text: 'Expert-Led Courses & Comprehensive Curriculum' },
+                { icon: Zap, text: 'Interactive Learning & Practical Projects' },
+                { icon: Sparkles, text: 'Earn Certificates & Build Your Portfolio' }
               ].map((feature, idx) => (
                 <motion.div
                   key={idx}
@@ -234,7 +245,7 @@ const Login = () => {
               Welcome Back
             </h1>
             <p className={`mt-1 text-xs ${currentTheme.classes.text}`}>
-              Sign in to access your personalized learning dashboard
+              Sign in to access Academy courses, track your progress, and manage your personalized learning dashboard
             </p>
           </div>
 
@@ -418,10 +429,10 @@ const Login = () => {
               </Link>
             </div>
             <Link
-              to="/"
+              to="/elearning"
               className={`inline-flex items-center gap-2 text-sm font-semibold transition ${currentTheme.classes.link}`}
             >
-              <span>←</span> Back to Main Website
+              <span>←</span> Back to Academy
             </Link>
           </div>
         </motion.div>
@@ -444,7 +455,8 @@ const Login = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

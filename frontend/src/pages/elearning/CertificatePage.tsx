@@ -25,7 +25,7 @@ const CertificatePage = () => {
   const navigate = useNavigate();
 
   const pageInfo = {
-    title: "Certificates",
+    title: "Search Certificate",
     subtitle: "Industry Recognition",
     description: "Industry-standard certificates proving your n8n automation and AI workflow skills."
   };
@@ -38,7 +38,8 @@ const CertificatePage = () => {
       jobUse: "Junior automation roles",
       tags: ["n8n", "certificate"],
       icon: Zap,
-      level: "Beginner"
+      level: "Beginner",
+      color: 'from-blue-500 to-cyan-500'
     },
     {
       id: 2,
@@ -47,7 +48,8 @@ const CertificatePage = () => {
       jobUse: "API developer",
       tags: ["API", "advanced"],
       icon: Code,
-      level: "Advanced"
+      level: "Advanced",
+      color: 'from-purple-500 to-indigo-500'
     },
     {
       id: 3,
@@ -56,7 +58,8 @@ const CertificatePage = () => {
       jobUse: "AI automation engineer",
       tags: ["AI", "automation"],
       icon: Bot,
-      level: "Specialist"
+      level: "Specialist",
+      color: 'from-emerald-500 to-green-500'
     },
     {
       id: 4,
@@ -65,7 +68,8 @@ const CertificatePage = () => {
       jobUse: "Automation consultant",
       tags: ["no-code", "expert"],
       icon: Target,
-      level: "Expert"
+      level: "Expert",
+      color: 'from-amber-500 to-orange-500'
     },
     {
       id: 5,
@@ -74,7 +78,8 @@ const CertificatePage = () => {
       jobUse: "Data engineer roles",
       tags: ["data", "pipelines"],
       icon: Database,
-      level: "Intermediate"
+      level: "Intermediate",
+      color: 'from-teal-500 to-cyan-500'
     },
     {
       id: 6,
@@ -83,7 +88,8 @@ const CertificatePage = () => {
       jobUse: "Social automation specialist",
       tags: ["social media"],
       icon: Share2,
-      level: "Intermediate"
+      level: "Intermediate",
+      color: 'from-pink-500 to-rose-500'
     },
     {
       id: 7,
@@ -92,7 +98,8 @@ const CertificatePage = () => {
       jobUse: "Workflow architect",
       tags: ["business", "CRM"],
       icon: Users,
-      level: "Advanced"
+      level: "Advanced",
+      color: 'from-indigo-500 to-blue-500'
     },
     {
       id: 8,
@@ -101,7 +108,8 @@ const CertificatePage = () => {
       jobUse: "Integration engineer",
       tags: ["webhooks", "triggers"],
       icon: Webhook,
-      level: "Intermediate"
+      level: "Intermediate",
+      color: 'from-lime-500 to-green-500'
     },
     {
       id: 9,
@@ -110,7 +118,8 @@ const CertificatePage = () => {
       jobUse: "Productivity specialist",
       tags: ["productivity", "automation"],
       icon: Briefcase,
-      level: "Beginner"
+      level: "Beginner",
+      color: 'from-red-500 to-orange-500'
     },
     {
       id: 10,
@@ -119,7 +128,8 @@ const CertificatePage = () => {
       jobUse: "Ecommerce automation engineer",
       tags: ["ecommerce", "workflows"],
       icon: ShoppingCart,
-      level: "Intermediate"
+      level: "Intermediate",
+      color: 'from-fuchsia-500 to-purple-500'
     }
   ];
 
@@ -144,7 +154,7 @@ const CertificatePage = () => {
     <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
       <ELearningNav />
       
-      <section className={`pt-32 pb-20 ${theme === 'dark' ? 'bg-gradient-to-b from-dark-card to-dark-bg' : 'bg-gradient-to-b from-white to-gray-50'}`}>
+      <section className={`pt-32 pb-10 ${theme === 'dark' ? 'bg-gradient-to-b from-dark-card to-dark-bg' : 'bg-gradient-to-b from-white to-gray-50'}`}>
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -161,7 +171,14 @@ const CertificatePage = () => {
             </span>
             
             <h1 className={`text-4xl md:text-6xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              {pageInfo.title}
+              Search{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Certificate
+              </span>
             </h1>
             
             <p className={`text-xl mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -171,97 +188,99 @@ const CertificatePage = () => {
         </div>
       </section>
 
-      <section className={`py-20 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+      {/* Certificate verification form */}
+      <section className={`${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'} pt-2 pb-12`}>
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-6">
-            {certificates.map((cert, idx) => (
-              <motion.div
-                key={cert.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className={`group p-6 rounded-2xl border transition-all duration-300 hover:shadow-xl ${
-                  theme === 'dark'
-                    ? 'bg-dark-card border-gray-800 hover:border-electric-blue/50'
-                    : 'bg-white border-gray-200 hover:border-accent-blue/50'
-                }`}
-              >
-                <div className="flex items-start gap-4">
-                  <div className={`flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center ${
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className={`max-w-3xl mx-auto rounded-3xl px-6 md:px-10 py-8 md:py-10 border shadow-lg ${
+              theme === 'dark'
+                ? 'bg-dark-card border-gray-800'
+                : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30'
+            }`}
+          >
+            <form className="space-y-5">
+              <div>
+                <label
+                  className={`block text-sm font-medium mb-1 ${
+                    theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
+                  }`}
+                >
+                  Student&apos;s Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your full name"
+                  className={`w-full rounded-lg border px-3 py-2.5 text-sm outline-none transition ${
                     theme === 'dark'
-                      ? 'bg-gradient-to-br from-electric-green/20 to-electric-blue/20'
-                      : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10'
-                  }`}>
-                    <cert.icon className={`w-7 h-7 ${theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'}`} />
-                  </div>
-                  
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                        {cert.title}
-                      </h3>
-                      <span className={`text-xs font-semibold px-3 py-1 rounded-full ${getLevelColor(cert.level)}`}>
-                        {cert.level}
-                      </span>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <p className={`text-xs uppercase tracking-wider mb-1 ${
-                          theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                        }`}>
-                          Validates
-                        </p>
-                        <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-                          {cert.validates}
-                        </p>
-                      </div>
-                      <div>
-                        <p className={`text-xs uppercase tracking-wider mb-1 ${
-                          theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                        }`}>
-                          Career Use
-                        </p>
-                        <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-                          {cert.jobUse}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex flex-wrap gap-2">
-                        {cert.tags.map((tag, tagIdx) => (
-                          <span
-                            key={tagIdx}
-                            className={`flex items-center gap-1 text-xs px-2 py-1 rounded-full ${
-                              theme === 'dark'
-                                ? 'bg-dark-lighter text-gray-400'
-                                : 'bg-gray-100 text-gray-600'
-                            }`}
-                          >
-                            <Tag className="w-3 h-3" />
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                      
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`flex items-center gap-1 text-sm font-medium ${
-                          theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
-                        }`}
-                      >
-                        Get Certified
-                        <ArrowRight className="w-4 h-4" />
-                      </motion.button>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                      ? 'bg-dark-bg border-gray-700 text-white placeholder-gray-500 focus:border-electric-blue'
+                      : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400 focus:border-accent-red'
+                  }`}
+                />
+              </div>
+
+              <div>
+                <label
+                  className={`block text-sm font-medium mb-1 ${
+                    theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
+                  }`}
+                >
+                  Mobile Number
+                </label>
+                <input
+                  type="tel"
+                  placeholder="Enter mobile number"
+                  className={`w-full rounded-lg border px-3 py-2.5 text-sm outline-none transition ${
+                    theme === 'dark'
+                      ? 'bg-dark-bg border-gray-700 text-white placeholder-gray-500 focus:border-electric-blue'
+                      : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400 focus:border-accent-red'
+                  }`}
+                />
+              </div>
+
+              <div>
+                <label
+                  className={`block text-sm font-medium mb-1 ${
+                    theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
+                  }`}
+                >
+                  Date of Birth
+                </label>
+                <input
+                  type="date"
+                  className={`w-full rounded-lg border px-3 py-2.5 text-sm outline-none transition ${
+                    theme === 'dark'
+                      ? 'bg-dark-bg border-gray-700 text-white focus:border-electric-blue'
+                      : 'bg-white border-gray-300 text-gray-900 focus:border-accent-red'
+                  }`}
+                />
+              </div>
+
+              <div className="pt-2 flex justify-end">
+                <button
+                  type="button"
+                  className={`relative group overflow-hidden px-6 md:px-8 py-2.5 rounded-md text-sm font-semibold shadow-lg transition-all duration-300 ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
+                      : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
+                  }`}
+                >
+                  <span className="relative z-10 tracking-wide">
+                    SEARCH
+                  </span>
+                  <div
+                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                        : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                    }`}
+                  />
+                </button>
+              </div>
+            </form>
+          </motion.div>
         </div>
       </section>
 
@@ -275,7 +294,14 @@ const CertificatePage = () => {
           >
             <div className="text-center mb-12">
               <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                Why Our Certificates Matter
+                Why Our{' '}
+                <span className={`bg-gradient-to-r ${
+                  theme === 'dark'
+                    ? 'from-electric-green to-electric-blue'
+                    : 'from-accent-red to-accent-blue'
+                } bg-clip-text text-transparent`}>
+                  Certificates Matter
+                </span>
               </h2>
               <p className={`text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                 Industry-recognized credentials that boost your career
@@ -291,8 +317,10 @@ const CertificatePage = () => {
               ].map((benefit, idx) => (
                 <div
                   key={idx}
-                  className={`flex items-start gap-4 p-6 rounded-2xl ${
-                    theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'
+                  className={`flex items-start gap-4 p-6 rounded-2xl border ${
+                    theme === 'dark'
+                      ? 'bg-dark-bg border-gray-800'
+                      : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30'
                   }`}
                 >
                   <CheckCircle className={`w-6 h-6 flex-shrink-0 ${theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}`} />
@@ -325,7 +353,14 @@ const CertificatePage = () => {
           >
             <Award className={`w-16 h-16 mx-auto mb-6 ${theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}`} />
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              Start Your Certification Journey
+              Start Your{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Certification Journey
+              </span>
             </h2>
             <p className={`text-lg mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
               Choose a certificate program and prove your automation expertise to employers worldwide.
@@ -334,20 +369,29 @@ const CertificatePage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/elearning/courses')}
-              className={`px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto ${
+              className={`relative group overflow-hidden px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto transition-all duration-300 ${
                 theme === 'dark'
                   ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                   : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
               }`}
             >
+              <span className="relative z-10 flex items-center gap-2">
               Browse Certification Courses
               <ArrowRight className="w-5 h-5" />
+              </span>
+              <div
+                className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                    : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                }`}
+              />
             </motion.button>
           </motion.div>
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="elearning" />
     </div>
   );
 };

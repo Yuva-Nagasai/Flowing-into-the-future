@@ -14,6 +14,7 @@ import {
 import { Sun, Moon, GraduationCap, Zap, Building2, Trophy, Users, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import RoleBadge from '../../components/academy/RoleBadge';
+import SEO from '../../components/SEO';
 
 const UserDashboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -178,7 +179,7 @@ const UserDashboard = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/academy/platform-selection');
+    navigate('/academy/dashboard');
   };
 
   // Pagination
@@ -201,8 +202,14 @@ const UserDashboard = () => {
   }
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
-      {/* Gradient Background Effects */}
+    <>
+      <SEO
+        title="Dashboard | NanoFlows Academy"
+        description="Access your learning dashboard, track course progress, view certificates, and manage your Academy account."
+        keywords="academy dashboard, learning dashboard, course progress, certificates, student portal"
+      />
+      <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+        {/* Gradient Background Effects */}
       <div className={`fixed inset-0 pointer-events-none ${
         theme === 'dark' 
           ? 'bg-[radial-gradient(circle_at_top_right,_rgba(0,240,255,0.15),transparent_50%),radial-gradient(circle_at_bottom_left,_rgba(0,232,129,0.10),transparent_60%)]'
@@ -1371,7 +1378,8 @@ const UserDashboard = () => {
           )}
         </AnimatePresence>
       </main>
-    </div>
+      </div>
+    </>
   );
 };
 

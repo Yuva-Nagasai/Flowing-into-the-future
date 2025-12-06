@@ -36,7 +36,7 @@ export default function ShopForgotPassword() {
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-950' : 'bg-gray-50'}`}>
-      <SEOHead title="Forgot Password" description="Reset your NanoFlows Shop password" />
+      <SEOHead title="Forgot Password" description="Reset your NanoFlows Digital Hub password" />
       <ShopNav />
 
       <section className="py-16">
@@ -134,17 +134,26 @@ export default function ShopForgotPassword() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className={`w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all disabled:opacity-50 ${
+                      className={`relative group overflow-hidden w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 disabled:opacity-50 ${
                         theme === 'dark'
                           ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
                           : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
                       }`}
                     >
-                      {loading ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                      ) : (
-                        'Reset Password'
-                      )}
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        {loading ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          'Reset Password'
+                        )}
+                      </span>
+                      <div
+                        className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                          theme === 'dark'
+                            ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                            : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                        }`}
+                      />
                     </button>
                   </form>
 
@@ -166,7 +175,7 @@ export default function ShopForgotPassword() {
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="shop" />
     </div>
   );
 }

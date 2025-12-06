@@ -9,12 +9,17 @@ import {
   Zap,
   Award,
   BookOpen,
-  ArrowRight
+  ArrowRight,
+  Briefcase,
+  Rocket,
+  UserCheck,
+  Megaphone
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import ELearningNav from '../../components/elearning/ELearningNav';
 import Footer from '../../components/Footer';
+import SEO from '../../components/SEO';
 
 const MasterclassPage = () => {
   const { theme } = useTheme();
@@ -36,32 +41,38 @@ const MasterclassPage = () => {
     {
       icon: Clock,
       title: "5 Days of Intensive Learning",
-      description: "Focused, structured curriculum designed for maximum knowledge retention"
+      description: "Focused, structured curriculum designed for maximum knowledge retention",
+      color: 'from-blue-500 to-cyan-500'
     },
     {
       icon: Target,
       title: "Practical Hands-On Approach",
-      description: "Build real automations from day one, not just theory"
+      description: "Build real automations from day one, not just theory",
+      color: 'from-pink-500 to-rose-500'
     },
     {
       icon: Users,
       title: "Small Batch Sizes",
-      description: "Personalized attention with limited seats per batch"
+      description: "Personalized attention with limited seats per batch",
+      color: 'from-purple-500 to-violet-500'
     },
     {
       icon: Zap,
       title: "Live Doubt Sessions",
-      description: "Get your questions answered in real-time by experts"
+      description: "Get your questions answered in real-time by experts",
+      color: 'from-amber-500 to-orange-500'
     },
     {
       icon: BookOpen,
       title: "Comprehensive Resources",
-      description: "Access to recordings, templates, and reference materials"
+      description: "Access to recordings, templates, and reference materials",
+      color: 'from-green-500 to-emerald-500'
     },
     {
       icon: Award,
       title: "Completion Certificate",
-      description: "Industry-recognized certificate upon successful completion"
+      description: "Industry-recognized certificate upon successful completion",
+      color: 'from-rose-500 to-pink-500'
     }
   ];
 
@@ -137,33 +148,51 @@ const MasterclassPage = () => {
   const whoIsThisFor = [
     {
       title: "Beginners",
-      description: "No coding or automation experience required. Start from zero and build your skills step by step."
+      description: "No coding or automation experience required. Start from zero and build your skills step by step.",
+      icon: BookOpen,
+      color: 'from-blue-500 to-cyan-500'
     },
     {
       title: "Business Professionals",
-      description: "Looking to automate repetitive tasks and boost productivity in your daily work."
+      description: "Looking to automate repetitive tasks and boost productivity in your daily work.",
+      icon: Briefcase,
+      color: 'from-indigo-500 to-blue-500'
     },
     {
       title: "Entrepreneurs & Startups",
-      description: "Want to build efficient systems without hiring developers."
+      description: "Want to build efficient systems without hiring developers.",
+      icon: Rocket,
+      color: 'from-purple-500 to-pink-500'
     },
     {
       title: "Freelancers",
-      description: "Add automation services to your offerings and increase your earning potential."
+      description: "Add automation services to your offerings and increase your earning potential.",
+      icon: UserCheck,
+      color: 'from-teal-500 to-cyan-500'
     },
     {
       title: "Marketers & Sales Teams",
-      description: "Automate lead generation, follow-ups, and reporting."
+      description: "Automate lead generation, follow-ups, and reporting.",
+      icon: Megaphone,
+      color: 'from-orange-500 to-red-500'
     },
     {
       title: "Career Changers",
-      description: "Looking to enter the growing field of automation and workflow optimization."
+      description: "Looking to enter the growing field of automation and workflow optimization.",
+      icon: ArrowRight,
+      color: 'from-green-500 to-emerald-500'
     }
   ];
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
-      <ELearningNav />
+    <>
+      <SEO
+        title="Masterclass | NanoFlows Academy"
+        description="Join our 5-day n8n automation bootcamp. Transform your workflow automation skills from beginner to expert."
+        keywords="masterclass, n8n bootcamp, automation training, workflow automation course"
+      />
+      <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+        <ELearningNav />
       
       <section className={`pt-32 pb-20 ${theme === 'dark' ? 'bg-gradient-to-b from-dark-card to-dark-bg' : 'bg-gradient-to-b from-white to-gray-50'}`}>
         <div className="container mx-auto px-4 lg:px-8">
@@ -182,7 +211,14 @@ const MasterclassPage = () => {
             </span>
             
             <h1 className={`text-4xl md:text-6xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              {overview.title}
+              MASTERCLASS —{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                n8n Automation
+              </span>
             </h1>
             
             <p className={`text-xl mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -207,14 +243,23 @@ const MasterclassPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/academy/signup')}
-              className={`px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto ${
+              className={`relative group overflow-hidden px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto transition-all duration-300 ${
                 theme === 'dark'
                   ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                   : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
               }`}
             >
-              Enroll Now
-              <ArrowRight className="w-5 h-5" />
+              <span className="relative z-10 flex items-center gap-2">
+                Enroll Now
+                <ArrowRight className="w-5 h-5" />
+              </span>
+              <div
+                className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                    : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                }`}
+              />
             </motion.button>
           </motion.div>
         </div>
@@ -229,7 +274,14 @@ const MasterclassPage = () => {
             className="text-center mb-12"
           >
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              Full Feature List
+              Full{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Feature List
+              </span>
             </h2>
             <p className={`text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
               Everything included in your 5-day bootcamp experience
@@ -247,15 +299,11 @@ const MasterclassPage = () => {
                 className={`p-6 rounded-2xl border ${
                   theme === 'dark'
                     ? 'bg-dark-card border-gray-800'
-                    : 'bg-white border-gray-200'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30'
                 }`}
               >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
-                  theme === 'dark'
-                    ? 'bg-electric-blue/20 text-electric-blue'
-                    : 'bg-accent-blue/10 text-accent-blue'
-                }`}>
-                  <feature.icon className="w-6 h-6" />
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-gradient-to-br ${feature.color}`}>
+                  <feature.icon className="w-6 h-6 text-white" />
                 </div>
                 <h3 className={`text-xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                   {feature.title}
@@ -278,7 +326,14 @@ const MasterclassPage = () => {
             className="text-center mb-12"
           >
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              Day-by-Day Syllabus
+              Day-by-Day{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Syllabus
+              </span>
             </h2>
             <p className={`text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
               Your structured path from beginner to automation expert
@@ -296,7 +351,7 @@ const MasterclassPage = () => {
                 className={`p-6 rounded-2xl border ${
                   theme === 'dark'
                     ? 'bg-dark-bg border-gray-800'
-                    : 'bg-gray-50 border-gray-200'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30'
                 }`}
               >
                 <div className="flex items-start gap-4">
@@ -337,7 +392,14 @@ const MasterclassPage = () => {
             className="text-center mb-12"
           >
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              Learning Outcomes
+              Learning{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Outcomes
+              </span>
             </h2>
             <p className={`text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
               What you will achieve by the end of this bootcamp
@@ -353,9 +415,11 @@ const MasterclassPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.05 }}
-                  className={`flex items-start gap-3 p-4 rounded-xl ${
-                    theme === 'dark' ? 'bg-dark-card' : 'bg-white shadow-sm'
-                  }`}
+                className={`flex items-start gap-3 p-4 rounded-xl ${
+                  theme === 'dark'
+                    ? 'bg-dark-card'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10'
+                }`}
                 >
                   <CheckCircle className={`w-5 h-5 mt-0.5 flex-shrink-0 ${theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}`} />
                   <span className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
@@ -377,7 +441,14 @@ const MasterclassPage = () => {
             className="text-center mb-12"
           >
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              Who This Is For
+              Who This{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                Is For
+              </span>
             </h2>
             <p className={`text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
               This bootcamp is perfect for you if you are...
@@ -395,15 +466,11 @@ const MasterclassPage = () => {
                 className={`p-6 rounded-2xl border text-center ${
                   theme === 'dark'
                     ? 'bg-dark-bg border-gray-800'
-                    : 'bg-gray-50 border-gray-200'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30'
                 }`}
               >
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                  theme === 'dark'
-                    ? 'bg-electric-green/20 text-electric-green'
-                    : 'bg-accent-red/10 text-accent-red'
-                }`}>
-                  <Users className="w-6 h-6" />
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 bg-gradient-to-br ${item.color}`}>
+                  <item.icon className="w-6 h-6 text-white" />
                 </div>
                 <h3 className={`text-lg font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                   {item.title}
@@ -430,7 +497,14 @@ const MasterclassPage = () => {
             }`}
           >
             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-              Ready to Master n8n Automation?
+              Ready to Master{' '}
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
+                n8n Automation?
+              </span>
             </h2>
             <p className={`text-lg mb-8 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
               Join our next batch and transform your workflow automation skills in just 5 days.
@@ -439,21 +513,31 @@ const MasterclassPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/academy/signup')}
-              className={`px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto ${
+              className={`relative group overflow-hidden px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 mx-auto transition-all duration-300 ${
                 theme === 'dark'
                   ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
                   : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
               }`}
             >
-              Enroll in Masterclass
-              <ArrowRight className="w-5 h-5" />
+              <span className="relative z-10 flex items-center gap-2">
+                Enroll in Masterclass
+                <ArrowRight className="w-5 h-5" />
+              </span>
+              <div
+                className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                    : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                }`}
+              />
             </motion.button>
           </motion.div>
         </div>
       </section>
 
-      <Footer />
-    </div>
+      <Footer variant="elearning" />
+      </div>
+    </>
   );
 };
 

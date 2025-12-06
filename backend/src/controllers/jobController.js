@@ -30,21 +30,18 @@ const getAllJobs = async (req, res) => {
     }
 
     const { department, active } = req.query;
-    
+
     let query = 'SELECT * FROM jobs WHERE 1=1';
     const params = [];
-    let paramCount = 1;
 
     if (active !== undefined) {
-      query += ` AND active = $${paramCount}`;
+      query += ' AND active = ?';
       params.push(active === 'true');
-      paramCount++;
     }
 
     if (department) {
-      query += ` AND department = $${paramCount}`;
+      query += ' AND department = ?';
       params.push(department);
-      paramCount++;
     }
 
     query += ' ORDER BY created_at DESC';
@@ -65,7 +62,7 @@ const getJobById = async (req, res) => {
     }
 
     const { id } = req.params;
-    const result = await queryWithRetry('SELECT * FROM jobs WHERE id = $1', [id]);
+    const result = await queryWithRetry('SELECT * FROM jobs WHERE id = ?', [id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Job not found' });
@@ -94,14 +91,19 @@ const createJob = async (req, res) => {
       return res.status(400).json({ error: 'Requirements must be a non-empty array' });
     }
 
-    const result = await queryWithRetry(
+    await queryWithRetry(
       `INSERT INTO jobs (title, department, location, type, description, requirements)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING *`,
-      [title, department, location, type, description, requirements]
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [title, department, location, type, description, JSON.stringify(requirements)]
     );
 
-    res.status(201).json({ job: result.rows[0] });
+    // Fetch the most recently created job (approximation for MySQL without RETURNING)
+    const fetchResult = await queryWithRetry(
+      'SELECT * FROM jobs ORDER BY created_at DESC LIMIT 1',
+      []
+    );
+
+    res.status(201).json({ job: fetchResult.rows[0] });
   } catch (error) {
     console.error('Create job error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -119,58 +121,53 @@ const updateJob = async (req, res) => {
 
     const updateFields = [];
     const params = [];
-    let paramCount = 1;
 
     if (title !== undefined) {
-      updateFields.push(`title = $${paramCount}`);
+      updateFields.push('title = ?');
       params.push(title);
-      paramCount++;
     }
     if (department !== undefined) {
-      updateFields.push(`department = $${paramCount}`);
+      updateFields.push('department = ?');
       params.push(department);
-      paramCount++;
     }
     if (location !== undefined) {
-      updateFields.push(`location = $${paramCount}`);
+      updateFields.push('location = ?');
       params.push(location);
-      paramCount++;
     }
     if (type !== undefined) {
-      updateFields.push(`type = $${paramCount}`);
+      updateFields.push('type = ?');
       params.push(type);
-      paramCount++;
     }
     if (description !== undefined) {
-      updateFields.push(`description = $${paramCount}`);
+      updateFields.push('description = ?');
       params.push(description);
-      paramCount++;
     }
     if (requirements !== undefined) {
       if (!Array.isArray(requirements) || requirements.length === 0) {
         return res.status(400).json({ error: 'Requirements must be a non-empty array' });
       }
-      updateFields.push(`requirements = $${paramCount}`);
-      params.push(requirements);
-      paramCount++;
+      updateFields.push('requirements = ?');
+      params.push(JSON.stringify(requirements));
     }
     if (active !== undefined) {
-      updateFields.push(`active = $${paramCount}`);
+      updateFields.push('active = ?');
       params.push(active);
-      paramCount++;
     }
 
     if (updateFields.length === 0) {
       return res.status(400).json({ error: 'No fields to update' });
     }
 
-    updateFields.push(`updated_at = NOW()`);
+    updateFields.push('updated_at = CURRENT_TIMESTAMP');
     params.push(id);
 
-    const result = await queryWithRetry(
-      `UPDATE jobs SET ${updateFields.join(', ')} WHERE id = $${paramCount} RETURNING *`,
+    await queryWithRetry(
+      `UPDATE jobs SET ${updateFields.join(', ')} WHERE id = ?`,
       params
     );
+
+    // Fetch updated job
+    const result = await queryWithRetry('SELECT * FROM jobs WHERE id = ?', [id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Job not found' });
@@ -190,11 +187,15 @@ const deleteJob = async (req, res) => {
     }
 
     const { id } = req.params;
-    const result = await queryWithRetry('DELETE FROM jobs WHERE id = $1 RETURNING *', [id]);
 
-    if (result.rows.length === 0) {
+    // Get job before delete so we can confirm existence
+    const existing = await queryWithRetry('SELECT * FROM jobs WHERE id = ?', [id]);
+
+    if (existing.rows.length === 0) {
       return res.status(404).json({ error: 'Job not found' });
     }
+
+    await queryWithRetry('DELETE FROM jobs WHERE id = ?', [id]);
 
     res.json({ message: 'Job deleted successfully' });
   } catch (error) {

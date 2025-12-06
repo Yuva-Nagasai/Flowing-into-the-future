@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ZoomIn, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
 interface ProductGalleryProps {
@@ -57,46 +57,6 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
           </motion.div>
         </AnimatePresence>
 
-        {displayImages[currentIndex] && (
-          <button
-            onClick={() => setIsZoomed(true)}
-            className={`absolute top-4 right-4 p-2 rounded-full transition-all ${
-              theme === 'dark'
-                ? 'bg-slate-700/80 text-white hover:bg-slate-600'
-                : 'bg-white/80 text-gray-800 hover:bg-white shadow-md'
-            }`}
-            aria-label="Zoom image"
-          >
-            <ZoomIn className="w-5 h-5" />
-          </button>
-        )}
-
-        {displayImages.length > 1 && (
-          <>
-            <button
-              onClick={goPrev}
-              className={`absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full transition-all ${
-                theme === 'dark'
-                  ? 'bg-slate-700/80 text-white hover:bg-slate-600'
-                  : 'bg-white/80 text-gray-800 hover:bg-white shadow-md'
-              }`}
-              aria-label="Previous image"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={goNext}
-              className={`absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full transition-all ${
-                theme === 'dark'
-                  ? 'bg-slate-700/80 text-white hover:bg-slate-600'
-                  : 'bg-white/80 text-gray-800 hover:bg-white shadow-md'
-              }`}
-              aria-label="Next image"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </>
-        )}
       </div>
 
       {displayImages.length > 1 && (

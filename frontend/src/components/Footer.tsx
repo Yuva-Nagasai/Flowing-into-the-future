@@ -5,7 +5,7 @@ import { ArrowUp } from 'lucide-react';
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import { SiThreads } from 'react-icons/si';
 
-type FooterVariant = 'default' | 'elearning' | 'ai-tools';
+type FooterVariant = 'default' | 'elearning' | 'ai-tools' | 'shop';
 
 type FooterLink = {
   label: string;
@@ -81,7 +81,7 @@ const footerVariantConfig: Record<FooterVariant, { description: string; title: s
           { label: 'Home', path: '/elearning' },
           { label: 'Courses', path: '/elearning/courses' },
           { label: 'Masterclass', path: '/elearning/masterclass' },
-          { label: 'Mahakumbh', path: '/elearning/mahakumbh' },
+          { label: 'Summit', path: '/elearning/mahakumbh' },
           { label: 'Freebies', path: '/elearning/freebies' },
         ],
       },
@@ -137,10 +137,9 @@ const footerVariantConfig: Record<FooterVariant, { description: string; title: s
         title: 'Platform',
         links: [
           { label: 'Home', path: '/ai-tools' },
+          { label: 'Explore Tools', path: '/ai-tools/explore' },
           { label: 'About', path: '/ai-tools/about' },
-          { label: 'Academy', path: '/academy' },
-          { label: 'Main Site', path: '/' },
-          { label: 'Contact', path: '/contact' },
+          { label: 'Contact', path: '/ai-tools/contact' },
         ],
       },
       {
@@ -158,6 +157,54 @@ const footerVariantConfig: Record<FooterVariant, { description: string; title: s
         links: [
           { label: 'Privacy Policy', path: '/legal/privacy-policy' },
           { label: 'Terms', path: '/legal/terms-of-service' },
+          { label: 'Cookie Policy', path: '/legal/cookie-policy' },
+          { label: 'Security', path: '/legal/security' },
+          { label: 'Compliance', path: '/legal/compliance' },
+        ],
+      },
+    ],
+  },
+  shop: {
+    title: 'Digital Hub',
+    subtitle: 'Premium Digital Products',
+    description:
+      'Discover professionally crafted digital products, templates, and assets designed to accelerate your projects and business growth.',
+    sections: [
+      {
+        title: 'Digital Hub',
+        links: [
+          { label: 'Home', path: '/shop' },
+          { label: 'Products', path: '/shop/products' },
+          { label: 'Deals', path: '/shop/deals' },
+          { label: 'About', path: '/shop/about' },
+          { label: 'Contact', path: '/shop/contact' },
+        ],
+      },
+      {
+        title: 'Account',
+        links: [
+          { label: 'Login', path: '/shop/login' },
+          { label: 'Register', path: '/shop/register' },
+          { label: 'My Orders', path: '/shop/orders' },
+          { label: 'Wishlist', path: '/shop/wishlist' },
+          { label: 'Cart', path: '/shop/cart' },
+        ],
+      },
+      {
+        title: 'Support',
+        links: [
+          { label: 'Help Center', path: '/contact' },
+          { label: 'Refund Policy', path: '/legal/refund-policy' },
+          { label: 'Shipping & Delivery', path: '/shop/about' },
+          { label: 'FAQs', path: '/shop/about' },
+          { label: 'Order Status', path: '/shop/orders' },
+        ],
+      },
+      {
+        title: 'Legal',
+        links: [
+          { label: 'Privacy Policy', path: '/legal/privacy-policy' },
+          { label: 'Terms of Service', path: '/legal/terms-of-service' },
           { label: 'Cookie Policy', path: '/legal/cookie-policy' },
           { label: 'Security', path: '/legal/security' },
           { label: 'Compliance', path: '/legal/compliance' },
@@ -247,14 +294,21 @@ const Footer = ({ variant = 'default' }: FooterProps) => {
     return <span className={commonClasses}>{link.label}</span>;
   };
 
+  // Use a single background style for all variants so that
+  // the shop footer visually matches the AI tools footer.
+  const bgClass =
+    theme === 'dark'
+      ? 'bg-black border-t border-electric-blue/20'
+      : 'bg-gray-50 border-t border-gray-200';
+
   return (
-    <footer
-      className={`relative overflow-hidden ${
-        theme === 'dark' ? 'bg-black border-t border-electric-blue/20' : 'bg-gray-50 border-t border-gray-200'
-      }`}
-      role="contentinfo"
-    >
-      <div className={`absolute inset-0 ${theme === 'dark' ? 'gradient-mesh' : 'gradient-mesh-light'}`} aria-hidden="true" />
+    <footer className={`relative overflow-hidden ${bgClass}`} role="contentinfo">
+      <div
+        className={`absolute inset-0 ${
+          theme === 'dark' ? 'gradient-mesh' : 'gradient-mesh-light'
+        }`}
+        aria-hidden="true"
+      />
 
       <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8 mb-8 sm:mb-12">
@@ -356,7 +410,7 @@ const Footer = ({ variant = 'default' }: FooterProps) => {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className={`fixed bottom-20 sm:bottom-24 right-6 sm:right-8 w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center z-40 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+          className={`fixed bottom-24 sm:bottom-28 right-6 sm:right-8 w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center z-50 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
             theme === 'dark'
               ? 'bg-dark-card text-electric-blue border border-electric-blue/30 hover:bg-electric-blue hover:text-black hover:glow-blue focus:ring-electric-blue'
               : 'bg-white text-accent-red border border-accent-red/30 hover:bg-accent-red hover:text-white hover:glow-red shadow-lg focus:ring-accent-red'

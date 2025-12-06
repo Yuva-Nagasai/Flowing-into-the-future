@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   GraduationCap, 
   BookOpen, 
@@ -21,7 +21,7 @@ import { useTheme } from '../../context/ThemeContext';
 import ELearningNav from '../../components/elearning/ELearningNav';
 import CourseCard from '../../components/elearning/CourseCard';
 import TestimonialsSlider from '../../components/elearning/TestimonialsSlider';
-import { coursesAPI, heroSlidesAPI } from '../../utils/api';
+import { coursesAPI } from '../../utils/api';
 
 import heroImage1 from '@assets/stock_images/professional_e-learn_9e7fdc74.jpg';
 import heroImage2 from '@assets/stock_images/professional_e-learn_64dcaf64.jpg';
@@ -48,28 +48,19 @@ interface Course {
   is_published: boolean;
 }
 
-interface HeroSlide {
-  id: number;
-  title: string;
-  subtitle: string;
-  description: string;
-  image_url: string;
-  cta_text: string;
-  cta_link: string;
-}
-
 const ELearningHome = () => {
   const [courses, setCourses] = useState<Course[]>([]);
-  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [courseFilter, setCourseFilter] = useState<'all' | 'beginner' | 'intermediate' | 'advanced'>('all');
   const { theme } = useTheme();
   const navigate = useNavigate();
 
   const defaultHeroSlides = [
     {
       id: 1,
-      title: 'Master In-Demand Skills',
+      title: 'Master In-Demand',
+      highlight: 'Skills',
       subtitle: 'Transform Your Career',
       description: 'Learn from industry experts and gain practical skills that employers value most.',
       image_url: heroImage1,
@@ -78,7 +69,8 @@ const ELearningHome = () => {
     },
     {
       id: 2,
-      title: 'Learn at Your Own Pace',
+      title: 'Learn at Your Own',
+      highlight: 'Pace',
       subtitle: 'Flexible Learning',
       description: 'Access courses anytime, anywhere. Study on your schedule with lifetime access.',
       image_url: heroImage2,
@@ -87,7 +79,8 @@ const ELearningHome = () => {
     },
     {
       id: 3,
-      title: 'Get Certified',
+      title: 'Get',
+      highlight: 'Certified',
       subtitle: 'Industry Recognition',
       description: 'Earn certificates recognized by top companies and boost your career prospects.',
       image_url: heroImage3,
@@ -100,22 +93,26 @@ const ELearningHome = () => {
     {
       icon: Zap,
       title: 'Learn Faster',
-      description: 'Our AI-powered learning system adapts to your pace and style.'
+      description: 'Our AI-powered learning system adapts to your pace and style.',
+      color: 'from-blue-500 to-cyan-500'
     },
     {
       icon: Target,
       title: 'Career Focused',
-      description: 'Courses designed with industry requirements in mind.'
+      description: 'Courses designed with industry requirements in mind.',
+      color: 'from-pink-500 to-rose-500'
     },
     {
       icon: Shield,
       title: 'Verified Skills',
-      description: 'Earn certificates that validate your expertise.'
+      description: 'Earn certificates that validate your expertise.',
+      color: 'from-amber-500 to-orange-500'
     },
     {
       icon: Users,
       title: 'Expert Mentors',
-      description: 'Learn from professionals with real-world experience.'
+      description: 'Learn from professionals with real-world experience.',
+      color: 'from-green-500 to-emerald-500'
     }
   ];
 
@@ -127,34 +124,41 @@ const ELearningHome = () => {
   ];
 
   useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const coursesRes = await coursesAPI.getAll({});
+        setCourses(coursesRes.data.courses?.filter((c: Course) => c.is_published) || []);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchData();
   }, []);
 
+  const filteredCourses = courses.filter((course) => {
+    if (courseFilter === 'all') return true;
+    const level = (course.level || '').toLowerCase();
+    if (courseFilter === 'beginner') return level.includes('beginner');
+    if (courseFilter === 'intermediate') return level.includes('intermediate');
+    if (courseFilter === 'advanced') return level.includes('advanced');
+    return true;
+  });
+
+  // Simple 3-slide rotation using the local defaultHeroSlides only
   useEffect(() => {
+    const totalSlides = defaultHeroSlides.length;
+    if (totalSlides <= 1) return;
+
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % (heroSlides.length || defaultHeroSlides.length));
+      setCurrentSlide((prev) => (prev + 1) % totalSlides);
     }, 6000);
+
     return () => clearInterval(timer);
-  }, [heroSlides.length]);
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const [coursesRes, slidesRes] = await Promise.all([
-        coursesAPI.getAll({}),
-        heroSlidesAPI.getAll().catch(() => ({ data: { slides: [] } }))
-      ]);
-      
-      setCourses(coursesRes.data.courses?.filter((c: Course) => c.is_published) || []);
-      setHeroSlides(slidesRes.data.slides || []);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const activeSlides = heroSlides.length > 0 ? heroSlides : defaultHeroSlides;
+  }, [defaultHeroSlides.length]);
 
   const handleCourseClick = (courseId: number) => {
     navigate(`/academy/login?redirect=/academy/course/${courseId}`);
@@ -164,28 +168,27 @@ const ELearningHome = () => {
     <div className={`min-h-screen overflow-x-hidden transition-colors duration-300 ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
       <ELearningNav />
       
-      {/* Hero Section with Slider */}
+      {/* Hero Section with 3 professional slides (local only) */}
       <section className="relative min-h-[600px] overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentSlide}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.7 }}
-            className="absolute inset-0"
-          >
-            <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${activeSlides[currentSlide]?.image_url || heroImage1})` }}
-            />
-            <div className={`absolute inset-0 ${
-              theme === 'dark' 
-                ? 'bg-gradient-to-r from-dark-bg/95 via-dark-bg/80 to-transparent' 
+        <motion.div
+          key={currentSlide}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7 }}
+          className="absolute inset-0"
+        >
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${defaultHeroSlides[currentSlide].image_url})` }}
+          />
+          <div
+            className={`absolute inset-0 ${
+              theme === 'dark'
+                ? 'bg-gradient-to-r from-dark-bg/95 via-dark-bg/80 to-transparent'
                 : 'bg-gradient-to-r from-white/95 via-white/80 to-transparent'
-            }`} />
-          </motion.div>
-        </AnimatePresence>
+            }`}
+          />
+        </motion.div>
 
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className={`absolute -top-40 -right-40 w-80 h-80 rounded-full blur-3xl ${
@@ -198,76 +201,102 @@ const ELearningHome = () => {
 
         <div className="container mx-auto px-4 lg:px-6 relative z-10 pt-28 pb-20">
           <div className="max-w-2xl">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentSlide}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-              >
-                <div className="mb-6">
-                  <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="mb-6">
+                <span
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
                     theme === 'dark'
                       ? 'bg-electric-green/10 text-electric-green border border-electric-green/30'
                       : 'bg-accent-red/10 text-accent-red border border-accent-red/30'
-                  }`}>
-                    <Sparkles className="w-4 h-4" />
-                    {activeSlides[currentSlide]?.subtitle}
-                  </span>
-                </div>
+                  }`}
+                >
+                  <Sparkles className="w-4 h-4" />
+                  {defaultHeroSlides[currentSlide].subtitle}
+                </span>
+              </div>
 
-                <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 ${
+              <h1
+                className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 ${
                   theme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`}>
-                  {activeSlides[currentSlide]?.title}
-                </h1>
+                }`}
+              >
+                {defaultHeroSlides[currentSlide].title}{' '}
+                {defaultHeroSlides[currentSlide].highlight && (
+                  <span
+                    className={`bg-gradient-to-r ${
+                      theme === 'dark'
+                        ? 'from-electric-green to-electric-blue'
+                        : 'from-accent-red to-accent-blue'
+                    } bg-clip-text text-transparent`}
+                  >
+                    {defaultHeroSlides[currentSlide].highlight}
+                  </span>
+                )}
+              </h1>
 
-                <p className={`text-lg md:text-xl mb-8 ${
+              <p
+                className={`text-lg md:text-xl mb-8 ${
                   theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-                }`}>
-                  {activeSlides[currentSlide]?.description}
-                </p>
+                }`}
+              >
+                {defaultHeroSlides[currentSlide].description}
+              </p>
 
-                <div className="flex flex-col sm:flex-row items-start gap-4">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => navigate(activeSlides[currentSlide]?.cta_link || '/academy/signup')}
-                    className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all ${
-                      theme === 'dark'
-                        ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
-                        : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
-                    }`}
-                  >
-                    {activeSlides[currentSlide]?.cta_text}
+              <div className="flex flex-col sm:flex-row items-start gap-4">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() =>
+                    navigate(defaultHeroSlides[currentSlide].cta_link || '/academy/signup')
+                  }
+                  className={`relative group overflow-hidden inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
+                      : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
+                  }`}
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    {defaultHeroSlides[currentSlide].cta_text}
                     <ArrowRight className="w-5 h-5" />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })}
-                    className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all border ${
+                  </span>
+                  <div
+                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
                       theme === 'dark'
-                        ? 'border-slate-600 text-gray-300 hover:bg-slate-800'
-                        : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                        ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                        : 'bg-gradient-to-r from-accent-blue to-accent-red'
                     }`}
-                  >
-                    <Play className="w-5 h-5" />
-                    Watch Demo
-                  </motion.button>
-                </div>
+                  />
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() =>
+                    document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })
+                  }
+                  className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all border ${
+                    theme === 'dark'
+                      ? 'border-slate-600 text-gray-300 hover:bg-slate-800'
+                      : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Play className="w-5 h-5" />
+                  Watch Demo
+                </motion.button>
+              </div>
               </motion.div>
-            </AnimatePresence>
 
-            {/* Slide Navigation - Bottom Left like E-commerce */}
+            {/* Slide Navigation - Bottom Left */}
             <div className="flex items-center gap-3 mt-10">
-              {activeSlides.map((_, idx) => (
+              {defaultHeroSlides.map((slide) => (
                 <button
-                  key={idx}
-                  onClick={() => setCurrentSlide(idx)}
+                  key={slide.id}
+                  onClick={() => setCurrentSlide(slide.id - 1)}
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    currentSlide === idx
+                    currentSlide === slide.id - 1
                       ? theme === 'dark'
                         ? 'w-8 bg-electric-green'
                         : 'w-8 bg-accent-red'
@@ -275,6 +304,7 @@ const ELearningHome = () => {
                         ? 'w-2 bg-white/30 hover:bg-white/50'
                         : 'w-2 bg-gray-900/30 hover:bg-gray-900/50'
                   }`}
+                  aria-label={`Go to e-learning slide ${slide.id}`}
                 />
               ))}
             </div>
@@ -336,7 +366,11 @@ const ELearningHome = () => {
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
               The NanoFlows{' '}
-              <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>
+              <span className={`bg-gradient-to-r ${
+                theme === 'dark'
+                  ? 'from-electric-green to-electric-blue'
+                  : 'from-accent-red to-accent-blue'
+              } bg-clip-text text-transparent`}>
                 Advantage
               </span>
             </h2>
@@ -359,14 +393,10 @@ const ELearningHome = () => {
                 className={`p-8 rounded-2xl border-2 transition-all ${
                   theme === 'dark'
                     ? 'bg-dark-card border-gray-800 hover:border-electric-blue'
-                    : 'bg-white border-gray-200 hover:border-accent-blue'
+                    : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 hover:border-accent-blue'
                 }`}
               >
-                <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 ${
-                  theme === 'dark'
-                    ? 'bg-gradient-to-br from-electric-blue to-electric-green'
-                    : 'bg-gradient-to-br from-accent-red to-accent-blue'
-                }`}>
+                <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-gradient-to-br ${feature.color}`}>
                   <feature.icon className="w-7 h-7 text-white" />
                 </div>
                 <h3 className={`text-xl font-bold mb-3 ${
@@ -390,7 +420,7 @@ const ELearningHome = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col md:flex-row md:items-end md:justify-between mb-12"
+            className="flex flex-col gap-6 md:gap-4 md:flex-row md:items-end md:justify-between mb-12"
           >
             <div>
               <span className={`inline-block px-4 py-2 rounded-full text-sm font-semibold mb-4 ${
@@ -404,24 +434,86 @@ const ELearningHome = () => {
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>
                 Trending{' '}
-                <span className={theme === 'dark' ? 'text-electric-blue' : 'text-accent-blue'}>
+                <span className={`bg-gradient-to-r ${
+                  theme === 'dark'
+                    ? 'from-electric-green to-electric-blue'
+                    : 'from-accent-red to-accent-blue'
+                } bg-clip-text text-transparent`}>
                   Courses
                 </span>
               </h2>
             </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/academy/login')}
-              className={`mt-6 md:mt-0 px-6 py-3 rounded-xl font-semibold flex items-center gap-2 ${
-                theme === 'dark'
-                  ? 'bg-electric-blue/20 text-electric-blue hover:bg-electric-blue/30'
-                  : 'bg-accent-blue/10 text-accent-blue hover:bg-accent-blue/20'
-              }`}
-            >
-              View All Courses
-              <ArrowRight className="w-4 h-4" />
-            </motion.button>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4">
+              <div className="flex items-center gap-3">
+                <div className="flex flex-col">
+                  <span
+                    className={`text-xs font-semibold uppercase tracking-wide ${
+                      theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                    }`}
+                  >
+                    Filter
+                  </span>
+                  <span
+                    className={`text-sm font-medium ${
+                      theme === 'dark' ? 'text-gray-200' : 'text-gray-800'
+                    }`}
+                  >
+                    By Level
+                  </span>
+                </div>
+                <div className="relative">
+                  <select
+                    value={courseFilter}
+                    onChange={(e) =>
+                      setCourseFilter(
+                        e.target.value as 'all' | 'beginner' | 'intermediate' | 'advanced'
+                      )
+                    }
+                    className={`appearance-none rounded-xl border px-4 py-2.5 text-sm pr-10 shadow-sm transition-all focus:outline-none ${
+                      theme === 'dark'
+                        ? 'bg-dark-bg border-gray-700 text-gray-100 focus:border-electric-blue focus:ring-2 focus:ring-electric-blue/40'
+                        : 'bg-white border-gray-300 text-gray-800 focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/30'
+                    }`}
+                  >
+                    <option value="all">All levels</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                  <span
+                    className={`pointer-events-none absolute inset-y-0 right-3 flex items-center ${
+                      theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                    }`}
+                  >
+                    ▼
+                  </span>
+                </div>
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/academy/login')}
+                className={`relative group overflow-hidden inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 ${
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg hover:shadow-electric-blue/25'
+                    : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg hover:shadow-accent-red/25'
+                }`}
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  View All Courses
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+                <div
+                  className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                      : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                  }`}
+                />
+              </motion.button>
+            </div>
           </motion.div>
 
           {loading ? (
@@ -445,9 +537,9 @@ const ELearningHome = () => {
                 </div>
               ))}
             </div>
-          ) : courses.length > 0 ? (
+          ) : filteredCourses.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {courses.slice(0, 6).map((course) => (
+              {filteredCourses.slice(0, 6).map((course) => (
                 <CourseCard
                   key={course.id}
                   id={course.id}
@@ -502,7 +594,11 @@ const ELearningHome = () => {
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>
                 Your Learning{' '}
-                <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>
+                <span className={`bg-gradient-to-r ${
+                  theme === 'dark'
+                    ? 'from-electric-green to-electric-blue'
+                    : 'from-accent-red to-accent-blue'
+                } bg-clip-text text-transparent`}>
                   Journey
                 </span>
               </h2>
@@ -593,73 +689,6 @@ const ELearningHome = () => {
 
       {/* Testimonials */}
       <TestimonialsSlider />
-
-      {/* CTA Section */}
-      <section className={`py-20 ${theme === 'dark' ? 'bg-dark-card' : 'bg-white'}`}>
-        <div className="container mx-auto px-4 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className={`relative overflow-hidden rounded-3xl p-12 md:p-20 ${
-              theme === 'dark'
-                ? 'bg-gradient-to-br from-electric-blue/20 via-dark-bg to-electric-green/20'
-                : 'bg-gradient-to-br from-accent-red/10 via-white to-accent-blue/10'
-            }`}
-          >
-            <div className={`absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl ${
-              theme === 'dark' ? 'bg-electric-blue/30' : 'bg-accent-blue/30'
-            }`} />
-            <div className={`absolute bottom-0 left-0 w-80 h-80 rounded-full blur-3xl ${
-              theme === 'dark' ? 'bg-electric-green/30' : 'bg-accent-red/30'
-            }`} />
-
-            <div className="relative z-10 text-center max-w-3xl mx-auto">
-              <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${
-                theme === 'dark' ? 'text-white' : 'text-gray-900'
-              }`}>
-                Ready to Start Your{' '}
-                <span className={theme === 'dark' ? 'text-electric-green' : 'text-accent-red'}>
-                  Learning Journey?
-                </span>
-              </h2>
-              <p className={`text-xl mb-10 ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-              }`}>
-                Join thousands of students already learning with NanoFlows Academy. 
-                Start your journey today and transform your career.
-              </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate('/academy/signup')}
-                  className={`px-10 py-5 rounded-xl font-bold text-lg flex items-center gap-2 shadow-2xl ${
-                    theme === 'dark'
-                      ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg hover:shadow-electric-green/50'
-                      : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-accent-red/50'
-                  }`}
-                >
-                  Get Started Free
-                  <ArrowRight className="w-5 h-5" />
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate('/elearning/about')}
-                  className={`px-10 py-5 rounded-xl font-bold text-lg border-2 ${
-                    theme === 'dark'
-                      ? 'border-white/30 text-white hover:bg-white/10'
-                      : 'border-gray-900/30 text-gray-900 hover:bg-gray-900/10'
-                  }`}
-                >
-                  Learn More
-                </motion.button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
 
       <Footer variant="elearning" />
     </div>

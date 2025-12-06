@@ -5,21 +5,20 @@ import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import SEO from '../../components/SEO';
 
 const CloudPlatform = () => {
   const { theme } = useTheme();
 
-  useEffect(() => {
-    document.title = 'Cloud Platform Solutions - Nano Flows | Cloud Migration & DevOps';
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Nano Flows offers comprehensive cloud platform solutions including cloud migration, serverless architecture, DevOps automation, and multi-cloud strategies. Scale effortlessly with modern cloud technologies.');
-    }
-  }, []);
-
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
-      <Header />
+    <>
+      <SEO
+        title="Cloud Platform Solutions - NanoFlows | Cloud Migration & DevOps"
+        description="NanoFlows offers comprehensive cloud platform solutions including cloud migration, serverless architecture, DevOps automation, and multi-cloud strategies. Scale effortlessly with modern cloud technologies."
+        keywords="cloud platform, cloud migration, serverless architecture, DevOps automation, multi-cloud, cloud solutions"
+      />
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+        <Header />
       <main className="pt-24 lg:pt-32">
         {/* Hero Section */}
         <section className={`relative py-12 sm:py-16 md:py-20 overflow-hidden ${
@@ -221,7 +220,8 @@ const CloudPlatform = () => {
         </section>
       </main>
       <Footer />
-    </div>
+      </div>
+    </>
   );
 };
 

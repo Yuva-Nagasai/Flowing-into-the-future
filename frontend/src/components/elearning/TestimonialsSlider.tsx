@@ -144,8 +144,8 @@ const TestimonialsSlider = () => {
               }}
               className={`p-8 md:p-12 rounded-3xl border-2 ${
                 theme === 'dark'
-                  ? 'bg-dark-card border-gray-800'
-                  : 'bg-white border-gray-200'
+                  ? 'bg-slate-900/80 border-slate-700/70 backdrop-blur-sm'
+                  : 'bg-gradient-to-br from-accent-red/10 to-accent-blue/10 border-accent-red/30 backdrop-blur-sm'
               } shadow-2xl`}
             >
               <div className="flex flex-col md:flex-row gap-8 items-center">

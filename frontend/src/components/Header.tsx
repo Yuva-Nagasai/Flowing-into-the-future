@@ -119,13 +119,13 @@ const Header = () => {
     { name: 'Home', href: '#home', type: 'anchor' },
     { name: 'Services', href: '/services', type: 'route' },
     { name: 'How it Works', href: '/how-it-works', type: 'route' },
-    { name: 'Shop', href: '/ecommerce', type: 'external' },
     { name: 'Careers', href: '/careers', type: 'route' },
     { name: 'Contact', href: '/contact', type: 'route' }
   ];
 
   const isRouteActive = (href: string) => {
     if (!href.startsWith('/')) return false;
+    if (href === '/') return false;
     return location.pathname === href || location.pathname.startsWith(`${href}/`);
   };
 
@@ -256,7 +256,8 @@ const Header = () => {
                     href={link.href}
                     onClick={(e) => handleAnchorClick(e, link.href)}
                     className={`font-exo font-medium transition-all duration-300 cursor-pointer ${getLinkClasses(
-                      activeAnchor === link.href.replace('#', '')
+                      // Do not show "Home" as an active/selected state (to match e-learning nav behavior)
+                      link.name === 'Home' ? false : activeAnchor === link.href.replace('#', '')
                     )}`}
                   >
                     {link.name}
@@ -478,9 +479,9 @@ const Header = () => {
               )}
             </div>
 
-            {/* Login Button */}
+            {/* Website Login Button (website auth) */}
             <Link
-              to="/academy/login"
+              to="/login"
               className={`font-exo font-medium px-4 py-2 rounded-md transition-all duration-300 ${
                 theme === 'dark'
                   ? 'bg-electric-green text-black hover:bg-electric-blue'
@@ -531,7 +532,12 @@ const Header = () => {
                     href={link.href}
                     onClick={(e) => handleAnchorClick(e, link.href)}
                     className={`block px-4 py-3 font-exo transition-all duration-300 cursor-pointer ${
-                      activeAnchor === link.href.replace('#', '')
+                      // Do not show "Home" as an active/selected state (to match e-learning nav behavior)
+                      link.name === 'Home'
+                        ? theme === 'dark'
+                          ? 'text-white hover:text-electric-green hover:bg-dark-lighter'
+                          : 'text-black hover:text-accent-red hover:bg-gray-50'
+                        : activeAnchor === link.href.replace('#', '')
                         ? theme === 'dark'
                           ? 'text-electric-green bg-dark-lighter/40'
                           : 'text-accent-red bg-gray-50'
@@ -730,9 +736,9 @@ const Header = () => {
               )}
             </div>
 
-            {/* Login Button */}
+            {/* Website Login Button (website auth) */}
             <Link
-              to="/academy/login"
+              to="/login"
               onClick={() => setIsMobileMenuOpen(false)}
               className={`block px-4 py-3 mt-2 font-exo font-medium rounded-md text-center transition-all duration-300 ${
                 theme === 'dark'

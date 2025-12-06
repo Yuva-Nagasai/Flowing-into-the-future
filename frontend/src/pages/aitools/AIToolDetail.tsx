@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
+import { useAIToolsAuth } from '../../contexts/AIToolsAuthContext';
 import { aiToolsAPI } from '../../utils/api';
 import AIToolsNav from '../../components/aitools/AIToolsNav';
-import AIToolsFooter from '../../components/aitools/AIToolsFooter';
+import Footer from '../../components/Footer';
+import SEO from '../../components/SEO';
 import {
   Brain,
   ArrowLeft,
@@ -23,7 +25,9 @@ import {
   BarChart3,
   Languages,
   ArrowRight,
-  Copy
+  Copy,
+  Lock,
+  X
 } from 'lucide-react';
 
 interface AITool {
@@ -67,11 +71,13 @@ const getCategoryLabel = (category: string) => {
 const AIToolDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { theme } = useTheme();
+  const { user } = useAIToolsAuth();
   const navigate = useNavigate();
   const [tool, setTool] = useState<AITool | null>(null);
   const [relatedTools, setRelatedTools] = useState<AITool[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const sampleTools: AITool[] = [
     { id: '1', name: 'ChatGPT', description: 'Advanced AI chatbot for conversations, coding help, and content creation. Powered by OpenAI, ChatGPT can help with writing, analysis, coding, math, and creative tasks. It understands context and can engage in natural conversations on virtually any topic.', category: 'text', color: 'from-green-500 to-emerald-600', features: ['Natural Language Processing', 'Code Generation', 'Content Writing', 'Multi-turn Conversations', 'Context Understanding'], pricing_type: 'free', url: 'https://chat.openai.com' },
@@ -127,16 +133,40 @@ const AIToolDetail = () => {
     }
   };
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleShare = async () => {
+    if (navigator.share && tool) {
+      try {
+        await navigator.share({
+          title: tool.name,
+          text: tool.description,
+          url: window.location.href,
+        });
+      } catch (err) {
+        // ignore share cancellation
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const handleUseTool = () => {
+    // Check if user is authenticated
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+    
+    // User is authenticated, proceed to use the tool
     if (tool?.url) {
       window.open(tool.url, '_blank', 'noopener,noreferrer');
     }
+  };
+
+  const handleLogin = () => {
+    setShowLoginModal(false);
+    navigate('/ai-tools/login', { state: { from: { pathname: `/ai-tools/tool/${id}` } } });
   };
 
   if (loading) {
@@ -195,23 +225,45 @@ const AIToolDetail = () => {
 
   const Icon = getCategoryIcon(tool.category);
 
+  const detailCardClass =
+    theme === 'dark'
+      ? 'bg-dark-card/95 border border-gray-700/60 backdrop-blur-sm shadow-[0_25px_90px_rgba(0,0,0,0.65)]'
+      : 'bg-gradient-to-br from-accent-red/10 via-white to-accent-blue/15 border border-accent-red/30 shadow-[0_25px_90px_rgba(15,23,42,0.15)] backdrop-blur-sm';
+
   return (
-    <div className={`min-h-screen w-full max-w-full overflow-x-hidden flex flex-col ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
-      <AIToolsNav />
+    <>
+      <SEO
+        title={tool ? `${tool.name} | AI Tools` : 'AI Tool Details | NanoFlows'}
+        description={tool ? tool.description : 'Discover powerful AI tools and automation solutions.'}
+        keywords={tool ? `AI tool, ${tool.category}, ${tool.name}, automation` : 'AI tools, automation, artificial intelligence'}
+      />
+      <div className={`min-h-screen w-full max-w-full overflow-x-hidden flex flex-col ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+        <AIToolsNav />
 
       <div className="container mx-auto px-4 lg:px-8 py-8">
         <motion.button
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          onClick={() => navigate(-1)}
-          className={`flex items-center gap-2 mb-8 font-medium transition-all ${
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => navigate('/ai-tools/explore')}
+          className={`relative group overflow-hidden mb-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-exo font-medium shadow-lg transition-all duration-300 ${
             theme === 'dark'
-              ? 'text-gray-400 hover:text-electric-blue'
-              : 'text-gray-600 hover:text-accent-red'
+              ? 'bg-gradient-to-r from-electric-green to-electric-blue text-dark-bg'
+              : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
           }`}
         >
-          <ArrowLeft className="w-5 h-5" />
-          Back to Tools
+          <span className="relative z-10 flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Tools
+          </span>
+          <div
+            className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+              theme === 'dark'
+                ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                : 'bg-gradient-to-r from-accent-blue to-accent-red'
+            }`}
+          />
         </motion.button>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -220,9 +272,7 @@ const AIToolDetail = () => {
             animate={{ opacity: 1, y: 0 }}
             className="lg:col-span-2"
           >
-            <div className={`p-8 rounded-3xl ${
-              theme === 'dark' ? 'bg-dark-card border border-gray-800' : 'bg-white border border-gray-200'
-            } shadow-lg`}>
+            <div className={`p-8 rounded-3xl ${detailCardClass}`}>
               <div className="flex flex-col sm:flex-row sm:items-start gap-6 mb-8">
                 <div className={`flex-shrink-0 p-5 rounded-2xl bg-gradient-to-br ${tool.color} shadow-lg`}>
                   <Icon className="w-12 h-12 text-white" />
@@ -306,21 +356,30 @@ const AIToolDetail = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleUseTool}
-                  className={`flex-1 py-4 rounded-xl font-bold flex items-center justify-center gap-2 ${
+                  className={`relative group overflow-hidden flex-1 py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all duration-300 ${
                     theme === 'dark'
                       ? 'bg-gradient-to-r from-electric-blue to-electric-green text-black'
                       : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
-                  } shadow-lg`}
+                  }`}
                 >
+                  <span className="relative z-10 flex items-center justify-center gap-2">
                   <Zap className="w-5 h-5" />
                   Use This Tool
                   <ExternalLink className="w-5 h-5" />
+                  </span>
+                  <div
+                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                        : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                    }`}
+                  />
                 </motion.button>
 
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={handleCopyLink}
+                  onClick={handleShare}
                   className={`px-6 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 border-2 ${
                     theme === 'dark'
                       ? 'border-gray-700 text-gray-300 hover:border-electric-blue hover:text-electric-blue'
@@ -349,9 +408,7 @@ const AIToolDetail = () => {
             transition={{ delay: 0.1 }}
             className="space-y-6"
           >
-            <div className={`p-6 rounded-2xl ${
-              theme === 'dark' ? 'bg-dark-card border border-gray-800' : 'bg-white border border-gray-200'
-            }`}>
+            <div className={`p-6 rounded-2xl ${detailCardClass}`}>
               <h3 className={`text-lg font-bold mb-4 ${
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>Quick Info</h3>
@@ -411,9 +468,7 @@ const AIToolDetail = () => {
             </div>
 
             {relatedTools.length > 0 && (
-              <div className={`p-6 rounded-2xl ${
-                theme === 'dark' ? 'bg-dark-card border border-gray-800' : 'bg-white border border-gray-200'
-              }`}>
+              <div className={`p-6 rounded-2xl ${detailCardClass}`}>
                 <h3 className={`text-lg font-bold mb-4 ${
                   theme === 'dark' ? 'text-white' : 'text-gray-900'
                 }`}>Related Tools</h3>
@@ -457,8 +512,152 @@ const AIToolDetail = () => {
         </div>
       </div>
 
-      <AIToolsFooter />
-    </div>
+      <Footer variant="ai-tools" />
+
+      {/* Login Required Modal */}
+      <AnimatePresence>
+        {showLoginModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowLoginModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className={`relative w-full max-w-md rounded-2xl shadow-2xl ${
+                theme === 'dark'
+                  ? 'bg-dark-card border border-gray-700'
+                  : 'bg-white border border-gray-200'
+              }`}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setShowLoginModal(false)}
+                className={`absolute right-4 top-4 p-2 rounded-lg transition-all ${
+                  theme === 'dark'
+                    ? 'text-gray-400 hover:text-white hover:bg-gray-700'
+                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="p-8">
+                {/* Icon */}
+                <div className={`mx-auto mb-6 w-16 h-16 rounded-2xl flex items-center justify-center ${
+                  theme === 'dark'
+                    ? 'bg-electric-green/20'
+                    : 'bg-accent-red/20'
+                }`}>
+                  <Lock className={`w-8 h-8 ${
+                    theme === 'dark' ? 'text-electric-green' : 'text-accent-red'
+                  }`} />
+                </div>
+
+                {/* Title */}
+                <h2 className={`text-2xl font-bold text-center mb-3 ${
+                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                }`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                  Login Required
+                </h2>
+
+                {/* Description */}
+                <p className={`text-center mb-6 ${
+                  theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                }`}>
+                  You need to be logged in to use AI Tools. Sign in to your account to access this feature and explore all available tools.
+                </p>
+
+                {/* Benefits List */}
+                <div className={`mb-6 p-4 rounded-xl ${
+                  theme === 'dark' ? 'bg-dark-lighter' : 'bg-gray-50'
+                }`}>
+                  <p className={`text-sm font-semibold mb-3 ${
+                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
+                    By logging in, you'll get:
+                  </p>
+                  <ul className="space-y-2">
+                    {[
+                      'Access to all AI Tools',
+                      'Track your favorite tools',
+                      'Save your preferences',
+                      'Get personalized recommendations'
+                    ].map((benefit, idx) => (
+                      <li key={idx} className="flex items-center gap-2">
+                        <Check className={`w-4 h-4 flex-shrink-0 ${
+                          theme === 'dark' ? 'text-electric-green' : 'text-green-600'
+                        }`} />
+                        <span className={`text-sm ${
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                        }`}>
+                          {benefit}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleLogin}
+                    className={`relative group overflow-hidden flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all duration-300 ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-electric-blue to-electric-green text-black'
+                        : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
+                    }`}
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                      <Zap className="w-5 h-5" />
+                      Sign In
+                    </span>
+                    <div
+                      className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                        theme === 'dark'
+                          ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                          : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                      }`}
+                    />
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      setShowLoginModal(false);
+                      navigate('/academy/signup', { state: { from: { pathname: `/ai-tools/tool/${id}` } } });
+                    }}
+                    className={`px-6 py-3 rounded-xl font-semibold border-2 transition-all ${
+                      theme === 'dark'
+                        ? 'border-gray-700 text-gray-300 hover:border-electric-blue hover:text-electric-blue'
+                        : 'border-gray-300 text-gray-700 hover:border-accent-red hover:text-accent-red'
+                    }`}
+                  >
+                    Create Account
+                  </motion.button>
+                </div>
+
+                {/* Footer Text */}
+                <p className={`text-xs text-center mt-4 ${
+                  theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
+                }`}>
+                  Don't have an account? Sign up is free and takes less than a minute.
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      </div>
+    </>
   );
 };
 

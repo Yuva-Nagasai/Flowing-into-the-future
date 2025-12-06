@@ -322,7 +322,7 @@ export default function ShopAccount() {
                         {wishlist.map((item) => (
                           <Link
                             key={item.id}
-                            to={`/shop/product/${item.product?.slug}`}
+                            to={`/shop/products/${item.product?.slug}`}
                             className={`flex items-center gap-4 p-4 rounded-xl border transition-colors ${
                               theme === 'dark' ? 'border-slate-600 hover:bg-slate-700' : 'border-gray-200 hover:bg-gray-50'
                             }`}
@@ -479,7 +479,7 @@ export default function ShopAccount() {
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="shop" />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { MapPin, Compass, Globe, Route } from 'lucide-react';
 import ProductCategoryTemplate from '../../components/products/ProductCategoryTemplate';
+import SEO from '../../components/SEO';
 
 const discoveryFeatures = [
   {
@@ -123,7 +124,16 @@ const GetDiscovery = () => {
     document.title = 'Get Discovery - Nano Flows Products';
   }, []);
 
-  return <ProductCategoryTemplate {...pageContent} />;
+  return (
+    <>
+      <SEO
+        title="Get Discovery Platform - NanoFlows"
+        description="Omni-channel store visibility, real-time store locator, micro-site builder, and reputation management to help customers discover your business."
+        keywords="store discovery, store locator, omni-channel visibility, reputation management, micro-site builder"
+      />
+      <ProductCategoryTemplate {...pageContent} />
+    </>
+  );
 };
 
 export default GetDiscovery;

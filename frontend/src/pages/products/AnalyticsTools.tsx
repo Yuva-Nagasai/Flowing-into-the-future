@@ -5,21 +5,20 @@ import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import SEO from '../../components/SEO';
 
 const AnalyticsTools = () => {
   const { theme } = useTheme();
 
-  useEffect(() => {
-    document.title = 'Analytics Tools - Nano Flows | Business Intelligence & Data Analytics';
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Nano Flows develops powerful analytics tools and business intelligence platforms. Transform data into actionable insights with real-time dashboards, predictive analytics, and big data processing.');
-    }
-  }, []);
-
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
-      <Header />
+    <>
+      <SEO
+        title="Analytics Tools - NanoFlows | Business Intelligence & Data Analytics"
+        description="NanoFlows develops powerful analytics tools and business intelligence platforms. Transform data into actionable insights with real-time dashboards, predictive analytics, and big data processing."
+        keywords="analytics tools, business intelligence, data analytics, real-time dashboards, predictive analytics, big data"
+      />
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+        <Header />
       <main className="pt-24 lg:pt-32">
         {/* Hero Section */}
         <section className={`relative py-12 sm:py-16 md:py-20 overflow-hidden ${
@@ -223,7 +222,8 @@ const AnalyticsTools = () => {
         </section>
       </main>
       <Footer />
-    </div>
+      </div>
+    </>
   );
 };
 

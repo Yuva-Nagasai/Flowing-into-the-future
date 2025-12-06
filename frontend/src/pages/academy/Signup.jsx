@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { getTheme } from '../../themes/theme';
 import { Sparkles, Brain, Sun, Moon } from 'lucide-react';
 import { motion } from 'framer-motion';
+import SEO from '../../components/SEO';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -17,6 +18,7 @@ const Signup = () => {
   const { signup } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
   
   const currentTheme = getTheme(theme);
 
@@ -39,7 +41,7 @@ const Signup = () => {
     const result = await signup(name, email, password, role);
 
     if (result.success) {
-      navigate('/academy/dashboard');
+      navigate('/academy/dashboard', { replace: true });
     } else {
       setError(result.error);
     }
@@ -48,13 +50,19 @@ const Signup = () => {
   };
 
   return (
-    <div className={`relative flex h-screen items-center justify-center overflow-hidden ${currentTheme.classes.containerBg}`}>
-      {/* Background Gradient Mesh */}
-      <div className={`absolute inset-0 ${currentTheme.classes.mesh}`} />
+    <>
+      <SEO
+        title="Sign Up | NanoFlows Academy"
+        description="Create your NanoFlows Academy account to start learning and earning certificates."
+        keywords="academy signup, register, create account"
+      />
+      <div className={`relative flex h-screen items-center justify-center overflow-hidden ${currentTheme.classes.containerBg}`}>
+        {/* Background Gradient Mesh */}
+        <div className={`absolute inset-0 ${currentTheme.classes.mesh}`} />
       
       {/* Gradient Blurs */}
-      <div className={`absolute right-0 top-0 h-[600px] w-[600px] rounded-full blur-3xl ${currentTheme.classes.blurPrimary}`} />
-      <div className={`absolute bottom-0 left-0 h-[500px] w-[500px] rounded-full blur-3xl ${currentTheme.classes.blurSecondary}`} />
+      <div className={`absolute right-0 top-0 h-[480px] w-[480px] rounded-full blur-3xl ${currentTheme.classes.blurPrimary}`} />
+      <div className={`absolute bottom-0 left-0 h-[420px] w-[420px] rounded-full blur-3xl ${currentTheme.classes.blurSecondary}`} />
 
       {/* Theme Toggle Button - Fixed Position */}
       <motion.button
@@ -73,16 +81,16 @@ const Signup = () => {
       </motion.button>
 
       {/* Signup Container - Centered */}
-      <div className="relative z-10 mx-auto w-full max-w-sm px-4 sm:px-6 py-4 sm:py-6">
+      <div className="relative z-10 mx-auto w-full max-w-sm px-4 sm:px-5 py-4 sm:py-5">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className={`rounded-2xl p-5 sm:p-6 shadow-2xl backdrop-blur-xl ${currentTheme.classes.cardBg} ${currentTheme.classes.border} ${currentTheme.classes.shadow}`}
+          className={`rounded-2xl p-4 sm:p-5 shadow-2xl backdrop-blur-xl ${currentTheme.classes.cardBg} ${currentTheme.classes.border} ${currentTheme.classes.shadow}`}
         >
           {/* Logo & Header */}
-          <div className="mb-5 text-center">
-            <div className="mx-auto mb-2 h-10 w-20 overflow-hidden flex items-center justify-center rounded-lg">
+          <div className="mb-4 text-center">
+            <div className="mx-auto mb-2 h-9 w-18 overflow-hidden flex items-center justify-center rounded-lg">
               <motion.div
                 className="w-full h-full"
                 initial={{ opacity: 0, scale: 0.5 }}
@@ -107,11 +115,11 @@ const Signup = () => {
               <Sparkles className="h-3 w-3 animate-pulse" />
               NanoFlows Academy
             </div>
-            <h1 className={`mt-2 text-xl font-bold ${currentTheme.classes.headingPrimary}`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
+            <h1 className={`mt-2 text-lg font-bold ${currentTheme.classes.headingPrimary}`} style={{ fontFamily: 'Orbitron, sans-serif' }}>
               Create Your Account
             </h1>
             <p className={`mt-1 text-xs ${currentTheme.classes.text}`}>
-              Join NanoFlows Academy and start your learning journey
+              Join NanoFlows Academy to access courses, AI Tools platform, and start your learning journey
             </p>
           </div>
 
@@ -230,12 +238,6 @@ const Signup = () => {
                 Sign in
               </Link>
             </div>
-            <Link
-              to="/"
-              className={`inline-flex items-center gap-2 text-sm font-semibold transition ${currentTheme.classes.link}`}
-            >
-              <span>←</span> Back to Main Website
-            </Link>
           </div>
         </motion.div>
 
@@ -255,7 +257,8 @@ const Signup = () => {
           </a>
         </motion.div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

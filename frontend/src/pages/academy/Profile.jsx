@@ -8,6 +8,7 @@ import {
   FiCheckCircle, FiTrendingUp, FiCalendar, FiDollarSign
 } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import SEO from '../../components/SEO';
 
 const Profile = () => {
   const { user, logout } = useAuth();
@@ -47,7 +48,7 @@ const Profile = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/academy/platform-selection');
+    navigate('/academy/dashboard');
   };
 
   const totalSpent = payments
@@ -73,8 +74,14 @@ const Profile = () => {
   }
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
-      {/* Header */}
+    <>
+      <SEO
+        title="Profile | NanoFlows Academy"
+        description="Manage your Academy profile, view purchase history, certificates, and account settings."
+        keywords="academy profile, account settings, purchase history, certificates, user profile"
+      />
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-dark-bg' : 'bg-gray-50'}`}>
+        {/* Header */}
       <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${
         theme === 'dark' 
           ? 'border-gray-800/50 bg-dark-card/90' 
@@ -506,7 +513,8 @@ const Profile = () => {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

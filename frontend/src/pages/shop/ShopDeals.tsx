@@ -149,14 +149,23 @@ function DealModal({ deal, isOpen, onClose, theme }: DealModalProps) {
                 <div className="flex gap-3">
                   <Link
                     to={deal.productId ? `/shop/products/${deal.productId}` : '/shop/products'}
-                    className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                    className={`relative group overflow-hidden flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                       theme === 'dark'
                         ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg'
                         : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg'
                     }`}
                   >
-                    <ShoppingBag className="w-5 h-5" />
-                    Shop Now
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      <ShoppingBag className="w-5 h-5" />
+                      Shop Now
+                    </span>
+                    <div
+                      className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                        theme === 'dark'
+                          ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                          : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                      }`}
+                    />
                   </Link>
                   <button
                     onClick={onClose}
@@ -314,7 +323,7 @@ export default function ShopDeals() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     onClick={() => !isExpired && openDealModal(deal)}
-                    className={`group rounded-2xl overflow-hidden transition-all cursor-pointer ${
+                    className={`group rounded-2xl overflow-hidden transition-all cursor-pointer flex flex-col h-full ${
                       isExpired ? 'opacity-60' : 'hover:scale-[1.02] hover:shadow-xl'
                     } ${
                       theme === 'dark'
@@ -322,7 +331,7 @@ export default function ShopDeals() {
                         : 'bg-white border border-gray-200 shadow-sm hover:shadow-lg'
                     }`}
                   >
-                    <div className="p-6">
+                    <div className="p-6 flex flex-col flex-1">
                       <div className="flex items-start justify-between mb-4">
                         <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${
                           theme === 'dark'
@@ -344,14 +353,14 @@ export default function ShopDeals() {
                         </span>
                       </div>
 
-                      <h3 className={`text-xl font-bold mb-2 ${
+                      <h3 className={`text-xl font-bold mb-2 min-h-[3rem] line-clamp-2 ${
                         theme === 'dark' ? 'text-white' : 'text-gray-900'
                       }`}>
                         {deal.title}
                       </h3>
                       
                       {deal.description && (
-                        <p className={`text-sm mb-4 line-clamp-2 ${
+                        <p className={`text-sm mb-4 line-clamp-2 min-h-[2.5rem] flex-shrink-0 ${
                           theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                         }`}>
                           {deal.description}
@@ -359,7 +368,7 @@ export default function ShopDeals() {
                       )}
 
                       {deal.code && (
-                        <div className={`mb-4 p-3 rounded-lg border-2 border-dashed text-center ${
+                        <div className={`mb-4 p-3 rounded-lg border-2 border-dashed text-center flex-shrink-0 ${
                           theme === 'dark'
                             ? 'border-slate-600 bg-slate-700/50'
                             : 'border-gray-200 bg-gray-50'
@@ -377,7 +386,7 @@ export default function ShopDeals() {
                         </div>
                       )}
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between mt-auto flex-shrink-0">
                         <div className={`flex items-center gap-2 text-sm ${
                           isExpired
                             ? 'text-red-500'
@@ -418,9 +427,13 @@ export default function ShopDeals() {
               })}
             </div>
           ) : (
-            <div className={`text-center py-20 rounded-2xl ${
-              theme === 'dark' ? 'bg-slate-800/50' : 'bg-white border border-gray-200'
-            }`}>
+            <div
+              className={`text-center py-20 rounded-2xl ${
+                theme === 'dark'
+                  ? 'bg-slate-800/50'
+                  : 'bg-gradient-to-r from-accent-red/10 to-accent-blue/10 border border-accent-red/30'
+              }`}
+            >
               <div className={`inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6 ${
                 theme === 'dark' ? 'bg-slate-700' : 'bg-gray-100'
               }`}>
@@ -431,35 +444,68 @@ export default function ShopDeals() {
               <h3 className={`text-2xl font-bold mb-2 ${
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>
-                No Active Deals
+                No Active{' '}
+                <span
+                  className={`bg-gradient-to-r ${
+                    theme === 'dark'
+                      ? 'from-electric-blue to-electric-green'
+                      : 'from-accent-red to-accent-blue'
+                  } bg-clip-text text-transparent`}
+                >
+                  Deals
+                </span>
               </h3>
               <p className={`mb-8 text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                 Check back soon for amazing offers and discounts!
               </p>
               <Link
                 to="/shop/products"
-                className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all ${
+                className={`relative group overflow-hidden inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 ${
                   theme === 'dark'
                     ? 'bg-gradient-to-r from-electric-blue to-electric-green text-slate-900 hover:shadow-lg'
                     : 'bg-gradient-to-r from-accent-red to-accent-blue text-white hover:shadow-lg'
                 }`}
               >
-                <ShoppingBag className="w-5 h-5" />
-                Browse Products
-                <ArrowRight className="w-5 h-5" />
+                <span className="relative z-10 flex items-center gap-2">
+                  <ShoppingBag className="w-5 h-5" />
+                  Browse Products
+                  <ArrowRight className="w-5 h-5" />
+                </span>
+                <div
+                  className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-electric-green to-electric-blue'
+                      : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                  }`}
+                />
               </Link>
             </div>
           )}
         </div>
       </section>
 
-      <section className={`py-16 ${theme === 'dark' ? 'bg-slate-900/50' : 'bg-white'}`}>
+      <section
+        className={`py-16 ${
+          theme === 'dark'
+            ? 'bg-gradient-to-r from-electric-blue/20 to-electric-green/20'
+            : 'bg-gradient-to-r from-accent-red/10 to-accent-blue/10'
+        }`}
+      >
         <div className="container mx-auto px-4 lg:px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${
               theme === 'dark' ? 'text-white' : 'text-gray-900'
             }`}>
-              Never Miss a Deal
+              Never Miss a{' '}
+              <span
+                className={`bg-gradient-to-r ${
+                  theme === 'dark'
+                    ? 'from-electric-blue to-electric-green'
+                    : 'from-accent-red to-accent-blue'
+                } bg-clip-text text-transparent`}
+              >
+                Deal
+              </span>
             </h2>
             <p className={`mb-8 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
               Subscribe to our newsletter and be the first to know about exclusive offers and discounts
@@ -476,13 +522,23 @@ export default function ShopDeals() {
               />
               <button
                 type="submit"
-                className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+                className={`relative group overflow-hidden inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 ${
                   theme === 'dark'
-                    ? 'bg-electric-green text-slate-900 hover:bg-electric-green/90'
-                    : 'bg-accent-blue text-white hover:bg-accent-blue/90'
+                    ? 'bg-gradient-to-r from-electric-green to-electric-blue text-slate-900'
+                    : 'bg-gradient-to-r from-accent-red to-accent-blue text-white'
                 }`}
               >
-                Subscribe
+                <span className="relative z-10 flex items-center gap-2">
+                  Subscribe
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+                <div
+                  className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+                    theme === 'dark'
+                      ? 'bg-gradient-to-r from-electric-blue to-electric-green'
+                      : 'bg-gradient-to-r from-accent-blue to-accent-red'
+                  }`}
+                />
               </button>
             </form>
           </div>
@@ -496,7 +552,7 @@ export default function ShopDeals() {
         theme={theme}
       />
 
-      <Footer />
+      <Footer variant="shop" />
     </div>
   );
 }
